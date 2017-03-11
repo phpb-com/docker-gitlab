@@ -5,6 +5,13 @@ This file only reflects the changes that are made in this image. Please refer to
 **8.17.0**
 - gitlab: upgrade to CE v8.17.0
 
+**8.16.7**
+- gitlab: upgrade to CE v8.16.7
+- golang: upgrade to 1.8
+- gitlab-shell: upgrade to 5.0.0
+- gitlab-workhorse: upgrade to 1.4.0
+- ubuntu: upgrade to xenial
+
 **8.16.6**
 - gitlab: upgrade to CE v8.16.6
 - Fix logical bug of Remote Backup

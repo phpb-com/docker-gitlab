@@ -9,7 +9,7 @@ GITLAB_PAGES_URL=https://gitlab.com/gitlab-org/gitlab-pages/repository/archive.t
 GEM_CACHE_DIR="${GITLAB_BUILD_DIR}/cache"
 
 BUILD_DEPENDENCIES="gcc g++ make patch pkg-config cmake paxctl \
-  libc6-dev ruby${RUBY_VERSION}-dev \
+  libc6-dev ruby${RUBY_VERSION}-dev libkrb5-dev \
   libmysqlclient-dev libpq-dev zlib1g-dev libyaml-dev libssl-dev \
   libgdbm-dev libreadline-dev libncurses5-dev libffi-dev \
   libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev"
@@ -39,8 +39,11 @@ passwd -d ${GITLAB_USER}
 
 # set PATH (fixes cron job PATH issues)
 cat >> ${GITLAB_HOME}/.profile <<EOF
-PATH=/usr/local/sbin:/usr/local/bin:\$PATH
+PATH=$HOME/.yarn/bin:/usr/local/sbin:/usr/local/bin:\$PATH
 EOF
+
+# install fresh yarn
+curl --location https://yarnpkg.com/install.sh | exec_as_git bash -
 
 # configure git for ${GITLAB_USER}
 exec_as_git git config --global core.autocrlf input
