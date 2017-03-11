@@ -1292,3 +1292,4 @@ docker exec -it gitlab bash
 * https://docs.gitlab.com/ce/user/project/pages/index.html
 * https://docs.gitlab.com/ce/administration/pages/index.html
 * https://gitlab.com/gitlab-org/gitlab-pages/
+* https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/update
