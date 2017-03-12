@@ -816,7 +816,19 @@ You can now import the [following dashboard](https://grafana.net/dashboards/1575
 
 *Please refer the docker run command options for the `--env-file` flag where you can specify all required environment variables in a single file. This will save you from writing a potentially long docker run command. Alternatively you can use docker-compose.*
 
-Below is the complete list of available options that can be used to customize your gitlab installation.
+Below is the complete list of available configuration options segregated by category. Those options will allow you to customize your installation of GitLab.
+
+#### GitLab Pages
+
+| Parameter | Description |
+|-----------|-------------|
+| `GITLAB_PAGES_ENABLED` | Enable GitLab Pages. Default to `false` |
+| `GITLAB_PAGES_DOMAIN`  | GitLab Pages domain. Default tp `example.com` |
+| `GITLAB_PAGES_DIR`     | Root directory of GitLab pages. Default to  `$GITLAB_SHARED_DIR/pages` |
+| `GITLAB_PAGES_PORT`    | Port that is used by gitlab-pages daemon to listen for requests. Default to `8090` |
+| `GITLAB_PAGES_HTTPS`   | Run gitlab-pages in HTTPS mode. Default to `false` |
+
+#### GitLab specific
 
 | Parameter | Description |
 |-----------|-------------|
