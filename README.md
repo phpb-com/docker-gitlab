@@ -1258,3 +1258,4 @@ docker exec -it gitlab bash
 * https://gitlab.com/gitlab-org/gitlab-pages/
 * https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/update
 * https://docs.gitlab.com/ce/administration/pages/source.html - Configuration guide for GitLab pages installed from source
+* https://docs.gitlab.com/ce/administration/raketasks/maintenance.html - List of maintanance tasks for GitLab
