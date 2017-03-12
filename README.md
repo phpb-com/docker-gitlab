@@ -1259,3 +1259,4 @@ docker exec -it gitlab bash
 * https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/update
 * https://docs.gitlab.com/ce/administration/pages/source.html - Configuration guide for GitLab pages installed from source
 * https://docs.gitlab.com/ce/administration/raketasks/maintenance.html - List of maintanance tasks for GitLab
+* https://gitlab.com/gitlab-org/gitlab-runner-docker-cleanup - docker base cleaner for docker, useful on the runner host
