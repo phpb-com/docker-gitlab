@@ -1067,9 +1067,11 @@ initialize_logdir() {
   chmod -R 0755 ${GITLAB_LOG_DIR}/supervisor
   chown -R root: ${GITLAB_LOG_DIR}/supervisor
 
-  mkdir -p ${GITLAB_LOG_DIR}/nginx
-  chmod -R 0755 ${GITLAB_LOG_DIR}/nginx
-  chown -R ${GITLAB_USER}: ${GITLAB_LOG_DIR}/nginx
+  if [[ ${NGINX_ENABLED} == true ]]; then
+    mkdir -p ${GITLAB_LOG_DIR}/nginx
+    chmod -R 0755 ${GITLAB_LOG_DIR}/nginx
+    chown -R ${GITLAB_USER}: ${GITLAB_LOG_DIR}/nginx
+  fi
 
   mkdir -p ${GITLAB_LOG_DIR}/gitlab
   chmod -R 0755 ${GITLAB_LOG_DIR}/gitlab
@@ -1149,6 +1151,9 @@ initialize_datadir() {
   mkdir -p ${GITLAB_DATA_DIR}/uploads
   chmod 0700 ${GITLAB_DATA_DIR}/uploads
   chown ${GITLAB_USER}: ${GITLAB_DATA_DIR}/uploads
+  chown -R ${GITLAB_USER} /home/git/data/uploads
+  find ${GITLAB_DATA_DIR}/uploads -type f -exec chmod 0644 {} \;
+  find ${GITLAB_DATA_DIR}/uploads -type d -not -path ${GITLAB_DATA_DIR}/uploads -exec chmod 0700 {} \;
 
   # create the .ssh directory
   mkdir -p ${GITLAB_DATA_DIR}/.ssh
@@ -1277,29 +1282,33 @@ install_configuration_templates() {
     exec_as_git cp ${GITLAB_ROBOTS_PATH} ${GITLAB_ROBOTS_CONFIG}
   fi
 
-  ## ${GITLAB_NGINX_CONFIG}
-  if [[ ${GITLAB_HTTPS} == true ]]; then
-    if [[ -f ${SSL_CERTIFICATE_PATH} && -f ${SSL_KEY_PATH} && -f ${SSL_DHPARAM_PATH} ]]; then
-      install_template root: nginx/gitlab-ssl ${GITLAB_NGINX_CONFIG}
+  if [[ ${NGINX_ENABLED} == true ]]; then
+    ## ${GITLAB_NGINX_CONFIG}
+    if [[ ${GITLAB_HTTPS} == true ]]; then
+      if [[ -f ${SSL_CERTIFICATE_PATH} && -f ${SSL_KEY_PATH} && -f ${SSL_DHPARAM_PATH} ]]; then
+        install_template root: nginx/gitlab-ssl ${GITLAB_NGINX_CONFIG}
+      else
+        echo "SSL keys and certificates were not found."
+        echo "Assuming that the container is running behind a HTTPS enabled load balancer."
+        install_template root: nginx/gitlab ${GITLAB_NGINX_CONFIG}
+      fi
     else
       echo "SSL Key, SSL Certificate and DHParam were not found."
       echo "Assuming that the container is running behind a HTTPS enabled load balancer."
       install_template root: nginx/gitlab ${GITLAB_NGINX_CONFIG}
     fi
-  else
-    install_template root: nginx/gitlab ${GITLAB_NGINX_CONFIG}
-  fi
 
-  if [[ -n $GITLAB_CI_HOST ]]; then
-    install_template root: nginx/gitlab_ci ${GITLAB_CI_NGINX_CONFIG}
-  fi
+    if [[ -n $GITLAB_CI_HOST ]]; then
+      install_template root: nginx/gitlab_ci ${GITLAB_CI_NGINX_CONFIG}
+    fi
 
-  if [[ ${GITLAB_REGISTRY_ENABLED} == true ]]; then
-    if [[ -f ${SSL_REGISTRY_CERT_PATH} && -f ${SSL_REGISTRY_KEY_PATH} ]]; then
-      install_template root: nginx/gitlab-registry ${GITLAB_REGISTRY_NGINX_CONFIG}
-    else
-      echo "SSL key and certificates for Registry were not found"
-      echo "Assuming that the Registry is running behind a HTTPS enabled load balancer."
+    if [[ ${GITLAB_REGISTRY_ENABLED} == true ]]; then
+      if [[ -f ${SSL_REGISTRY_CERT_PATH} && -f ${SSL_REGISTRY_KEY_PATH} ]]; then
+        install_template root: nginx/gitlab-registry ${GITLAB_REGISTRY_NGINX_CONFIG}
+      else
+        echo "SSL key and certificates for Registry were not found"
+        echo "Assuming that the Registry is running behind a HTTPS enabled load balancer."
+      fi
     fi
   fi
 }
@@ -1401,15 +1410,19 @@ configure_gitlab_monitor() {
 }
 
 configure_nginx() {
-  echo "Configuring nginx..."
-  sed -i \
-  -e "s|worker_processes .*|worker_processes ${NGINX_WORKERS};|" \
-  -e "s|# server_names_hash_bucket_size 64;|server_names_hash_bucket_size ${NGINX_SERVER_NAMES_HASH_BUCKET_SIZE};|" \
-  /etc/nginx/nginx.conf
+  if [[ ${NGINX_ENABLED} == true ]]; then
+    echo "Configuring nginx..."
+    sed -i \
+    -e "s|worker_processes .*|worker_processes ${NGINX_WORKERS};|" \
+    -e "s|# server_names_hash_bucket_size 64;|server_names_hash_bucket_size ${NGINX_SERVER_NAMES_HASH_BUCKET_SIZE};|" \
+    /etc/nginx/nginx.conf
 
-  nginx_configure_gitlab
-  nginx_configure_gitlab_ci
-  nginx_configure_gitlab_registry
+    nginx_configure_gitlab
+    nginx_configure_gitlab_ci
+    nginx_configure_gitlab_registry
+  else
+    rm -f /etc/supervisor/conf.d/nginx.conf
+  fi
 }
 
 migrate_database() {
