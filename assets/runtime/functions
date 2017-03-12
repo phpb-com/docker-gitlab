@@ -1378,6 +1378,8 @@ configure_gitlab_shell() {
 
 configure_gitlab_pages() {
   echo "Configuring gitlab-pages..."
+  GITLAB_UID=$(id -u ${GITLAB_USER})
+  GITLAB_GID=$(id -g ${GITLAB_USER})
 cat > /etc/supervisor/conf.d/gitlab-pages.conf <<EOF
 [program:gitlab-pages]
 priority=20
@@ -1387,7 +1389,9 @@ command=/usr/local/bin/gitlab-pages
   -pages-domain ${GITLAB_PAGES_DOMAIN}
   -pages-root ${GITLAB_PAGES_DIR}
   -listen-proxy :${GITLAB_PAGES_PORT}
-user=git
+  -daemon-uid ${GITLAB_UID}
+  -daemon-gid ${GITLAB_GID}
+user=root
 autostart=true
 autorestart=true
 stdout_logfile=${GITLAB_INSTALL_DIR}/log/%(program_name)s.log
