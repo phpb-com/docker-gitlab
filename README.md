@@ -51,6 +51,7 @@
     - [Host UID / GID Mapping](#host-uid--gid-mapping)
     - [Reuse docker host SSH daemon](docs/docker_host_ssh.md)
     - [Piwik](#piwik)
+    - [Grafana Metrics](#grafana)
     - [Available Configuration Parameters](#available-configuration-parameters)
 - [Maintenance](#maintenance)
     - [Creating Backups](#creating-backups)
@@ -795,6 +796,21 @@ These options should contain something like:
 
 - `PIWIK_URL=piwik.example.org`
 - `PIWIK_SITE_ID=42`
+
+
+### Grafana
+
+If you want to graph gitlab metrics on grafana you have to setup the grafana instance :
+
+On Grafana UI : 
+- Click Data Sources
+- Click Add Data Source
+- Set Type Prometheus
+- Url : http://prometheus-server:9090
+
+You can now import the [following dashboard](https://grafana.net/dashboards/1575), or create a custum one using the prometheus metrics.
+
+
 
 ### Available Configuration Parameters
 
