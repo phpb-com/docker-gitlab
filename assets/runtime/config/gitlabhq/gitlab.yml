@@ -164,7 +164,7 @@ production: &base
     # http://group.example.com/project
     # or project path can be a group page: group.example.com
     host: {{GITLAB_PAGES_DOMAIN}}
-    port: {{GITLAB_PAGES_PORT}} # Set to 443 if you serve the pages with HTTPS
+    port: {{GITLAB_PAGES_PROXY_PORT}} # Set to 443 if you serve the pages with HTTPS
     https: {{GITLAB_PAGES_HTTPS}} # Set to true if you serve the pages with HTTPS
     # external_http: "1.1.1.1:80" # If defined, enables custom domain support in GitLab Pages
     # external_https: "1.1.1.1:443" # If defined, enables custom domain and certificate support in GitLab Pages

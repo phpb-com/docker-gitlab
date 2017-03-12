@@ -927,7 +927,7 @@ gitlab_configure_registry(){
 
 gitlab_configure_pages() {
   echo "Configuring gitlab::pages..."
-  if [[ ${GITLAB_PAGES_PORT} == 443 ]]; then
+  if [[ ${GITLAB_PAGES_PORT} == 443 || ${GITLAB_PAGES_PROXY_PORT} == 443 ]]; then
      local GITLAB_PAGES_HTTPS=true
   fi
 
@@ -935,6 +935,7 @@ gitlab_configure_pages() {
     GITLAB_PAGES_ENABLED \
     GITLAB_PAGES_DOMAIN \
     GITLAB_PAGES_PORT \
+    GITLAB_PAGES_PROXY_PORT \
     GITLAB_PAGES_HTTPS 
 }
 
