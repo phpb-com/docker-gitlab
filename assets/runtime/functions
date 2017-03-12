@@ -1047,6 +1047,10 @@ map_uidgid() {
   fi
 }
 
+update_git_config() {
+  exec_as_git git config --global repack.writeBitmaps true
+}
+
 update_ca_certificates() {
   if [[ -f ${SSL_CERTIFICATE_PATH} || -f ${SSL_CA_CERTIFICATES_PATH} ]]; then
     echo "Updating CA certificates..."
@@ -1241,6 +1245,7 @@ initialize_system() {
   map_uidgid
   initialize_logdir
   initialize_datadir
+  update_git_config
   update_ca_certificates
   generate_ssh_host_keys
   install_configuration_templates
