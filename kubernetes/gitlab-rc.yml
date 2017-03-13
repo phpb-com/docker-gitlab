@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: gitlab
-        image: phpbcom/docker-gitlab:8.17.3
+        image: phpbcom/docker-gitlab:8.17.3-3
         env:
         - name: TZ
           value: Asia/Kolkata

@@ -43,7 +43,7 @@ where:
 | `AWS_BACKUP_BUCKET` | AWS bucket for backup uploads. No defaults. |
 | `AWS_BACKUP_MULTIPART_CHUNK_SIZE` | Enables mulitpart uploads when file size reaches a defined size. See at [AWS S3 Docs](http://docs.aws.amazon.com/AmazonS3/latest/dev/uploadobjusingmpu.html) |
 
-For more info look at [Available Configuration Parameters](https://github.com/sameersbn/docker-gitlab#available-configuration-parameters).
+For more info look at [Available Configuration Parameters](https://github.com/phpb-com/docker-gitlab#available-configuration-parameters).
 
 A minimum set of these parameters are required to use the s3 compatible storage:
 
@@ -72,7 +72,7 @@ version: '2'
 services:
   redis:
     restart: always
-    image: sameersbn/redis:latest
+    image: phpbcom/docker-redis:latest
     command:
     - --loglevel warning
     volumes:
@@ -80,7 +80,7 @@ services:
 
   postgresql:
     restart: always
-    image: sameersbn/postgresql:9.6-2
+    image: phpbcom/docker-postgresql:9.6.2-1
     volumes:
     - /tmp/docker/gitlab/postgresql:/var/lib/postgresql:Z
     environment:
@@ -91,7 +91,7 @@ services:
 
   gitlab:
     restart: always
-    #image: sameersbn/gitlab:8.16.4
+    image: phpbcom/docker-gitlab:8.17.3-3
     build: .
     depends_on:
     - redis
@@ -217,7 +217,7 @@ services:
 Execute the rake task with a removeable container.
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    sameersbn/gitlab:8.16.4 app:rake gitlab:backup:create
+    phpbcom/docker-gitlab:8.17.3-3 app:rake gitlab:backup:create
 ```
 ## Restoring Backups
 
@@ -225,7 +225,7 @@ Execute the rake task to restore a backup. Make sure you run the container in in
 
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    sameersbn/gitlab:8.16.4 app:rake gitlab:backup:restore
+    phpbcom/docker-gitlab:8.17.3-3 app:rake gitlab:backup:restore
 ```
 
 The list of all available backups will be displayed in reverse chronological order. Select the backup you want to restore and continue.
@@ -234,6 +234,6 @@ To avoid user interaction in the restore operation, specify the timestamp of the
 
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    sameersbn/gitlab:8.16.4 app:rake gitlab:backup:restore BACKUP=1417624827
+    phpbcom/docker-gitlab:8.17.3-3 app:rake gitlab:backup:restore BACKUP=1417624827
 ```
 

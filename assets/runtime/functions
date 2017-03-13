@@ -1459,7 +1459,7 @@ migrate_database() {
       echo
       echo "ERROR: "
       echo "  Cannot downgrade from GitLab version ${CACHE_VERSION} to ${GITLAB_VERSION}."
-      echo "  Only upgrades are allowed. Please use sameersbn/gitlab:${CACHE_VERSION} or higher."
+      echo "  Only upgrades are allowed. Please use phpbcom/docker-gitlab:${CACHE_VERSION} or higher."
       echo "  Cannot continue. Aborting!"
       echo
       return 1
