@@ -1,5 +1,0 @@
-image: docker:dind
-
-deploy:
-  script:
-    - ci/gitlab
