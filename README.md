@@ -1,3 +1,5 @@
+[![build status](https://gotfix.com/docker/gitlab/badges/master/build.svg)](https://gotfix.com/docker/gitlab/commits/master)
+
 # phpbcom/docker-gitlab:8.17.3-3
 
 **NOTE:** This project was forked from [sameersbn/docker-gitlab](https://github.com/sameersbn/docker-gitlab) to maintain slightly more modern and less conservative (i.e., things will  break) version of GitLab docker image. This is hopefuly a shortlived fork, and the upstream will get there someday.
