@@ -1,7 +1,7 @@
 FROM ubuntu:xenial
 MAINTAINER ian@phpb.com
 
-ENV GITLAB_VERSION=8.17.3-3 \
+ENV GITLAB_VERSION=8.17.3 \
     RUBY_VERSION=2.3 \
     GOLANG_VERSION=1.8 \
     GITLAB_SHELL_VERSION=5.0.0 \
@@ -27,9 +27,7 @@ RUN echo 'APT::Install-Recommends 0;' >> /etc/apt/apt.conf.d/01norecommends \
  && echo 'APT::Install-Suggests 0;' >> /etc/apt/apt.conf.d/01norecommends \
  && apt-get update \
  && DEBIAN_FRONTEND=noninteractive apt-get install -y vim.tiny curl wget sudo net-tools ca-certificates unzip apt-transport-https \
- && rm -rf /var/lib/apt/lists/*
-
-RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv E1DD270288B4E6030699E45FA1715D88E1DF1F24 \
+ && apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv E1DD270288B4E6030699E45FA1715D88E1DF1F24 \
  && echo "deb http://ppa.launchpad.net/git-core/ppa/ubuntu xenial main" >> /etc/apt/sources.list \
  && apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 80F70E11F0F0D5F10CB20E62F5DA5F09C3173AA6 \
  && echo "deb http://ppa.launchpad.net/brightbox/ruby-ng/ubuntu xenial main" >> /etc/apt/sources.list \
