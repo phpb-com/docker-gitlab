@@ -711,6 +711,10 @@ On Grafana UI :
 
 You can now import the [following dashboard](https://grafana.net/dashboards/1575), or create a custum one using the prometheus metrics.
 
+| Parameter | Description |
+|-----------|-------------|
+| `GITLAB_MONITOR_ENABLED` | Enable gitlab-monitor. Default to `false` |
+| `GITLAB_MONITOR_PORT`    | Specify port that gitlab-monitor will listen on. Default to `9168` |
 
 
 ### Available Configuration Parameters
