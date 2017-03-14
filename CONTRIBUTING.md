@@ -2,7 +2,9 @@
 
 Those are the steps that should be taken to upgrade GitLab, GitLab Shell, GitLab Monitor, GitLab Pages, GitLab Workhorse, etc... to the next version.
 
-# GitLab
+# Update to the next version
+
+## GitLab
 
  - Check [GitLab official repo](https://gitlab.com/gitlab-org/gitlab-ce) and see if new [tag](https://gitlab.com/gitlab-org/gitlab-ce/tags) is available.
  - Check [Changelog](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) and see if there are any changes that might break the build. Make sure to check the full list starting at the current version in this repo and until the target upgrade version.
