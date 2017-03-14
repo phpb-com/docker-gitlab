@@ -9,3 +9,4 @@ Those are the steps that should be taken to upgrade GitLab, GitLab Shell, GitLab
  - If it is a major update (i.e., 8.X -> 9.X, 8.1 -> 8.2), check [update documents](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/update).
  - Resolve all of the new requirements and changes
  - Try to build image (run `make`) after changes are applied.
+ - **NOTE** Watch for availability of [Gitaly](https://gitlab.com/gitlab-org/gitaly) to include in defailt image. Should be available in 9.1~
