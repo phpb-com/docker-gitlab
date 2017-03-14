@@ -1410,8 +1410,12 @@ configure_gitlab_monitor() {
   DB_PASS \
   DB_PORT \
   GITLAB_REPOS_DIR \
+  GITLAB_MONITOR_PORT \
   REDIS_HOST \
   REDIS_PORT
+
+  # enable/disable startup of gitlab-monitor
+  update_template /etc/supervisor/conf.d/gitlab-monitor.conf GITLAB_MONITOR_ENABLED
 }
 
 configure_nginx() {

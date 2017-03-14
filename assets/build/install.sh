@@ -317,7 +317,7 @@ directory=${GITLAB_MONITOR_INSTALL_DIR}
 environment=HOME=${GITLAB_HOME}
 command=bundle exec ${GITLAB_MONITOR_INSTALL_DIR}/bin/gitlab-mon web -c ${GITLAB_MONITOR_INSTALL_DIR}/config/gitlab-monitor.yml
 user=git
-autostart=true
+autostart={{GITLAB_MONITOR_ENABLED}}
 autorestart=true
 stdout_logfile=${GITLAB_INSTALL_DIR}/log/%(program_name)s.log
 stderr_logfile=${GITLAB_INSTALL_DIR}/log/%(program_name)s.log
