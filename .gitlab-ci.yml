@@ -63,7 +63,9 @@ github_mirror:
   type: mirror
   image: docker:git
   script:
-  - mkdir -p "${WORK_DIR}/mirror" && cd "${WORK_DIR}/mirror"
-  - git clone -q --mirror "${CI_BUILD_REPO}"
-  - cd "${CI_PROJECT_NAME}.git"
-  - git push -q --mirror "${GITHUB_REPO_URL}"
+    - mkdir -p "${WORK_DIR}/mirror" && cd "${WORK_DIR}/mirror"
+    - git clone -q --mirror "${CI_BUILD_REPO}"
+    - cd "${CI_PROJECT_NAME}.git"
+    - git push -q --mirror "${GITHUB_REPO_URL}"
+  except:
+    - latest
