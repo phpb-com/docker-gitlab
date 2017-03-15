@@ -49,6 +49,7 @@ curl --location https://yarnpkg.com/install.sh | exec_as_git bash -
 # configure git for ${GITLAB_USER}
 exec_as_git git config --global core.autocrlf input
 exec_as_git git config --global gc.auto 0
+exec_as_git git config --global repack.writeBitmaps true
 
 # install gitlab-shell
 echo "Downloading gitlab-shell v.${GITLAB_SHELL_VERSION}..."
@@ -295,7 +296,7 @@ environment=HOME=${GITLAB_HOME}
 command=/usr/local/bin/gitlab-workhorse
   -listenUmask 0
   -listenNetwork tcp
-  -listenAddr ":8181"
+  -listenAddr ":{{GITLAB_WORKHORSE_PORT}}"
   -authBackend http://127.0.0.1:8080{{GITLAB_RELATIVE_URL_ROOT}}
   -authSocket ${GITLAB_INSTALL_DIR}/tmp/sockets/gitlab.socket
   -documentRoot ${GITLAB_INSTALL_DIR}/public
@@ -317,6 +318,7 @@ command=/usr/local/bin/gitlab-pages
   -pages-domain {{GITLAB_PAGES_DOMAIN}}
   -pages-root ${GITLAB_PAGES_DIR}
   -listen-proxy :{{GITLAB_PAGES_PORT}}
+  -metrics-address :{{GITLAB_PAGES_METRICS_PORT}}
   -daemon-uid {{GITLAB_UID}}
   -daemon-gid {{GITLAB_GID}}
 user=root

@@ -28,25 +28,44 @@ build:
         --build-arg=HTTP_PROXY=${HTTP_PROXY}
         --pull -t "$CI_REGISTRY_IMAGE:$IMAGE_TAG" .
     - docker push "$CI_REGISTRY_IMAGE:$IMAGE_TAG"
+  except:
+    - latest
+
+tag-latest:
+  image: docker:git
+  stage: release
+  script:
+    - git config --global user.email "ci@gotfix.com"
+    - git config --global user.name "CI Build"
+    - git tag -fa latest -m "CI Build auto-tagged, latest master branch ref"
+    - git push --force https://${ACCESS_USER}:${ACCESS_TOKEN}@gotfix.com/docker/gitlab.git refs/tags/latest
+  only:
+    - master
 
 release:
   stage: release
   script:
     - docker pull "${CI_REGISTRY_IMAGE}:${IMAGE_TAG}"
     - docker tag "${CI_REGISTRY_IMAGE}:${IMAGE_TAG}" "${DOCKER_HUB_BASE}"
+    - docker tag "${CI_REGISTRY_IMAGE}:${IMAGE_TAG}" "${DOCKER_HUB_BASE}:${IMAGE_TAG}"
     - docker tag "${CI_REGISTRY_IMAGE}:${IMAGE_TAG}" "${DOCKER_HUB_BASE}:latest"
     - docker login -u "${DOCKER_USER}" -p "${DOCKER_PASS}"
     - docker push "${DOCKER_HUB_BASE}"
+    - docker push "${DOCKER_HUB_BASE}:${IMAGE_TAG}"
     - docker push "${DOCKER_HUB_BASE}:latest"
   only:
     - master
     - tags
+  except:
+    - latest
 
 github_mirror:
   type: mirror
   image: docker:git
   script:
-  - mkdir -p "${WORK_DIR}/mirror" && cd "${WORK_DIR}/mirror"
-  - git clone -q --mirror "${CI_BUILD_REPO}"
-  - cd "${CI_PROJECT_NAME}.git"
-  - git push -q --mirror "${GITHUB_REPO_URL}"
+    - mkdir -p "${WORK_DIR}/mirror" && cd "${WORK_DIR}/mirror"
+    - git clone -q --mirror "${CI_BUILD_REPO}"
+    - cd "${CI_PROJECT_NAME}.git"
+    - git push -q --mirror "${GITHUB_REPO_URL}"
+  except:
+    - latest
