@@ -25,9 +25,7 @@ build:
   script:
     - docker build 
         --build-arg=http_proxy=${HTTP_PROXY}
-        --build-arg=https_proxy=${HTTPS_PROXY}
         --build-arg=HTTP_PROXY=${HTTP_PROXY}
-        --build-arg=HTTPS_PROXY=${HTTPS_PROXY}
         --pull -t "$CI_REGISTRY_IMAGE:$IMAGE_TAG" .
     - docker push "$CI_REGISTRY_IMAGE:$IMAGE_TAG"
 

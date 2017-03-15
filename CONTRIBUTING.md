@@ -12,5 +12,11 @@ Those are the steps that should be taken to upgrade GitLab, GitLab Shell, GitLab
  - Resolve all of the new requirements and changes
  - Update relevant files with new version number
    - Update DOCKER_GITLAB_IMAGE_VERSION in [Dockerfile](Dockerfile) - mainly to invalidate quay.io cache and build a fresh image.
+   - check https://gitlab.com/gitlab-org/gitlab-shell/tags
+   - check https://gitlab.com/gitlab-org/gitlab-monitor/tags
+   - check https://gitlab.com/gitlab-org/gitlab-pages/tags
+   - check https://gitlab.com/gitlab-org/gitlab-workhorse/tags
+   - check https://gitlab.com/gitlab-org/gitlab-ce/tags
+   - Update each version in a separate commit in Dockerfile
  - Try to build image (run `make`) after changes are applied.
  - **NOTE** Watch for availability of [Gitaly](https://gitlab.com/gitlab-org/gitaly) to include in defailt image. Should be available in 9.1~
