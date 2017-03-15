@@ -273,7 +273,8 @@ gitlab_configure_gitlab_workhorse() {
   echo "Configuring gitlab::gitlab-workhorse..."
   update_template /etc/supervisor/conf.d/gitlab-workhorse.conf \
     GITLAB_RELATIVE_URL_ROOT \
-    GITLAB_WORKHORSE_TIMEOUT
+    GITLAB_WORKHORSE_TIMEOUT \
+    GITLAB_WORKHORSE_PORT
 }
 
 gitlab_configure_unicorn() {
@@ -994,6 +995,7 @@ nginx_configure_gitlab() {
     GITLAB_LOG_DIR \
     GITLAB_HOST \
     GITLAB_PORT \
+    GITLAB_WORKHORSE_PORT \
     NGINX_PROXY_BUFFERING \
     NGINX_ACCEL_BUFFERING \
     NGINX_X_FORWARDED_PROTO
@@ -1047,10 +1049,6 @@ map_uidgid() {
     sed -i -e "s|:${USERMAP_ORIG_UID}:${USERMAP_GID}:|:${USERMAP_UID}:${USERMAP_GID}:|" /etc/passwd
     find ${GITLAB_HOME} -path ${GITLAB_DATA_DIR}/\* -prune -o -print0 | xargs -0 chown -h ${GITLAB_USER}:
   fi
-}
-
-update_git_config() {
-  exec_as_git git config --global repack.writeBitmaps true
 }
 
 update_ca_certificates() {
@@ -1252,7 +1250,6 @@ initialize_system() {
   map_uidgid
   initialize_logdir
   initialize_datadir
-  update_git_config
   update_ca_certificates
   generate_ssh_host_keys
   install_configuration_templates

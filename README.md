@@ -23,9 +23,6 @@ The canonical source of the repository is [hosted on gotfix.com](https://gotfix.
             - [External PostgreSQL Server](#external-postgresql-server)
             - [Linking to PostgreSQL Container](#linking-to-postgresql-container)
         - [MySQL](#mysql)
-            - [Internal MySQL Server](#internal-mysql-server)
-            - [External MySQL Server](#external-mysql-server)
-            - [Linking to MySQL Container](#linking-to-mysql-container)
     - [Redis](#redis)
         - [Internal Redis Server](#internal-redis-server)
         - [External Redis Server](#external-redis-server)
@@ -92,7 +89,7 @@ If you find this image useful here's how you can help:
 
 - Ian Matyssik ([matyssik](https://gotfix.com/matyssik))
 
-See [Contributors](../../graphs/contributors) for the complete list developers that have contributed to this project.
+See [Contributors](https://gotfix.com/docker/gitlab/graphs/master) for the complete list developers that have contributed to this project.
 
 # Issues
 
@@ -804,6 +801,7 @@ Below is the complete list of available configuration options segregated by cate
 | `GITLAB_REGISTRY_ISSUER` | Sets the GitLab Registry Issuer. Defaults to `gitlab-issuer`. |
 | `GITLAB_HTTPS` | Set to `true` to enable https support, disabled by default. |
 | `GITLAB_WORKHORSE_TIMEOUT` | Timeout for gitlab workhorse http proxy. Defaults to `5m0s`. |
+| `GITLAB_WORKHORSE_PORT` | Port that workhorse will listen on for connection. Defaults to `8181`. |
 | `SSL_SELF_SIGNED` | Set to `true` when using self signed ssl certificates. `false` by default. |
 | `SSL_CERTIFICATE_PATH` | Location of the ssl certificate. Defaults to `/home/git/data/certs/gitlab.crt` |
 | `SSL_KEY_PATH` | Location of the ssl private key. Defaults to `/home/git/data/certs/gitlab.key` |
