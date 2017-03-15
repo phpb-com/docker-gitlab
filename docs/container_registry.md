@@ -85,7 +85,7 @@ services:
     - ./redis:/var/lib/redis:Z
   postgresql:
     restart: always
-    image: quay.io/gotfix/postgresql:9.6.2-1
+    image: quay.io/gotfix/postgresql:9.6.2-3
     volumes:
     - ./postgresql:/var/lib/postgresql:Z
     environment:

@@ -172,7 +172,7 @@ docker run --name gitlab-postgresql -d \
     --env 'DB_USER=gitlab' --env 'DB_PASS=password' \
     --env 'DB_EXTENSION=pg_trgm' \
     --volume /srv/docker/gitlab/postgresql:/var/lib/postgresql \
-    quay.io/gotfix/postgresql:9.6.2-1
+    quay.io/gotfix/postgresql:9.6.2-3
 ```
 
 Step 2. Launch a redis container
@@ -276,7 +276,7 @@ To illustrate linking with a postgresql container, we will use the [quay.io/gotf
 First, lets pull the postgresql image from the docker index.
 
 ```bash
-docker pull quay.io/gotfix/postgresql:9.6.2-1
+docker pull quay.io/gotfix/postgresql:9.6.2-3
 ```
 
 For data persistence lets create a store for the postgresql and start the container.
@@ -296,7 +296,7 @@ docker run --name gitlab-postgresql -d \
     --env 'DB_USER=gitlab' --env 'DB_PASS=password' \
     --env 'DB_EXTENSION=pg_trgm' \
     --volume /srv/docker/gitlab/postgresql:/var/lib/postgresql \
-    quay.io/gotfix/postgresql:9.6.2-1
+    quay.io/gotfix/postgresql:9.6.2-3
 ```
 
 The above command will create a database named `gitlabhq_production` and also create a user named `gitlab` with the password `password` with access to the `gitlabhq_production` database.
