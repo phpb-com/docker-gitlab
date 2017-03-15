@@ -318,6 +318,7 @@ command=/usr/local/bin/gitlab-pages
   -pages-domain {{GITLAB_PAGES_DOMAIN}}
   -pages-root ${GITLAB_PAGES_DIR}
   -listen-proxy :{{GITLAB_PAGES_PORT}}
+  -metrics-address :{{GITLAB_PAGES_METRICS_PORT}}
   -daemon-uid {{GITLAB_UID}}
   -daemon-gid {{GITLAB_GID}}
 user=root

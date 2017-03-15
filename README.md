@@ -728,11 +728,12 @@ Below is the complete list of available configuration options segregated by cate
 
 | Parameter | Description |
 |-----------|-------------|
-| `GITLAB_PAGES_ENABLED`    | Enable GitLab Pages. Default to `false` |
-| `GITLAB_PAGES_DOMAIN`     | GitLab Pages domain. Default tp `example.com` |
-| `GITLAB_PAGES_PORT`       | Port that is used by gitlab-pages daemon to listen for requests. Default to `8090` |
-| `GITLAB_PAGES_PROXY_PORT` | Port that is used by upstream proxy to listen for requests. Default to `GITLAB_PAGES_PORT` |
-| `GITLAB_PAGES_HTTPS`      | Run gitlab-pages in HTTPS mode. Default to `false` |
+| `GITLAB_PAGES_ENABLED`      | Enable GitLab Pages. Default to `false` |
+| `GITLAB_PAGES_DOMAIN`       | GitLab Pages domain. Default tp `example.com` |
+| `GITLAB_PAGES_PORT`         | Port that is used by gitlab-pages daemon to listen for requests. Default to `8090` |
+| `GITLAB_PAGES_PROXY_PORT`   | Port that is used by upstream proxy to listen for requests. Default to `GITLAB_PAGES_PORT` |
+| `GITLAB_PAGES_HTTPS`        | Run gitlab-pages in HTTPS mode. Default to `false` |
+| `GITLAB_PAGES_METRICS_PORT` | This will expose general metrics about the Go runtime and pages application for Prometheus to scrape. Default to `9235` |
 
 #### GitLab specific
 

@@ -1385,7 +1385,8 @@ configure_gitlab_pages() {
     GITLAB_PAGES_PORT \
     GITLAB_UID \
     GITLAB_GID \
-    GITLAB_PAGES_ENABLED
+    GITLAB_PAGES_ENABLED \
+    GITLAB_PAGES_METRICS_PORT
 
   # congiure gitlab-pages 
   gitlab_configure_pages
