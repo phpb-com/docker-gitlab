@@ -34,9 +34,11 @@ release:
   script:
     - docker pull "${CI_REGISTRY_IMAGE}:${IMAGE_TAG}"
     - docker tag "${CI_REGISTRY_IMAGE}:${IMAGE_TAG}" "${DOCKER_HUB_BASE}"
+    - docker tag "${CI_REGISTRY_IMAGE}:${IMAGE_TAG}" "${DOCKER_HUB_BASE}:${IMAGE_TAG}"
     - docker tag "${CI_REGISTRY_IMAGE}:${IMAGE_TAG}" "${DOCKER_HUB_BASE}:latest"
     - docker login -u "${DOCKER_USER}" -p "${DOCKER_PASS}"
     - docker push "${DOCKER_HUB_BASE}"
+    - docker push "${DOCKER_HUB_BASE}:${IMAGE_TAG}"
     - docker push "${DOCKER_HUB_BASE}:latest"
   only:
     - master
