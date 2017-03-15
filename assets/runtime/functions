@@ -1382,6 +1382,7 @@ configure_gitlab_pages() {
   GITLAB_GID=$(id -g ${GITLAB_USER})
   update_template /etc/supervisor/conf.d/gitlab-pages.conf \
     GITLAB_PAGES_DOMAIN \
+    GITLAB_PAGES_DIR \
     GITLAB_PAGES_PORT \
     GITLAB_UID \
     GITLAB_GID \

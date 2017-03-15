@@ -2,7 +2,10 @@
 
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list of changes in GitLab.
 
-**8.17.3.6**
+**8.17.3-7**
+- Fix gitlab pages supervisor config
+
+**8.17.3-6**
 - gitlab: Gitlab CE v8.17.3
 - Expose workhorse port for configuration
 - Enable metrics port for gitlab-pages

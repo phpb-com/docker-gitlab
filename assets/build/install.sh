@@ -316,7 +316,7 @@ directory=${GITLAB_INSTALL_DIR}
 environment=HOME=${GITLAB_HOME}
 command=/usr/local/bin/gitlab-pages
   -pages-domain {{GITLAB_PAGES_DOMAIN}}
-  -pages-root ${GITLAB_PAGES_DIR}
+  -pages-root {{GITLAB_PAGES_DIR}}
   -listen-proxy :{{GITLAB_PAGES_PORT}}
   -metrics-address :{{GITLAB_PAGES_METRICS_PORT}}
   -daemon-uid {{GITLAB_UID}}
