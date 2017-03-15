@@ -80,7 +80,7 @@ services:
 
   postgresql:
     restart: always
-    image: quay.io/gotfix/postgresql:9.6.2-1
+    image: quay.io/gotfix/postgresql:9.6.2-3
     volumes:
     - /tmp/docker/gitlab/postgresql:/var/lib/postgresql:Z
     environment:
