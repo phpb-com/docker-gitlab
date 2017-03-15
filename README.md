@@ -1,4 +1,4 @@
-[![build status](https://gotfix.com/docker/gitlab/badges/master/build.svg)](https://gotfix.com/docker/gitlab/commits/master)
+[![build status](https://gotfix.com/docker/gitlab/badges/master/build.svg)](https://gotfix.com/docker/gitlab/commits/master) [![Docker Repository on Quay](https://quay.io/repository/gotfix/gitlab/status "Docker Repository on Quay")](https://quay.io/repository/gotfix/gitlab)
 
 # phpbcom/docker-gitlab:8.17.3-3
 
