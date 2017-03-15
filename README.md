@@ -125,7 +125,7 @@ Your docker host needs to have 1GB or more of available RAM to run GitLab. Pleas
 
 # Installation
 
-Automated builds of the image are available on [Quay](https://quay.io/repository/gotfix/gitlab) and [Dockerhub](https://hub.docker.com/r/phpbcom/docker-gitlab) and is the recommended method of installation.
+Automated builds of the image are available on [Quay](https://quay.io/repository/gotfix/gitlab) and [Dockerhub](https://hub.docker.com/r/gotfix/gitlab) and is the recommended method of installation.
 
 ```bash
 docker pull quay.io/gotfix/gitlab:8.17.3-4
