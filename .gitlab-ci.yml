@@ -29,6 +29,14 @@ build:
         --pull -t "$CI_REGISTRY_IMAGE:$IMAGE_TAG" .
     - docker push "$CI_REGISTRY_IMAGE:$IMAGE_TAG"
 
+tag-latest:
+  stage: release
+  script:
+    - git tag -fa latest
+    - git push --force origin refs/tags/latest
+  only:
+    - master
+
 release:
   stage: release
   script:
