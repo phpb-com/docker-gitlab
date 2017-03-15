@@ -43,7 +43,7 @@ where:
 | `AWS_BACKUP_BUCKET` | AWS bucket for backup uploads. No defaults. |
 | `AWS_BACKUP_MULTIPART_CHUNK_SIZE` | Enables mulitpart uploads when file size reaches a defined size. See at [AWS S3 Docs](http://docs.aws.amazon.com/AmazonS3/latest/dev/uploadobjusingmpu.html) |
 
-For more info look at [Available Configuration Parameters](https://github.com/phpb-com/docker-gitlab#available-configuration-parameters).
+For more info look at [Available Configuration Parameters](https://gotfix.com/docker/gitlab#available-configuration-parameters).
 
 A minimum set of these parameters are required to use the s3 compatible storage:
 

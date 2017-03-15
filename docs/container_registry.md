@@ -13,7 +13,7 @@ Since `8.8.0` GitLab introduces container registry. GitLab is helping to authent
 # Prerequisites
 
   - [Docker Distribution](https://github.com/docker/distribution) >= 2.4
-  - [Docker GitLab](https://github.com/phpb-com/docker-gitlab) >= 8.8.5-1
+  - [Docker GitLab](https://gotfix.com/docker/gitlab) >= 8.8.5-1
 
 
 # Available Parameters
@@ -49,7 +49,7 @@ where:
 | `SSL_REGISTRY_KEY_PATH `    | The private key of the `SSL_REGISTRY_CERT_PATH`. This will be later used in nginx to proxy your registry via https. |
 | `SSL_REGISTRY_CERT_PATH `    | The certificate for the private key of `SSL_REGISTRY_KEY_PATH`. This will be later used in nginx to proxy your registry via https. |
 
-For more info look at [Available Configuration Parameters](https://github.com/phpb-com/docker-gitlab#available-configuration-parameters).
+For more info look at [Available Configuration Parameters](https://gotfix.com/docker/gitlab#available-configuration-parameters).
 
 A minimum set of these parameters are required to use the GitLab Container Registry feature.
 

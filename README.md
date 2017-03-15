@@ -82,11 +82,11 @@ For other methods to install GitLab please refer to the [Official GitLab Install
 If you find this image useful here's how you can help:
 
 - Send a Pull Request with your awesome new features and bug fixes
-- Be a part of the community and help resolve [Issues](https://github.com/phpb-com/docker-gitlab/issues)
+- Be a part of the community and help resolve [Issues](https://gotfix.com/docker/gitlab/issues)
 
 # Team
 
-- Ian Matyssik ([phpb-com](https://github.com/phpb-com))
+- Ian Matyssik ([matyssik](https://gotfix.com/matyssik))
 
 See [Contributors](../../graphs/contributors) for the complete list developers that have contributed to this project.
 
@@ -106,7 +106,7 @@ Fedora and RHEL/CentOS users should try disabling selinux with `setenforce 0` an
 
 You may also set `DEBUG=true` to enable debugging of the entrypoint script, which could help you pin point any configuration issues.
 
-If using the latest docker version and/or disabling selinux does not fix the issue then please file a issue request on the [issues](https://github.com/phpb-com/docker-gitlab/issues) page.
+If using the latest docker version and/or disabling selinux does not fix the issue then please file a issue request on the [issues](https://gotfix.com/docker/gitlab/issues) page.
 
 In your issue report please make sure you provide the following information:
 
@@ -136,7 +136,7 @@ docker pull phpbcom/docker-gitlab:latest
 Alternatively you can build the image locally.
 
 ```bash
-docker build -t phpbcom/docker-gitlab github.com/phpb-com/docker-gitlab
+docker build -t phpbcom/docker-gitlab gotfix.com/docker/gitlab
 ```
 
 # Quick Start
@@ -144,7 +144,7 @@ docker build -t phpbcom/docker-gitlab github.com/phpb-com/docker-gitlab
 The quickest way to get started is using [docker-compose](https://docs.docker.com/compose/).
 
 ```bash
-wget https://raw.githubusercontent.com/phpb-com/docker-gitlab/master/docker-compose.yml
+wget https://gotfix.com/docker/gitlab/raw/master/docker-compose.yml
 ```
 
 Generate random strings that are at least `64` characters long for each of `GITLAB_SECRETS_OTP_KEY_BASE`, `GITLAB_SECRETS_DB_KEY_BASE`, and `GITLAB_SECRETS_SECRET_KEY_BASE`. These values are used for the following:
@@ -270,7 +270,7 @@ You can link this image with a postgresql container for the database requirement
 
 If a postgresql container is linked, only the `DB_ADAPTER`, `DB_HOST` and `DB_PORT` settings are automatically retrieved using the linkage. You may still need to set other database connection parameters such as the `DB_NAME`, `DB_USER`, `DB_PASS` and so on.
 
-To illustrate linking with a postgresql container, we will use the [phpbcom/docker-postgresql](https://github.com/phpb-com/docker-postgresql) image. When using postgresql image in production you should mount a volume for the postgresql data store. Please refer the [README](https://github.com/phpb-com/docker-postgresql/blob/master/README.md) of docker-postgresql for details.
+To illustrate linking with a postgresql container, we will use the [phpbcom/docker-postgresql](https://gotfix.com/docker/postgresql) image. When using postgresql image in production you should mount a volume for the postgresql data store. Please refer the [README](https://gotfix.com/docker/postgresql/blob/master/README.md) of docker-postgresql for details.
 
 First, lets pull the postgresql image from the docker index.
 
@@ -343,7 +343,7 @@ docker run --name gitlab -it --rm \
 
 You can link this image with a redis container to satisfy gitlab's redis requirement. The alias of the redis server container should be set to **redisio** while linking with the gitlab image.
 
-To illustrate linking with a redis container, we will use the [phpbcom/docker-redis](https://github.com/phpb-com/docker-redis) image. Please refer the [README](https://github.com/phpb-com/docker-redis/blob/master/README.md) of docker-redis for details.
+To illustrate linking with a redis container, we will use the [phpbcom/docker-redis](https://gotfix.com/docker/redis) image. Please refer the [README](https://gotfix.com/docker/redis/blob/master/README.md) of docker-redis for details.
 
 First, lets pull the redis image from the docker index.
 
