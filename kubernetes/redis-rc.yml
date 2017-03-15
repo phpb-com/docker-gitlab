@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: redis
-        image: phpbcom/docker-redis
+        image: quay.io/gotfix/redis
         ports:
         - name: redis
           containerPort: 6379

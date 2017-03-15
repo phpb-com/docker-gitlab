@@ -307,7 +307,24 @@ stdout_logfile=${GITLAB_INSTALL_DIR}/log/%(program_name)s.log
 stderr_logfile=${GITLAB_INSTALL_DIR}/log/%(program_name)s.log
 EOF
 
-
+# configure supervisord to start gitlab-pages
+cat > /etc/supervisor/conf.d/gitlab-pages.conf <<EOF
+[program:gitlab-pages]
+priority=20
+directory=${GITLAB_INSTALL_DIR}
+environment=HOME=${GITLAB_HOME}
+command=/usr/local/bin/gitlab-pages
+  -pages-domain {{GITLAB_PAGES_DOMAIN}}
+  -pages-root ${GITLAB_PAGES_DIR}
+  -listen-proxy :{{GITLAB_PAGES_PORT}}
+  -daemon-uid {{GITLAB_UID}}
+  -daemon-gid {{GITLAB_GID}}
+user=root
+autostart={{GITLAB_PAGES_ENABLED}}
+autorestart=true
+stdout_logfile=${GITLAB_INSTALL_DIR}/log/%(program_name)s.log
+stderr_logfile=${GITLAB_INSTALL_DIR}/log/%(program_name)s.log
+EOF
 
 # configure supervisord to start gitlab-monitor
 cat > /etc/supervisor/conf.d/gitlab-monitor.conf <<EOF
@@ -317,7 +334,7 @@ directory=${GITLAB_MONITOR_INSTALL_DIR}
 environment=HOME=${GITLAB_HOME}
 command=bundle exec ${GITLAB_MONITOR_INSTALL_DIR}/bin/gitlab-mon web -c ${GITLAB_MONITOR_INSTALL_DIR}/config/gitlab-monitor.yml
 user=git
-autostart=true
+autostart={{GITLAB_MONITOR_ENABLED}}
 autorestart=true
 stdout_logfile=${GITLAB_INSTALL_DIR}/log/%(program_name)s.log
 stderr_logfile=${GITLAB_INSTALL_DIR}/log/%(program_name)s.log

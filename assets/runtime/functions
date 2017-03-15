@@ -1379,25 +1379,18 @@ configure_gitlab_shell() {
 
 configure_gitlab_pages() {
   echo "Configuring gitlab-pages..."
+  # configure gitlab-pages supervise settings
+  # GITLAB_UID and GITLAB_GID are used for downgrade of process privileges 
   GITLAB_UID=$(id -u ${GITLAB_USER})
   GITLAB_GID=$(id -g ${GITLAB_USER})
-cat > /etc/supervisor/conf.d/gitlab-pages.conf <<EOF
-[program:gitlab-pages]
-priority=20
-directory=${GITLAB_INSTALL_DIR}
-environment=HOME=${GITLAB_HOME}
-command=/usr/local/bin/gitlab-pages
-  -pages-domain ${GITLAB_PAGES_DOMAIN}
-  -pages-root ${GITLAB_PAGES_DIR}
-  -listen-proxy :${GITLAB_PAGES_PORT}
-  -daemon-uid ${GITLAB_UID}
-  -daemon-gid ${GITLAB_GID}
-user=root
-autostart=true
-autorestart=true
-stdout_logfile=${GITLAB_INSTALL_DIR}/log/%(program_name)s.log
-stderr_logfile=${GITLAB_INSTALL_DIR}/log/%(program_name)s.log
-EOF
+  update_template /etc/supervisor/conf.d/gitlab-pages.conf \
+    GITLAB_PAGES_DOMAIN \
+    GITLAB_PAGES_PORT \
+    GITLAB_UID \
+    GITLAB_GID \
+    GITLAB_PAGES_ENABLED
+
+  # congiure gitlab-pages 
   gitlab_configure_pages
 }
 
@@ -1410,8 +1403,12 @@ configure_gitlab_monitor() {
   DB_PASS \
   DB_PORT \
   GITLAB_REPOS_DIR \
+  GITLAB_MONITOR_PORT \
   REDIS_HOST \
   REDIS_PORT
+
+  # enable/disable startup of gitlab-monitor
+  update_template /etc/supervisor/conf.d/gitlab-monitor.conf GITLAB_MONITOR_ENABLED
 }
 
 configure_nginx() {
@@ -1459,7 +1456,7 @@ migrate_database() {
       echo
       echo "ERROR: "
       echo "  Cannot downgrade from GitLab version ${CACHE_VERSION} to ${GITLAB_VERSION}."
-      echo "  Only upgrades are allowed. Please use phpbcom/docker-gitlab:${CACHE_VERSION} or higher."
+      echo "  Only upgrades are allowed. Please use quay.io/gotfix/gitlab:${CACHE_VERSION} or higher."
       echo "  Cannot continue. Aborting!"
       echo
       return 1

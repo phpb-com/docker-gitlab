@@ -1,6 +1,6 @@
 server:
   listen_address: 0.0.0.0
-  listen_port: 9168
+  listen_port: {{GITLAB_MONITOR_PORT}}
 
 probes:
   database:

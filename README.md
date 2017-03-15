@@ -1,8 +1,12 @@
-[![build status](https://gotfix.com/docker/gitlab/badges/master/build.svg)](https://gotfix.com/docker/gitlab/commits/master)
+[![build status](https://gotfix.com/docker/gitlab/badges/master/build.svg)](https://gotfix.com/docker/gitlab/commits/master) [![Docker Repository on Quay](https://quay.io/repository/gotfix/gitlab/status "Docker Repository on Quay")](https://quay.io/repository/gotfix/gitlab)
 
-# phpbcom/docker-gitlab:8.17.3-3
+# quay.io/gotfix/gitlab:8.17.3-4
 
 **NOTE:** This project was forked from [sameersbn/docker-gitlab](https://github.com/sameersbn/docker-gitlab) to maintain slightly more modern and less conservative (i.e., things will  break) version of GitLab docker image. This is hopefuly a shortlived fork, and the upstream will get there someday.
+
+## Canonical source
+
+The canonical source of the repository is [hosted on gotfix.com](https://gotfix.com/docker/gitlab).
 
 - [Introduction](#introduction)
     - [Changelog](Changelog.md)
@@ -82,11 +86,11 @@ For other methods to install GitLab please refer to the [Official GitLab Install
 If you find this image useful here's how you can help:
 
 - Send a Pull Request with your awesome new features and bug fixes
-- Be a part of the community and help resolve [Issues](https://github.com/phpb-com/docker-gitlab/issues)
+- Be a part of the community and help resolve [Issues](https://gotfix.com/docker/gitlab/issues)
 
 # Team
 
-- Ian Matyssik ([phpb-com](https://github.com/phpb-com))
+- Ian Matyssik ([matyssik](https://gotfix.com/matyssik))
 
 See [Contributors](../../graphs/contributors) for the complete list developers that have contributed to this project.
 
@@ -106,7 +110,7 @@ Fedora and RHEL/CentOS users should try disabling selinux with `setenforce 0` an
 
 You may also set `DEBUG=true` to enable debugging of the entrypoint script, which could help you pin point any configuration issues.
 
-If using the latest docker version and/or disabling selinux does not fix the issue then please file a issue request on the [issues](https://github.com/phpb-com/docker-gitlab/issues) page.
+If using the latest docker version and/or disabling selinux does not fix the issue then please file a issue request on the [issues](https://gotfix.com/docker/gitlab/issues) page.
 
 In your issue report please make sure you provide the following information:
 
@@ -121,22 +125,22 @@ Your docker host needs to have 1GB or more of available RAM to run GitLab. Pleas
 
 # Installation
 
-Automated builds of the image are available on [Dockerhub](https://hub.docker.com/r/phpbcom/docker-gitlab) and is the recommended method of installation.
+Automated builds of the image are available on [Quay](https://quay.io/repository/gotfix/gitlab) and [Dockerhub](https://hub.docker.com/r/gotfix/gitlab) and is the recommended method of installation.
 
 ```bash
-docker pull phpbcom/docker-gitlab:8.17.3-3
+docker pull quay.io/gotfix/gitlab:8.17.3-4
 ```
 
 You can also pull the `latest` tag which is built from the repository *HEAD*
 
 ```bash
-docker pull phpbcom/docker-gitlab:latest
+docker pull quay.io/gotfix/gitlab:latest
 ```
 
 Alternatively you can build the image locally.
 
 ```bash
-docker build -t phpbcom/docker-gitlab github.com/phpb-com/docker-gitlab
+docker build -t quay.io/gotfix/gitlab gotfix.com/docker/gitlab
 ```
 
 # Quick Start
@@ -144,7 +148,7 @@ docker build -t phpbcom/docker-gitlab github.com/phpb-com/docker-gitlab
 The quickest way to get started is using [docker-compose](https://docs.docker.com/compose/).
 
 ```bash
-wget https://raw.githubusercontent.com/phpb-com/docker-gitlab/master/docker-compose.yml
+wget https://gotfix.com/docker/gitlab/raw/master/docker-compose.yml
 ```
 
 Generate random strings that are at least `64` characters long for each of `GITLAB_SECRETS_OTP_KEY_BASE`, `GITLAB_SECRETS_DB_KEY_BASE`, and `GITLAB_SECRETS_SECRET_KEY_BASE`. These values are used for the following:
@@ -171,7 +175,7 @@ docker run --name gitlab-postgresql -d \
     --env 'DB_USER=gitlab' --env 'DB_PASS=password' \
     --env 'DB_EXTENSION=pg_trgm' \
     --volume /srv/docker/gitlab/postgresql:/var/lib/postgresql \
-    phpbcom/docker-postgresql:9.6.2-1
+    quay.io/gotfix/postgresql:9.6.2-1
 ```
 
 Step 2. Launch a redis container
@@ -179,7 +183,7 @@ Step 2. Launch a redis container
 ```bash
 docker run --name gitlab-redis -d \
     --volume /srv/docker/gitlab/redis:/var/lib/redis \
-    phpbcom/docker-redis:latest
+    quay.io/gotfix/redis:latest
 ```
 
 Step 3. Launch the gitlab container
@@ -193,7 +197,7 @@ docker run --name gitlab -d \
     --env 'GITLAB_SECRETS_SECRET_KEY_BASE=long-and-random-alpha-numeric-string' \
     --env 'GITLAB_SECRETS_OTP_KEY_BASE=long-and-random-alpha-numeric-string' \
     --volume /srv/docker/gitlab/gitlab:/home/git/data \
-    phpbcom/docker-gitlab:8.17.3-3
+    quay.io/gotfix/gitlab:8.17.3-4
 ```
 
 *Please refer to [Available Configuration Parameters](#available-configuration-parameters) to understand `GITLAB_PORT` and other configuration options*
@@ -228,7 +232,7 @@ Volumes can be mounted in docker by specifying the `-v` option in the docker run
 ```bash
 docker run --name gitlab -d \
     --volume /srv/docker/gitlab/gitlab:/home/git/data \
-    phpbcom/docker-gitlab:8.17.3-3
+    quay.io/gotfix/gitlab:8.17.3-4
 ```
 
 ## Database
@@ -261,7 +265,7 @@ docker run --name gitlab -d \
     --env 'DB_NAME=gitlabhq_production' \
     --env 'DB_USER=gitlab' --env 'DB_PASS=password' \
     --volume /srv/docker/gitlab/gitlab:/home/git/data \
-    phpbcom/docker-gitlab:8.17.3-3
+    quay.io/gotfix/gitlab:8.17.3-4
 ```
 
 #### Linking to PostgreSQL Container
@@ -270,12 +274,12 @@ You can link this image with a postgresql container for the database requirement
 
 If a postgresql container is linked, only the `DB_ADAPTER`, `DB_HOST` and `DB_PORT` settings are automatically retrieved using the linkage. You may still need to set other database connection parameters such as the `DB_NAME`, `DB_USER`, `DB_PASS` and so on.
 
-To illustrate linking with a postgresql container, we will use the [phpbcom/docker-postgresql](https://github.com/phpb-com/docker-postgresql) image. When using postgresql image in production you should mount a volume for the postgresql data store. Please refer the [README](https://github.com/phpb-com/docker-postgresql/blob/master/README.md) of docker-postgresql for details.
+To illustrate linking with a postgresql container, we will use the [quay.io/gotfix/postgresql](https://gotfix.com/docker/postgresql) image. When using postgresql image in production you should mount a volume for the postgresql data store. Please refer the [README](https://gotfix.com/docker/postgresql/blob/master/README.md) of docker-postgresql for details.
 
 First, lets pull the postgresql image from the docker index.
 
 ```bash
-docker pull phpbcom/docker-postgresql:9.6.2-1
+docker pull quay.io/gotfix/postgresql:9.6.2-1
 ```
 
 For data persistence lets create a store for the postgresql and start the container.
@@ -295,7 +299,7 @@ docker run --name gitlab-postgresql -d \
     --env 'DB_USER=gitlab' --env 'DB_PASS=password' \
     --env 'DB_EXTENSION=pg_trgm' \
     --volume /srv/docker/gitlab/postgresql:/var/lib/postgresql \
-    phpbcom/docker-postgresql:9.6.2-1
+    quay.io/gotfix/postgresql:9.6.2-1
 ```
 
 The above command will create a database named `gitlabhq_production` and also create a user named `gitlab` with the password `password` with access to the `gitlabhq_production` database.
@@ -305,13 +309,13 @@ We are now ready to start the GitLab application.
 ```bash
 docker run --name gitlab -d --link gitlab-postgresql:postgresql \
     --volume /srv/docker/gitlab/gitlab:/home/git/data \
-    phpbcom/docker-gitlab:8.17.3-3
+    quay.io/gotfix/gitlab:8.17.3-4
 ```
 
 Here the image will also automatically fetch the `DB_NAME`, `DB_USER` and `DB_PASS` variables from the postgresql container as they are specified in the `docker run` command for the postgresql container. This is made possible using the magic of docker links and works with the following images:
 
  - [postgres](https://hub.docker.com/_/postgres/)
- - [phpbcom/docker-postgresql](https://quay.io/repository/phpbcom/docker-postgresql/)
+ - [quay.io/gotfix/postgresql](https://quay.io/repository/quay.io/gotfix/postgresql/)
  - [orchardup/postgresql](https://hub.docker.com/r/orchardup/postgresql/)
  - [paintedfox/postgresql](https://hub.docker.com/r/paintedfox/postgresql/)
 
@@ -336,19 +340,19 @@ The image can be configured to use an external redis server. The configuration s
 ```bash
 docker run --name gitlab -it --rm \
     --env 'REDIS_HOST=192.168.1.100' --env 'REDIS_PORT=6379' \
-    phpbcom/docker-gitlab:8.17.3-3
+    quay.io/gotfix/gitlab:8.17.3-4
 ```
 
 ### Linking to Redis Container
 
 You can link this image with a redis container to satisfy gitlab's redis requirement. The alias of the redis server container should be set to **redisio** while linking with the gitlab image.
 
-To illustrate linking with a redis container, we will use the [phpbcom/docker-redis](https://github.com/phpb-com/docker-redis) image. Please refer the [README](https://github.com/phpb-com/docker-redis/blob/master/README.md) of docker-redis for details.
+To illustrate linking with a redis container, we will use the [quay.io/gotfix/redis](https://gotfix.com/docker/redis) image. Please refer the [README](https://gotfix.com/docker/redis/blob/master/README.md) of docker-redis for details.
 
 First, lets pull the redis image from the docker index.
 
 ```bash
-docker pull phpbcom/docker-redis:latest
+docker pull quay.io/gotfix/redis:latest
 ```
 
 Lets start the redis container
@@ -356,14 +360,14 @@ Lets start the redis container
 ```bash
 docker run --name gitlab-redis -d \
     --volume /srv/docker/gitlab/redis:/var/lib/redis \
-    phpbcom/docker-redis:latest
+    quay.io/gotfix/redis:latest
 ```
 
 We are now ready to start the GitLab application.
 
 ```bash
 docker run --name gitlab -d --link gitlab-redis:redisio \
-    phpbcom/docker-gitlab:8.17.3-3
+    quay.io/gotfix/gitlab:8.17.3-4
 ```
 
 ### Mail
@@ -376,7 +380,7 @@ If you are using Gmail then all you need to do is:
 docker run --name gitlab -d \
     --env 'SMTP_USER=USER@gmail.com' --env 'SMTP_PASS=PASSWORD' \
     --volume /srv/docker/gitlab/gitlab:/home/git/data \
-    phpbcom/docker-gitlab:8.17.3-3
+    quay.io/gotfix/gitlab:8.17.3-4
 ```
 
 Please refer the [Available Configuration Parameters](#available-configuration-parameters) section for the list of SMTP parameters that can be specified.
@@ -396,7 +400,7 @@ docker run --name gitlab -d \
     --env 'IMAP_USER=USER@gmail.com' --env 'IMAP_PASS=PASSWORD' \
     --env 'GITLAB_INCOMING_EMAIL_ADDRESS=USER+%{key}@gmail.com' \
     --volume /srv/docker/gitlab/gitlab:/home/git/data \
-    phpbcom/docker-gitlab:8.17.3-3
+    quay.io/gotfix/gitlab:8.17.3-4
 ```
 
 Please refer the [Available Configuration Parameters](#available-configuration-parameters) section for the list of IMAP parameters that can be specified.
@@ -473,7 +477,7 @@ docker run --name gitlab -d \
     --env 'GITLAB_SSH_PORT=10022' --env 'GITLAB_PORT=10443' \
     --env 'GITLAB_HTTPS=true' --env 'SSL_SELF_SIGNED=true' \
     --volume /srv/docker/gitlab/gitlab:/home/git/data \
-    phpbcom/docker-gitlab:8.17.3-3
+    quay.io/gotfix/gitlab:8.17.3-4
 ```
 
 In this configuration, any requests made over the plain http protocol will automatically be redirected to use the https protocol. However, this is not optimal when using a load balancer.
@@ -489,7 +493,7 @@ docker run --name gitlab -d \
  --env 'GITLAB_HTTPS=true' --env 'SSL_SELF_SIGNED=true' \
  --env 'NGINX_HSTS_MAXAGE=2592000' \
  --volume /srv/docker/gitlab/gitlab:/home/git/data \
- phpbcom/docker-gitlab:8.17.3-3
+ quay.io/gotfix/gitlab:8.17.3-4
 ```
 
 If you want to completely disable HSTS set `NGINX_HSTS_ENABLED` to `false`.
@@ -512,7 +516,7 @@ docker run --name gitlab -d \
     --env 'GITLAB_SSH_PORT=10022' --env 'GITLAB_PORT=443' \
     --env 'GITLAB_HTTPS=true' --env 'SSL_SELF_SIGNED=true' \
     --volume /srv/docker/gitlab/gitlab:/home/git/data \
-    phpbcom/docker-gitlab:8.17.3-3
+    quay.io/gotfix/gitlab:8.17.3-4
 ```
 
 Again, drop the `--env 'SSL_SELF_SIGNED=true'` option if you are using CA certified SSL certificates.
@@ -560,7 +564,7 @@ Let's assume we want to deploy our application to '/git'. GitLab needs to know t
 docker run --name gitlab -it --rm \
     --env 'GITLAB_RELATIVE_URL_ROOT=/git' \
     --volume /srv/docker/gitlab/gitlab:/home/git/data \
-    phpbcom/docker-gitlab:8.17.3-3
+    quay.io/gotfix/gitlab:8.17.3-4
 ```
 
 GitLab will now be accessible at the `/git` path, e.g. `http://www.example.com/git`.
@@ -680,14 +684,14 @@ Also the container processes seem to be executed as the host's user/group `1000`
 ```bash
 docker run --name gitlab -it --rm [options] \
     --env "USERMAP_UID=$(id -u git)" --env "USERMAP_GID=$(id -g git)" \
-    phpbcom/docker-gitlab:8.17.3-3
+    quay.io/gotfix/gitlab:8.17.3-4
 ```
 
 When changing this mapping, all files and directories in the mounted data volume `/home/git/data` have to be re-owned by the new ids. This can be achieved automatically using the following command:
 
 ```bash
 docker run --name gitlab -d [OPTIONS] \
-    phpbcom/docker-gitlab:8.17.3-3 app:sanitize
+    quay.io/gotfix/gitlab:8.17.3-4 app:sanitize
 ```
 
 ### Piwik
@@ -711,6 +715,10 @@ On Grafana UI :
 
 You can now import the [following dashboard](https://grafana.net/dashboards/1575), or create a custum one using the prometheus metrics.
 
+| Parameter | Description |
+|-----------|-------------|
+| `GITLAB_MONITOR_ENABLED` | Enable gitlab-monitor. Default to `false` |
+| `GITLAB_MONITOR_PORT`    | Specify port that gitlab-monitor will listen on. Default to `9168` |
 
 
 ### Available Configuration Parameters
@@ -725,7 +733,6 @@ Below is the complete list of available configuration options segregated by cate
 |-----------|-------------|
 | `GITLAB_PAGES_ENABLED`    | Enable GitLab Pages. Default to `false` |
 | `GITLAB_PAGES_DOMAIN`     | GitLab Pages domain. Default tp `example.com` |
-| `GITLAB_PAGES_DIR`        | Root directory of GitLab pages. Default to  `$GITLAB_SHARED_DIR/pages` |
 | `GITLAB_PAGES_PORT`       | Port that is used by gitlab-pages daemon to listen for requests. Default to `8090` |
 | `GITLAB_PAGES_PROXY_PORT` | Port that is used by upstream proxy to listen for requests. Default to `GITLAB_PAGES_PORT` |
 | `GITLAB_PAGES_HTTPS`      | Run gitlab-pages in HTTPS mode. Default to `false` |
@@ -961,7 +968,7 @@ Execute the rake task to create a backup.
 
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    phpbcom/docker-gitlab:8.17.3-3 app:rake gitlab:backup:create
+    quay.io/gotfix/gitlab:8.17.3-4 app:rake gitlab:backup:create
 ```
 
 A backup will be created in the backups folder of the [Data Store](#data-store). You can change the location of the backups using the `GITLAB_BACKUP_DIR` configuration parameter.
@@ -989,14 +996,14 @@ you need to prepare the database:
 
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    phpbcom/docker-gitlab:8.14.4 app:rake db:setup
+    quay.io/gotfix/gitlab:8.14.4 app:rake db:setup
 ```
 
 Execute the rake task to restore a backup. Make sure you run the container in interactive mode `-it`.
 
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    phpbcom/docker-gitlab:8.17.3-3 app:rake gitlab:backup:restore
+    quay.io/gotfix/gitlab:8.17.3-4 app:rake gitlab:backup:restore
 ```
 
 The list of all available backups will be displayed in reverse chronological order. Select the backup you want to restore and continue.
@@ -1005,7 +1012,7 @@ To avoid user interaction in the restore operation, specify the timestamp of the
 
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    phpbcom/docker-gitlab:8.17.3-3 app:rake gitlab:backup:restore BACKUP=1417624827
+    quay.io/gotfix/gitlab:8.17.3-4 app:rake gitlab:backup:restore BACKUP=1417624827
 ```
 
 When using `docker-compose` you may use the following command to execute the restore.
@@ -1054,7 +1061,7 @@ The `app:rake` command allows you to run gitlab rake tasks. To run a rake task s
 
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    phpbcom/docker-gitlab:8.17.3-3 app:rake gitlab:env:info
+    quay.io/gotfix/gitlab:8.17.3-4 app:rake gitlab:env:info
 ```
 
 You can also use `docker exec` to run raketasks on running gitlab instance. For example,
@@ -1067,7 +1074,7 @@ Similarly, to import bare repositories into GitLab project instance
 
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    phpbcom/docker-gitlab:8.17.3-3 app:rake gitlab:import:repos
+    quay.io/gotfix/gitlab:8.17.3-4 app:rake gitlab:import:repos
 ```
 
 Or
@@ -1098,7 +1105,7 @@ Copy all the **bare** git repositories to the `repositories/` directory of the [
 
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    phpbcom/docker-gitlab:8.17.3-3 app:rake gitlab:import:repos
+    quay.io/gotfix/gitlab:8.17.3-4 app:rake gitlab:import:repos
 ```
 
 Watch the logs and your repositories should be available into your new gitlab container.
@@ -1119,7 +1126,7 @@ To upgrade to newer gitlab releases, simply follow this 4 step upgrade procedure
 - **Step 1**: Update the docker image.
 
 ```bash
-docker pull phpbcom/docker-gitlab:8.17.3-3
+docker pull quay.io/gotfix/gitlab:8.17.3-4
 ```
 
 - **Step 2**: Stop and remove the currently running image
@@ -1133,7 +1140,7 @@ docker rm gitlab
 
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    phpbcom/docker-gitlab:x.x.x app:rake gitlab:backup:create
+    quay.io/gotfix/gitlab:x.x.x app:rake gitlab:backup:create
 ```
 
 Replace `x.x.x` with the version you are upgrading from. For example, if you are upgrading from version `6.0.0`, set `x.x.x` to `6.0.0`
@@ -1145,7 +1152,7 @@ Replace `x.x.x` with the version you are upgrading from. For example, if you are
 > **Note**: Since GitLab `8.11.0` you need to provide the `GITLAB_SECRETS_SECRET_KEY_BASE` and `GITLAB_SECRETS_OTP_KEY_BASE` parameters while starting the image. These should initially both have the same value as the contents of the `/home/git/data/.secret` file. See [Available Configuration Parameters](#available-configuration-parameters) for more information on these parameters.
 
 ```bash
-docker run --name gitlab -d [OPTIONS] phpbcom/docker-gitlab:8.17.3-3
+docker run --name gitlab -d [OPTIONS] quay.io/gotfix/gitlab:8.17.3-4
 ```
 
 ## Shell Access

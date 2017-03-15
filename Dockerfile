@@ -1,12 +1,13 @@
 FROM ubuntu:xenial
 MAINTAINER ian@phpb.com
 
+ENV DOCKER_GITLAB_IMAGE_VERSION=8.17.3-4
 ENV GITLAB_VERSION=8.17.3 \
     RUBY_VERSION=2.3 \
     GOLANG_VERSION=1.8 \
     GITLAB_SHELL_VERSION=5.0.0 \
-    GITLAB_WORKHORSE_VERSION=1.4.0 \
-    GITLAB_PAGES_VERSION=0.3.2 \
+    GITLAB_WORKHORSE_VERSION=1.4.1 \
+    GITLAB_PAGES_VERSION=0.4.0 \
     GITLAB_MONITOR_VERSION=1.2.0 \
     GITLAB_USER="git" \
     GITLAB_HOME="/home/git" \
@@ -22,6 +23,11 @@ ENV GITLAB_INSTALL_DIR="${GITLAB_HOME}/gitlab" \
     GITLAB_DATA_DIR="${GITLAB_HOME}/data" \
     GITLAB_BUILD_DIR="${GITLAB_CACHE_DIR}/build" \
     GITLAB_RUNTIME_DIR="${GITLAB_CACHE_DIR}/runtime"
+
+ARG HTTP_PROXY
+ARG HTTPS_PROXY
+ARG http_proxy
+ARG https_proxy
 
 RUN echo 'APT::Install-Recommends 0;' >> /etc/apt/apt.conf.d/01norecommends \
  && echo 'APT::Install-Suggests 0;' >> /etc/apt/apt.conf.d/01norecommends \
