@@ -28,12 +28,17 @@ build:
         --build-arg=HTTP_PROXY=${HTTP_PROXY}
         --pull -t "$CI_REGISTRY_IMAGE:$IMAGE_TAG" .
     - docker push "$CI_REGISTRY_IMAGE:$IMAGE_TAG"
+  except:
+    - latest
 
 tag-latest:
+  image: docker:git
   stage: release
   script:
-    - git tag -fa latest
-    - git push --force origin refs/tags/latest
+    - git config --global user.email "ci@gotfix.com"
+    - git config --global user.name "CI Build"
+    - git tag -fa latest -m "CI Build auto-tagged, latest master branch ref"
+    - git push --force https://${ACCESS_USER}:${ACCESS_TOKEN}@gotfix.com/docker/gitlab.git refs/tags/latest
   only:
     - master
 
@@ -51,6 +56,8 @@ release:
   only:
     - master
     - tags
+  except:
+    - latest
 
 github_mirror:
   type: mirror
