@@ -88,7 +88,7 @@ RUN apt-get install -y \
 
 RUN update-locale LANG=C.UTF-8 LC_MESSAGES=POSIX \
  && locale-gen en_US.UTF-8 \
- && dpkg-reconfigure locales \
+ && dpkg-reconfigure locales
 
 RUN gem install bundler --no-ri --no-rdoc
 
