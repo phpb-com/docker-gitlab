@@ -52,7 +52,7 @@ RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv E1DD270288B4E60
  && wget --quiet -O - https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add - \
  && echo 'deb https://deb.nodesource.com/node_7.x xenial main' > /etc/apt/sources.list.d/nodesource.list \
  && apt-get update \
- && apt-get dist-upgrade
+ && apt-get -yy upgrade
 
 RUN apt-get install -y \
     curl \
