@@ -3,7 +3,10 @@
 LICENSE
 VERSION
 README.md
+CONTRIBUTING.md
 Changelog.md
 Makefile
 docker-compose.yml
 docs
+kubernetes
+prometheus

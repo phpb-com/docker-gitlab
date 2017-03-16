@@ -13,7 +13,8 @@ ENV GITLAB_VERSION=8.17.3 \
     GITLAB_HOME="/home/git" \
     GITLAB_LOG_DIR="/var/log/gitlab" \
     GITLAB_CACHE_DIR="/etc/docker-gitlab" \
-    RAILS_ENV=production
+    RAILS_ENV=production \
+    DEBIAN_FRONTEND=noninteractive
 
 ENV GITLAB_INSTALL_DIR="${GITLAB_HOME}/gitlab" \
     GITLAB_SHELL_INSTALL_DIR="${GITLAB_HOME}/gitlab-shell" \
@@ -31,9 +32,16 @@ ARG https_proxy
 
 RUN echo 'APT::Install-Recommends 0;' >> /etc/apt/apt.conf.d/01norecommends \
  && echo 'APT::Install-Suggests 0;' >> /etc/apt/apt.conf.d/01norecommends \
- && apt-get update \
- && DEBIAN_FRONTEND=noninteractive apt-get install -y vim.tiny curl wget sudo net-tools ca-certificates unzip apt-transport-https \
- && apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv E1DD270288B4E6030699E45FA1715D88E1DF1F24 \
+ && apt-get update && apt-get install -y \
+    apt-transport-https \
+    ca-certificates \
+    net-tools \
+    sudo \
+    unzip \
+    vim.tiny \
+    wget
+
+RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv E1DD270288B4E6030699E45FA1715D88E1DF1F24 \
  && echo "deb http://ppa.launchpad.net/git-core/ppa/ubuntu xenial main" >> /etc/apt/sources.list \
  && apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 80F70E11F0F0D5F10CB20E62F5DA5F09C3173AA6 \
  && echo "deb http://ppa.launchpad.net/brightbox/ruby-ng/ubuntu xenial main" >> /etc/apt/sources.list \
@@ -44,18 +52,45 @@ RUN echo 'APT::Install-Recommends 0;' >> /etc/apt/apt.conf.d/01norecommends \
  && wget --quiet -O - https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add - \
  && echo 'deb https://deb.nodesource.com/node_7.x xenial main' > /etc/apt/sources.list.d/nodesource.list \
  && apt-get update \
- && apt-get -yy upgrade \
- && DEBIAN_FRONTEND=noninteractive apt-get install -y supervisor logrotate locales curl \
-      nginx nodejs openssh-server mysql-client postgresql-client redis-tools \
-      git-core ruby${RUBY_VERSION} python2.7 python-docutils gettext-base \
-      libmysqlclient20 libpq5 zlib1g libyaml-0-2 libssl1.0.0 \
-      libgdbm3 libreadline6 libncurses5 libffi6 libkrb5-3 \
-      libxml2 libxslt1.1 libcurl3 libicu55 \
- && update-locale LANG=C.UTF-8 LC_MESSAGES=POSIX \
- && locale-gen en_US.UTF-8 \
- && DEBIAN_FRONTEND=noninteractive dpkg-reconfigure locales \
- && gem install --no-document bundler \
+ && apt-get -yy upgrade
+
+RUN apt-get install -y \
+    curl \
+    gettext-base \
+    git-core \
+    libmysqlclient20 \
+    libpq5 \
+    libyaml-0-2 \
+    libssl1.0.0 \
+    libgdbm3 \
+    libreadline6 \
+    libncurses5 \
+    libffi6 \
+    libkrb5-3 \
+    libxml2 \
+    libxslt1.1 \
+    libcurl3 \
+    libicu55 \
+    logrotate \
+    locales \
+    mysql-client \
+    nginx \
+    nodejs \
+    openssh-server \
+    postgresql-client \
+    python2.7 \
+    python-docutils \
+    redis-tools \
+    ruby${RUBY_VERSION} \
+    supervisor \
+    zlib1g \
  && rm -rf /var/lib/apt/lists/*
+
+RUN update-locale LANG=C.UTF-8 LC_MESSAGES=POSIX \
+ && locale-gen en_US.UTF-8 \
+ && dpkg-reconfigure locales
+
+RUN gem install bundler --no-ri --no-rdoc
 
 COPY assets/build/ ${GITLAB_BUILD_DIR}/
 RUN bash ${GITLAB_BUILD_DIR}/install.sh
