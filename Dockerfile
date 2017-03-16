@@ -13,7 +13,8 @@ ENV GITLAB_VERSION=8.17.3 \
     GITLAB_HOME="/home/git" \
     GITLAB_LOG_DIR="/var/log/gitlab" \
     GITLAB_CACHE_DIR="/etc/docker-gitlab" \
-    RAILS_ENV=production
+    RAILS_ENV=production \
+    DEBIAN_FRONTEND=noninteractive
 
 ENV GITLAB_INSTALL_DIR="${GITLAB_HOME}/gitlab" \
     GITLAB_SHELL_INSTALL_DIR="${GITLAB_HOME}/gitlab-shell" \
@@ -31,8 +32,7 @@ ARG https_proxy
 
 RUN echo 'APT::Install-Recommends 0;' >> /etc/apt/apt.conf.d/01norecommends \
  && echo 'APT::Install-Suggests 0;' >> /etc/apt/apt.conf.d/01norecommends \
- && apt-get update \
- && DEBIAN_FRONTEND=noninteractive apt-get install -y \
+ && apt-get update && apt-get install -y \
     apt-transport-https \
     ca-certificates \
     net-tools \
@@ -54,7 +54,7 @@ RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv E1DD270288B4E60
  && apt-get update \
  && apt-get dist-upgrade
 
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y \
+RUN apt-get install -y \
     curl \
     gettext-base \
     git-core \
@@ -83,13 +83,14 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get install -y \
     redis-tools \
     ruby${RUBY_VERSION} \
     supervisor \
-    zlib1g
+    zlib1g \
+ && rm -rf /var/lib/apt/lists/*
 
 RUN update-locale LANG=C.UTF-8 LC_MESSAGES=POSIX \
  && locale-gen en_US.UTF-8 \
- && DEBIAN_FRONTEND=noninteractive dpkg-reconfigure locales \
- && gem install --no-document bundler \
- && rm -rf /var/lib/apt/lists/*
+ && dpkg-reconfigure locales \
+
+RUN gem install bundler --no-ri --no-rdoc
 
 COPY assets/build/ ${GITLAB_BUILD_DIR}/
 RUN bash ${GITLAB_BUILD_DIR}/install.sh
