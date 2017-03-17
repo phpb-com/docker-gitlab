@@ -139,7 +139,7 @@ gitlab_finalize_database_parameters() {
     echo
     echo "ERROR: "
     echo "  Please configure the database connection."
-    echo "  Refer http://git.io/wkYhyA for more information."
+    echo "  Refer https://gotfix.com/docker/gitlab/blob/master/README.md#database for more information."
     echo "  Cannot continue without a database. Aborting..."
     echo
     return 1
