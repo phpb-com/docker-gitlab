@@ -156,28 +156,29 @@ echo "Compiling assets. Please be patient, this could take a while..."
 # Installs nodejs packages required to compile webpack
 exec_as_git ${GITLAB_HOME}/.yarn/bin/yarn install --production --pure-lockfile
 
+echo "Executing rake commands to clean and compile assets"
 # Adding webpack compile needed since 8.17
-exec_as_git bundle exec rake assets:clean assets:precompile gitlab:assets:compile webpack:compile USE_DB=false SKIP_STORAGE_VALIDATION=true RAILS_ENV=${RAILS_ENV} NODE_ENV=${RAILS_ENV}>/dev/null 2>&1
+exec_as_git bundle exec rake assets:clean assets:precompile webpack:compile USE_DB=false SKIP_STORAGE_VALIDATION=true RAILS_ENV=${RAILS_ENV} NODE_ENV=${RAILS_ENV}>/dev/null 2>&1
 
-# remove auto generated ${GITLAB_DATA_DIR}/config/secrets.yml
+echo "remove auto generated ${GITLAB_DATA_DIR}/config/secrets.yml"
 rm -rf ${GITLAB_DATA_DIR}/config/secrets.yml
 
 exec_as_git mkdir -p ${GITLAB_INSTALL_DIR}/tmp/pids/ ${GITLAB_INSTALL_DIR}/tmp/sockets/
 chmod -R u+rwX ${GITLAB_INSTALL_DIR}/tmp
 
-# symlink ${GITLAB_HOME}/.ssh -> ${GITLAB_LOG_DIR}/gitlab
+echo "symlink ${GITLAB_HOME}/.ssh -> ${GITLAB_LOG_DIR}/gitlab"
 rm -rf ${GITLAB_HOME}/.ssh
 exec_as_git ln -sf ${GITLAB_DATA_DIR}/.ssh ${GITLAB_HOME}/.ssh
 
-# symlink ${GITLAB_INSTALL_DIR}/log -> ${GITLAB_LOG_DIR}/gitlab
+echo "symlink ${GITLAB_INSTALL_DIR}/log -> ${GITLAB_LOG_DIR}/gitlab"
 rm -rf ${GITLAB_INSTALL_DIR}/log
 ln -sf ${GITLAB_LOG_DIR}/gitlab ${GITLAB_INSTALL_DIR}/log
 
-# symlink ${GITLAB_INSTALL_DIR}/public/uploads -> ${GITLAB_DATA_DIR}/uploads
+echo "symlink ${GITLAB_INSTALL_DIR}/public/uploads -> ${GITLAB_DATA_DIR}/uploads"
 rm -rf ${GITLAB_INSTALL_DIR}/public/uploads
 exec_as_git ln -sf ${GITLAB_DATA_DIR}/uploads ${GITLAB_INSTALL_DIR}/public/uploads
 
-# symlink ${GITLAB_INSTALL_DIR}/.secret -> ${GITLAB_DATA_DIR}/.secret
+echo "symlink ${GITLAB_INSTALL_DIR}/.secret -> ${GITLAB_DATA_DIR}/.secret"
 rm -rf ${GITLAB_INSTALL_DIR}/.secret
 exec_as_git ln -sf ${GITLAB_DATA_DIR}/.secret ${GITLAB_INSTALL_DIR}/.secret
 
@@ -185,13 +186,14 @@ exec_as_git ln -sf ${GITLAB_DATA_DIR}/.secret ${GITLAB_INSTALL_DIR}/.secret
 rm -rf ${GITLAB_INSTALL_DIR}/builds
 rm -rf ${GITLAB_INSTALL_DIR}/shared
 
-# install gitlab bootscript, to silence gitlab:check warnings
+echo "install gitlab bootscript, to silence gitlab:check warnings"
 cp ${GITLAB_INSTALL_DIR}/lib/support/init.d/gitlab /etc/init.d/gitlab
 chmod +x /etc/init.d/gitlab
 
 # disable default nginx configuration and enable gitlab's nginx configuration
 rm -rf /etc/nginx/sites-enabled/default
 
+echo "Configuring SSHD"
 # configure sshd
 sed -i \
   -e "s|^[#]*UsePAM yes|UsePAM no|" \
@@ -201,15 +203,16 @@ sed -i \
   /etc/ssh/sshd_config
 echo "UseDNS no" >> /etc/ssh/sshd_config
 
-# move supervisord.log file to ${GITLAB_LOG_DIR}/supervisor/
+echo "move supervisord.log file to ${GITLAB_LOG_DIR}/supervisor/"
 sed -i "s|^[#]*logfile=.*|logfile=${GITLAB_LOG_DIR}/supervisor/supervisord.log ;|" /etc/supervisor/supervisord.conf
 
-# move nginx logs to ${GITLAB_LOG_DIR}/nginx
+echo "move nginx logs to ${GITLAB_LOG_DIR}/nginx"
 sed -i \
   -e "s|access_log /var/log/nginx/access.log;|access_log ${GITLAB_LOG_DIR}/nginx/access.log;|" \
   -e "s|error_log /var/log/nginx/error.log;|error_log ${GITLAB_LOG_DIR}/nginx/error.log;|" \
   /etc/nginx/nginx.conf
 
+echo "Configuring log rotations"
 # configure supervisord log rotation
 cat > /etc/logrotate.d/supervisord <<EOF
 ${GITLAB_LOG_DIR}/supervisor/*.log {
@@ -262,6 +265,7 @@ ${GITLAB_LOG_DIR}/nginx/*.log {
 }
 EOF
 
+echo "Configuring supervisord scripts"
 # configure supervisord to start unicorn
 cat > /etc/supervisor/conf.d/unicorn.conf <<EOF
 [program:unicorn]
@@ -404,6 +408,7 @@ stdout_logfile=${GITLAB_LOG_DIR}/supervisor/%(program_name)s.log
 stderr_logfile=${GITLAB_LOG_DIR}/supervisor/%(program_name)s.log
 EOF
 
+echo "Cleaning-up ..."
 # purge build dependencies and cleanup apt
 apt-get purge -y --auto-remove ${BUILD_DEPENDENCIES}
 rm -rf /var/lib/apt/lists/*
