@@ -6,6 +6,7 @@ GITLAB_SHELL_URL=https://gitlab.com/gitlab-org/gitlab-shell/repository/archive.t
 GITLAB_WORKHORSE_URL=https://gitlab.com/gitlab-org/gitlab-workhorse/repository/archive.tar.gz
 GITLAB_PAGES_URL=https://gitlab.com/gitlab-org/gitlab-pages/repository/archive.tar.gz
 GITLAB_MONITOR_URL=https://gitlab.com/gitlab-org/gitlab-monitor/repository/archive.tar.gz
+GITLAB_GITALY_URL=https://gitlab.com/gitlab-org/gitaly/repository/archive.tar.gz
 
 GEM_CACHE_DIR="${GITLAB_BUILD_DIR}/cache"
 
@@ -78,6 +79,13 @@ chown -R ${GITLAB_USER}: ${GITLAB_MONITOR_INSTALL_DIR}
 cd ${GITLAB_MONITOR_INSTALL_DIR}
 exec_as_git bundle install -j$(nproc) --deployment
 
+# download gitaly
+echo "Downloading gitlab-pages v.${GITLAB_GITALY_VERSION}..."
+mkdir -p ${GITLAB_GITALY_INSTALL_DIR}
+wget -cq ${GITLAB_GITALY_URL}?ref=v${GITLAB_GITALY_VERSION} -O ${GITLAB_BUILD_DIR}/gitlab-gitaly-${GITLAB_PAGES_VERSION}.tar.gz
+tar xf ${GITLAB_BUILD_DIR}/gitlab-gitaly-${GITLAB_GITALY_VERSION}.tar.gz --strip 1 -C ${GITLAB_GITALY_INSTALL_DIR}
+rm -rf ${GITLAB_BUILD_DIR}/gitlab-gitaly-${GITLAB_GITALY_VERSION}.tar.gz
+chown -R ${GITLAB_USER}: ${GITLAB_GITALY_INSTALL_DIR}
 
 # download gitlab-workhose
 echo "Downloading gitlab-workhorse v.${GITLAB_WORKHORSE_VERSION}..."
@@ -99,6 +107,10 @@ chown -R ${GITLAB_USER}: ${GITLAB_PAGES_INSTALL_DIR}
 echo "Downloading Go ${GOLANG_VERSION}..."
 wget -cnv https://storage.googleapis.com/golang/go${GOLANG_VERSION}.linux-amd64.tar.gz -P ${GITLAB_BUILD_DIR}/
 tar -xf ${GITLAB_BUILD_DIR}/go${GOLANG_VERSION}.linux-amd64.tar.gz -C /tmp/
+
+# install gitaly
+cd ${GITLAB_GITALY_INSTALL_DIR}
+PATH=/tmp/go/bin:$PATH GOROOT=/tmp/go make install
 
 # install gitlab-workhorse
 cd ${GITLAB_WORKHORSE_INSTALL_DIR}
