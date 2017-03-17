@@ -74,7 +74,7 @@ exec_as_git bundle install -j$(nproc) --deployment
 
 # download gitaly
 echo "Cloning gitlab-pages v.${GITLAB_GITALY_VERSION}..."
-exec_as_git git clone -q -b v${GITLAB_GITALY_VERSION} --depth 1 ${GITLAB_GITALY_CLONE_URL} ${GITLAB_GITLAY_INSTALL_DIR}
+exec_as_git git clone -q -b v${GITLAB_GITALY_VERSION} --depth 1 ${GITLAB_GITALY_CLONE_URL} ${GITLAB_GITALY_INSTALL_DIR}
 
 # download gitlab-workhose
 echo "Cloning gitlab-workhorse v.${GITLAB_WORKHORSE_VERSION}..."
