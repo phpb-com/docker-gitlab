@@ -156,7 +156,7 @@ npm install --production
 
 echo "Compiling assets. Please be patient, this could take a while..."
 # Compile assets
-exec_as_git yarn install --production --pure-lockfile
+exec_as_git ${GITLAB_HOME}/.yarn/bin/yarn install --production --pure-lockfile
 
 # Adding webpack compile needed since 8.17
 exec_as_git bundle exec rake assets:clean assets:precompile webpack:compile USE_DB=false SKIP_STORAGE_VALIDATION=true RAILS_ENV=${RAILS_ENV} NODE_ENV=${RAILS_ENV}>/dev/null 2>&1
