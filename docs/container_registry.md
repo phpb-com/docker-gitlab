@@ -96,7 +96,7 @@ services:
 
   gitlab:
     restart: always
-    image: quay.io/gotfix/gitlab:9.0.0-rc3
+    image: quay.io/gotfix/gitlab:9.0.0-rc4
     depends_on:
     - redis
     - postgresql
@@ -282,7 +282,7 @@ docker stop registry gitlab && docker rm registry gitlab
 Execute the rake task with a removeable container.
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    quay.io/gotfix/gitlab:9.0.0-rc3 app:rake gitlab:backup:create
+    quay.io/gotfix/gitlab:9.0.0-rc4 app:rake gitlab:backup:create
 ```
 ## Restoring Backups
 
@@ -298,7 +298,7 @@ Execute the rake task to restore a backup. Make sure you run the container in in
 
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    quay.io/gotfix/gitlab:9.0.0-rc3 app:rake gitlab:backup:restore
+    quay.io/gotfix/gitlab:9.0.0-rc4 app:rake gitlab:backup:restore
 ```
 
 The list of all available backups will be displayed in reverse chronological order. Select the backup you want to restore and continue.
@@ -307,7 +307,7 @@ To avoid user interaction in the restore operation, specify the timestamp of the
 
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    quay.io/gotfix/gitlab:9.0.0-rc3 app:rake gitlab:backup:restore BACKUP=1417624827
+    quay.io/gotfix/gitlab:9.0.0-rc4 app:rake gitlab:backup:restore BACKUP=1417624827
 ```
 
 # Upgrading from an existing GitLab installation
@@ -318,7 +318,7 @@ If you want enable this feature for an existing instance of GitLab you need to d
 - **Step 1**: Update the docker image.
 
 ```bash
-docker pull quay.io/gotfix/gitlab:9.0.0-rc3
+docker pull quay.io/gotfix/gitlab:9.0.0-rc4
 ```
 
 - **Step 2**: Stop and remove the currently running image
@@ -370,7 +370,7 @@ docker run --name gitlab -d [PREVIOUS_OPTIONS] \
 --env 'GITLAB_REGISTRY_API_URL=http://registry:5000/' \
 --env 'GITLAB_REGISTRY_KEY_PATH=/certs/registry-auth.key' \
 --link registry:registry
-quay.io/gotfix/gitlab:9.0.0-rc3
+quay.io/gotfix/gitlab:9.0.0-rc4
 ```
 
 
