@@ -41,10 +41,10 @@ passwd -d ${GITLAB_USER}
 
 # set PATH (fixes cron job PATH issues)
 cat >> ${GITLAB_HOME}/.profile <<EOF
-PATH=$HOME/.yarn/bin:/usr/local/sbin:/usr/local/bin:\$PATH
+PATH=\$HOME/.yarn/bin:/usr/local/sbin:/usr/local/bin:\$PATH
 EOF
 
-# install fresh yarn
+# download and install fresh yarn
 curl --location https://yarnpkg.com/install.sh | exec_as_git bash -
 
 # configure git for ${GITLAB_USER}
@@ -52,25 +52,17 @@ exec_as_git git config --global core.autocrlf input
 exec_as_git git config --global gc.auto 0
 exec_as_git git config --global repack.writeBitmaps true
 
-# install gitlab-shell
+#
+# Download necessary sources
+#
+
+# download gitlab-shell
 echo "Cloning gitlab-shell v.${GITLAB_SHELL_VERSION}..."
 exec_as_git git clone -q -b v${GITLAB_SHELL_VERSION} --depth 1 ${GITLAB_SHELL_CLONE_URL} ${GITLAB_SHELL_INSTALL_DIR}
-
-# install gitlab-shell
-cd ${GITLAB_SHELL_INSTALL_DIR}
-exec_as_git cp -a ${GITLAB_SHELL_INSTALL_DIR}/config.yml.example ${GITLAB_SHELL_INSTALL_DIR}/config.yml
-exec_as_git ./bin/install
-
-# remove unused repositories directory created by gitlab-shell install
-exec_as_git rm -rf ${GITLAB_HOME}/repositories
 
 # download gitlab-monitor
 echo "Cloning gitlab-monitor v.${GITLAB_MONITOR_VERSION}..."
 exec_as_git git clone -q -b v${GITLAB_MONITOR_VERSION} --depth 1 ${GITLAB_MONITOR_CLONE_URL} ${GITLAB_MONITOR_INSTALL_DIR}
-
-# install gitlab-monitor
-cd ${GITLAB_MONITOR_INSTALL_DIR}
-exec_as_git bundle install -j$(nproc) --deployment
 
 # download gitaly
 echo "Cloning gitlab-pages v.${GITLAB_GITALY_VERSION}..."
@@ -89,6 +81,19 @@ echo "Downloading Go ${GOLANG_VERSION}..."
 wget -cnv https://storage.googleapis.com/golang/go${GOLANG_VERSION}.linux-amd64.tar.gz -P ${GITLAB_BUILD_DIR}/
 tar -xf ${GITLAB_BUILD_DIR}/go${GOLANG_VERSION}.linux-amd64.tar.gz -C /tmp/
 
+#
+# Build and Install downloaded sources
+#
+
+# install gitlab-shell
+cd ${GITLAB_SHELL_INSTALL_DIR}
+exec_as_git cp -a ${GITLAB_SHELL_INSTALL_DIR}/config.yml.example ${GITLAB_SHELL_INSTALL_DIR}/config.yml
+exec_as_git ./bin/install
+
+# install gitlab-monitor
+cd ${GITLAB_MONITOR_INSTALL_DIR}
+exec_as_git bundle install -j$(nproc) --deployment
+
 # install gitaly
 cd ${GITLAB_GITALY_INSTALL_DIR}
 PATH=/tmp/go/bin:$PATH GOROOT=/tmp/go make install
@@ -106,8 +111,19 @@ cd "$GODIR"
 PATH=/tmp/go/bin:$PATH GOROOT=/tmp/go make gitlab-pages
 mv gitlab-pages /usr/local/bin/
 
-# remove go
+#
+# Cleanup
+#
+
+# remove unused repositories directory created by gitlab-shell install
+exec_as_git rm -rf ${GITLAB_HOME}/repositories
+
+# remove golang archive and executable
 rm -rf ${GITLAB_BUILD_DIR}/go${GOLANG_VERSION}.linux-amd64.tar.gz /tmp/go
+
+#
+# Download and Install Gitlab CE from source
+#
 
 # shallow clone gitlab-ce
 echo "Cloning gitlab-ce v.${GITLAB_VERSION}..."
@@ -135,13 +151,13 @@ chown -R ${GITLAB_USER}: ${GITLAB_HOME}
 exec_as_git cp ${GITLAB_INSTALL_DIR}/config/gitlab.yml.example ${GITLAB_INSTALL_DIR}/config/gitlab.yml
 exec_as_git cp ${GITLAB_INSTALL_DIR}/config/database.yml.mysql ${GITLAB_INSTALL_DIR}/config/database.yml
 
-# Installs nodejs packages required to compile webpack
-npm install --production
-
 echo "Compiling assets. Please be patient, this could take a while..."
-#Adding webpack compile needed since 8.17
-exec_as_git bundle exec rake assets:clean assets:precompile webpack:compile USE_DB=false SKIP_STORAGE_VALIDATION=true RAILS_ENV=${RAILS_ENV}>/dev/null 2>&1
+# Compile assets
+# Installs nodejs packages required to compile webpack
+exec_as_git ${GITLAB_HOME}/.yarn/bin/yarn install --production --pure-lockfile
 
+# Adding webpack compile needed since 8.17
+exec_as_git bundle exec rake assets:clean assets:precompile gitlab:assets:compile webpack:compile USE_DB=false SKIP_STORAGE_VALIDATION=true RAILS_ENV=${RAILS_ENV} NODE_ENV=${RAILS_ENV}>/dev/null 2>&1
 
 # remove auto generated ${GITLAB_DATA_DIR}/config/secrets.yml
 rm -rf ${GITLAB_DATA_DIR}/config/secrets.yml
@@ -389,5 +405,5 @@ stderr_logfile=${GITLAB_LOG_DIR}/supervisor/%(program_name)s.log
 EOF
 
 # purge build dependencies and cleanup apt
-DEBIAN_FRONTEND=noninteractive apt-get purge -y --auto-remove ${BUILD_DEPENDENCIES}
+apt-get purge -y --auto-remove ${BUILD_DEPENDENCIES}
 rm -rf /var/lib/apt/lists/*
