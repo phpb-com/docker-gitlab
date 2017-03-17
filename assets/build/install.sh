@@ -163,8 +163,11 @@ exec_as_git bundle exec rake assets:clean assets:precompile webpack:compile USE_
 echo "remove auto generated ${GITLAB_DATA_DIR}/config/secrets.yml"
 rm -rf ${GITLAB_DATA_DIR}/config/secrets.yml
 
-exec_as_git mkdir -p ${GITLAB_INSTALL_DIR}/tmp/pids/ ${GITLAB_INSTALL_DIR}/tmp/sockets/
+exec_as_git mkdir -p ${GITLAB_INSTALL_DIR}/tmp/pids/ ${GITLAB_INSTALL_DIR}/tmp/sockets/private/
 chmod -R u+rwX ${GITLAB_INSTALL_DIR}/tmp
+
+# Make a private socket dir for gitaly
+chmod 0700 ${GITLAB_INSTALL_DIR}/tmp/sockets/private
 
 echo "symlink ${GITLAB_HOME}/.ssh -> ${GITLAB_LOG_DIR}/gitlab"
 rm -rf ${GITLAB_HOME}/.ssh
