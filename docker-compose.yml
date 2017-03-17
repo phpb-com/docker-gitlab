@@ -22,7 +22,7 @@ services:
 
   gitlab:
     restart: always
-    image: quay.io/gotfix/gitlab:8.17.3-7
+    image: quay.io/gotfix/gitlab:9.0.0-rc3
     depends_on:
     - redis
     - postgresql
@@ -45,7 +45,7 @@ services:
     - REDIS_HOST=redis
     - REDIS_PORT=6379
 
-    - TZ=Asia/Kolkata
+    - TZ=UTC
     - GITLAB_TIMEZONE=Kolkata
 
     - GITLAB_HTTPS=false
