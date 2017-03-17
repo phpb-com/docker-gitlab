@@ -1,12 +1,12 @@
 #!/bin/bash
 set -e
 
-GITLAB_CLONE_URL=git@gitlab.com:gitlab-org/gitlab-ce.git
-GITLAB_SHELL_CLONE_URL=git@gitlab.com:gitlab-org/gitlab-shell.git
-GITLAB_WORKHORSE_CLONE_URL=git@gitlab.com:gitlab-org/gitlab-workhorse.git
-GITLAB_PAGES_CLONE_URL=git@gitlab.com:gitlab-org/gitlab-pgaes.git
-GITLAB_GITALY_CLONE_URL=git@gitlab.com:gitlab-org/gitaly.git
-GITLAB_MONITOR_CLONE_URL=git@gitlab.com:gitlab-org/gitlab-monitor.git
+GITLAB_CLONE_URL=https://gitlab.com/gitlab-org/gitlab-ce.git
+GITLAB_SHELL_CLONE_URL=https://gitlab.com/gitlab-org/gitlab-shell.git
+GITLAB_WORKHORSE_CLONE_URL=https://gitlab.com/gitlab-org/gitlab-workhorse.git
+GITLAB_PAGES_CLONE_URL=https://gitlab.com/gitlab-org/gitlab-pgaes.git
+GITLAB_GITALY_CLONE_URL=https://gitlab.com/gitlab-org/gitaly.git
+GITLAB_MONITOR_CLONE_URL=https://gitlab.com/gitlab-org/gitlab-monitor.git
 
 GEM_CACHE_DIR="${GITLAB_BUILD_DIR}/cache"
 
