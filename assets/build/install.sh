@@ -2,11 +2,11 @@
 set -e
 
 GITLAB_CLONE_URL=https://gitlab.com/gitlab-org/gitlab-ce.git
-GITLAB_SHELL_URL=https://gitlab.com/gitlab-org/gitlab-shell/repository/archive.tar.gz
-GITLAB_WORKHORSE_URL=https://gitlab.com/gitlab-org/gitlab-workhorse/repository/archive.tar.gz
-GITLAB_PAGES_URL=https://gitlab.com/gitlab-org/gitlab-pages/repository/archive.tar.gz
-GITLAB_MONITOR_URL=https://gitlab.com/gitlab-org/gitlab-monitor/repository/archive.tar.gz
-GITLAB_GITALY_URL=https://gitlab.com/gitlab-org/gitaly/repository/archive.tar.gz
+GITLAB_SHELL_CLONE_URL=https://gitlab.com/gitlab-org/gitlab-shell.git
+GITLAB_WORKHORSE_CLONE_URL=https://gitlab.com/gitlab-org/gitlab-workhorse.git
+GITLAB_PAGES_CLONE_URL=https://gitlab.com/gitlab-org/gitlab-pgaes.git
+GITLAB_GITALY_CLONE_URL=https://gitlab.com/gitlab-org/gitaly.git
+GITLAB_MONITOR_CLONE_URL=https://gitlab.com/gitlab-org/gitlab-monitor.git
 
 GEM_CACHE_DIR="${GITLAB_BUILD_DIR}/cache"
 
@@ -53,13 +53,10 @@ exec_as_git git config --global gc.auto 0
 exec_as_git git config --global repack.writeBitmaps true
 
 # install gitlab-shell
-echo "Downloading gitlab-shell v.${GITLAB_SHELL_VERSION}..."
-mkdir -p ${GITLAB_SHELL_INSTALL_DIR}
-wget -cq ${GITLAB_SHELL_URL}?ref=v${GITLAB_SHELL_VERSION} -O ${GITLAB_BUILD_DIR}/gitlab-shell-${GITLAB_SHELL_VERSION}.tar.gz
-tar xf ${GITLAB_BUILD_DIR}/gitlab-shell-${GITLAB_SHELL_VERSION}.tar.gz --strip 1 -C ${GITLAB_SHELL_INSTALL_DIR}
-rm -rf ${GITLAB_BUILD_DIR}/gitlab-shell-${GITLAB_SHELL_VERSION}.tar.gz
-chown -R ${GITLAB_USER}: ${GITLAB_SHELL_INSTALL_DIR}
+echo "Cloning gitlab-shell v.${GITLAB_SHELL_VERSION}..."
+exec_as_git git clone -q -b v${GITLAB_SHELL_VERSION} --depth 1 ${GITLAB_SHELL_CLONE_URL} ${GITLAB_SHELL_INSTALL_DIR}
 
+# install gitlab-shell
 cd ${GITLAB_SHELL_INSTALL_DIR}
 exec_as_git cp -a ${GITLAB_SHELL_INSTALL_DIR}/config.yml.example ${GITLAB_SHELL_INSTALL_DIR}/config.yml
 exec_as_git ./bin/install
@@ -68,40 +65,24 @@ exec_as_git ./bin/install
 exec_as_git rm -rf ${GITLAB_HOME}/repositories
 
 # download gitlab-monitor
-echo "Downloading gitlab-monitor v.${GITLAB_MONITOR_VERSION}..."
-mkdir -p ${GITLAB_MONITOR_INSTALL_DIR}
-wget -cq ${GITLAB_MONITOR_URL}?ref=v${GITLAB_MONITOR_VERSION} -O ${GITLAB_BUILD_DIR}/gitlab-monitor-${GITLAB_MONITOR_VERSION}.tar.gz
-tar xf ${GITLAB_BUILD_DIR}/gitlab-monitor-${GITLAB_MONITOR_VERSION}.tar.gz --strip 1 -C ${GITLAB_MONITOR_INSTALL_DIR}
-rm -rf ${GITLAB_BUILD_DIR}/gitlab-monitor-${GITLAB_MONITOR_VERSION}.tar.gz
-chown -R ${GITLAB_USER}: ${GITLAB_MONITOR_INSTALL_DIR}
+echo "Cloning gitlab-monitor v.${GITLAB_MONITOR_VERSION}..."
+exec_as_git git clone -q -b v${GITLAB_MONITOR_VERSION} --depth 1 ${GITLAB_MONITOR_CLONE_URL} ${GITLAB_MONITOR_INSTALL_DIR}
 
 # install gitlab-monitor
 cd ${GITLAB_MONITOR_INSTALL_DIR}
 exec_as_git bundle install -j$(nproc) --deployment
 
 # download gitaly
-echo "Downloading gitlab-pages v.${GITLAB_GITALY_VERSION}..."
-mkdir -p ${GITLAB_GITALY_INSTALL_DIR}
-wget -cq ${GITLAB_GITALY_URL}?ref=v${GITLAB_GITALY_VERSION} -O ${GITLAB_BUILD_DIR}/gitlab-gitaly-${GITLAB_PAGES_VERSION}.tar.gz
-tar xf ${GITLAB_BUILD_DIR}/gitlab-gitaly-${GITLAB_GITALY_VERSION}.tar.gz --strip 1 -C ${GITLAB_GITALY_INSTALL_DIR}
-rm -rf ${GITLAB_BUILD_DIR}/gitlab-gitaly-${GITLAB_GITALY_VERSION}.tar.gz
-chown -R ${GITLAB_USER}: ${GITLAB_GITALY_INSTALL_DIR}
+echo "Cloning gitlab-pages v.${GITLAB_GITALY_VERSION}..."
+exec_as_git git clone -q -b v${GITLAB_GITALY_VERSION} --depth 1 ${GITLAB_GITALY_CLONE_URL} ${GITLAB_GITLAY_INSTALL_DIR}
 
 # download gitlab-workhose
-echo "Downloading gitlab-workhorse v.${GITLAB_WORKHORSE_VERSION}..."
-mkdir -p ${GITLAB_WORKHORSE_INSTALL_DIR}
-wget -cq ${GITLAB_WORKHORSE_URL}?ref=v${GITLAB_WORKHORSE_VERSION} -O ${GITLAB_BUILD_DIR}/gitlab-workhorse-${GITLAB_WORKHORSE_VERSION}.tar.gz
-tar xf ${GITLAB_BUILD_DIR}/gitlab-workhorse-${GITLAB_WORKHORSE_VERSION}.tar.gz --strip 1 -C ${GITLAB_WORKHORSE_INSTALL_DIR}
-rm -rf ${GITLAB_BUILD_DIR}/gitlab-workhorse-${GITLAB_WORKHORSE_VERSION}.tar.gz
-chown -R ${GITLAB_USER}: ${GITLAB_WORKHORSE_INSTALL_DIR}
+echo "Cloning gitlab-workhorse v.${GITLAB_WORKHORSE_VERSION}..."
+exec_as_git git clone -q -b v${GITLAB_WORKHORSE_VERSION} --depth 1 ${GITLAB_WORKHORSE_CLONE_URL} ${GITLAB_WORKHORSE_INSTALL_DIR}
 
 # download pages
-echo "Downloading gitlab-pages v.${GITLAB_PAGES_VERSION}..."
-mkdir -p ${GITLAB_PAGES_INSTALL_DIR}
-wget -cq ${GITLAB_PAGES_URL}?ref=v${GITLAB_PAGES_VERSION} -O ${GITLAB_BUILD_DIR}/gitlab-pages-${GITLAB_PAGES_VERSION}.tar.gz
-tar xf ${GITLAB_BUILD_DIR}/gitlab-pages-${GITLAB_PAGES_VERSION}.tar.gz --strip 1 -C ${GITLAB_PAGES_INSTALL_DIR}
-rm -rf ${GITLAB_BUILD_DIR}/gitlab-pages-${GITLAB_PAGES_VERSION}.tar.gz
-chown -R ${GITLAB_USER}: ${GITLAB_PAGES_INSTALL_DIR}
+echo "Cloning gitlab-pages v.${GITLAB_PAGES_VERSION}..."
+exec_as_git git clone -q -b v${GITLAB_PAGES_VERSION} --depth 1 ${GITLAB_PAGES_CLONE_URL} ${GITLAB_PAGES_INSTALL_DIR}
 
 # download golang
 echo "Downloading Go ${GOLANG_VERSION}..."
