@@ -2,6 +2,13 @@
 
 Those are the steps that should be taken to upgrade GitLab, GitLab Shell, GitLab Monitor, GitLab Pages, GitLab Workhorse, etc... to the next version.
 
+# General Tips and Tricks
+
+## README.md
+
+- (Re)Generate TOC: https://github.com/jonschlinkert/markdown-toc
+- Update Version number: `sed -i -- 's/X.X.X/Y.Y.Y/g' README.md` - from version X.X.X to Y.Y.Y
+
 # Update to the next version
 
 ## GitLab
