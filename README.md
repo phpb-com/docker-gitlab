@@ -318,7 +318,7 @@ Here the image will also automatically fetch the `DB_NAME`, `DB_USER` and `DB_PA
 
 ### MySQL
 
-*Please use [original project](https://github.com/sameersbn/docker-gitlab) for mysql support*
+*Please use [sameersbn/docker-gitlab](https://github.com/sameersbn/docker-gitlab) for mysql support*
 
 ## Redis
 
@@ -829,10 +829,10 @@ Below is the complete list of available configuration options segregated by cate
 | `SIDEKIQ_CONCURRENCY` | The number of concurrent sidekiq jobs to run. Defaults to `25` |
 | `SIDEKIQ_SHUTDOWN_TIMEOUT` | Timeout for sidekiq shutdown. Defaults to `4` |
 | `SIDEKIQ_MEMORY_KILLER_MAX_RSS` | Non-zero value enables the SidekiqMemoryKiller. Defaults to `1000000`. For additional options refer [Configuring the MemoryKiller](http://doc.gitlab.com/ce/operations/sidekiq_memory_killer.html) |
-| `DB_ADAPTER` | The database type. Possible values: `mysql2`, `postgresql`. Defaults to `postgresql`. |
-| `DB_ENCODING` | The database encoding. For `DB_ADAPTER` values `postresql` and `mysql2`, this parameter defaults to `unicode` and `utf8` respectively. |
+| `DB_ADAPTER` | The database type. Possible values: `postgresql`. Defaults to `postgresql`. |
+| `DB_ENCODING` | The database encoding. For `DB_ADAPTER` values `postresql`, this parameter defaults to `unicode` and `utf8` respectively. |
 | `DB_HOST` | The database server hostname. Defaults to `localhost`. |
-| `DB_PORT` | The database server port. Defaults to `3306` for mysql and `5432` for postgresql. |
+| `DB_PORT` | The database server port. Defaults to `5432` for postgresql. |
 | `DB_NAME` | The database database name. Defaults to `gitlabhq_production` |
 | `DB_USER` | The database database user. Defaults to `root` |
 | `DB_PASS` | The database database password. Defaults to no password |

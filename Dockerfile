@@ -60,7 +60,6 @@ RUN apt-get install -y \
     curl \
     gettext-base \
     git-core \
-    libmysqlclient20 \
     libpq5 \
     libyaml-0-2 \
     libssl1.0.0 \
@@ -75,7 +74,6 @@ RUN apt-get install -y \
     libicu55 \
     logrotate \
     locales \
-    mysql-client \
     nginx \
     nodejs \
     openssh-server \

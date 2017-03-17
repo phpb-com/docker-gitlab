@@ -44,7 +44,6 @@ DB_POOL=${DB_POOL:-10}
 
 # backward compatibility
 case ${DB_TYPE} in
-  mysql) DB_ADAPTER=${DB_ADAPTER:-mysql2} ;;
   postgres) DB_ADAPTER=${DB_ADAPTER:-postgresql} ;;
 esac
 
