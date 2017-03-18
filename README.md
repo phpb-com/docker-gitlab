@@ -8,11 +8,13 @@
 
 The canonical source of the repository is [hosted on gotfix.com](https://gotfix.com/docker/gitlab).
 
+---
+
 ## FAQ
 
-### Why did you gork instead of contributing to the original project?
+### Why did you fork instead of contributing to the original project?
 
-Long story short, since the original project tends to be conservative and their goal is stability, it is not what I would like to run fr myself. I preffer to follow Gitlab development cycle closer (when time allows) and play with new features. If you rely on Gitlab for your business and require stability, backwards compatibility, and do not want to update often, I would suggest using the original project. You are welcome to use this fork if you do not mind doing testing yoursef.
+Long story short, since the original project tends to be conservative and their goal is stability, it is not what I would like to run fr myself. I prefer to follow Gitlab development cycle closer (when time allows) and play with new features. If you rely on Gitlab for your business and require stability, backwards compatibility, and do not want to update often, I would suggest using the original project. You are welcome to use this fork if you do not mind doing testing yourself.
 
 ### Why MySQL support is not available, it is in the original project?
 
@@ -20,7 +22,7 @@ Since I do not have any means to test well with MySQL, I decided to let it go. T
 
 ### Why NGINX is being removed from the image?
 
-Best practice dictates that one docker image should serve one purpuse, having NGINX in it is not a good idea. At this time it is still in the image but that will change very soon. If you do not know how to setup NGINX outside of this image, take a look at [nginx-proxy](https://github.com/jwilder/nginx-proxy), I am planning to support that instead.
+Best practice dictates that one docker image should serve one purpose, having NGINX in it is not a good idea. At this time it is still in the image but that will change very soon. If you do not know how to setup NGINX outside of this image, take a look at [nginx-proxy](https://github.com/jwilder/nginx-proxy), I am planning to support that instead.
 
 ### Why are you not hosting this project on GitHub and only maintaining mirror there?
 
@@ -33,6 +35,9 @@ Thanks, I would love to get some help. You can start by creating account and con
 ### Why are you not supporting feature X?
 
 Since I do not have unlimited time on my hands, it is very difficult to add/support all of the features. No worries, if you know how to add it to the image, send you Merge request and we will work it out.
+
+---
+
 
 # Table of Content
 
