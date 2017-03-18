@@ -139,6 +139,32 @@ exec_as_git sed -i 's/db:reset/db:setup/' ${GITLAB_INSTALL_DIR}/lib/tasks/gitlab
 
 cd ${GITLAB_INSTALL_DIR}
 
+# check versions in the source, exit 1 if less then required
+CACHE_GITALY_SERVER_VERSION=$(cat GITALY_SERVER_VERSION)
+CACHE_GITLAB_PAGES_VERSION=$(cat GITLAB_PAGES_VERSION)
+CACHE_GITLAB_SHELL_VERSION=$(cat GITLAB_SHELL_VERSION)
+CACHE_GITLAB_WORKHORSE_VERSION=$(cat GITLAB_WORKHORSE_VERSION)
+
+if [[ -n ${CACHE_GITLAB_SHELL_VERSION} && $(vercmp ${GITLAB_SHELL_VERSION} ${CACHE_GITLAB_SHELL_VERSION}) -lt 0 ]]; then
+    echo "Gitlab Shell server version is less than required, installed ${GITLAB_SHELL_VERSION} ; required ${CACHE_GITLAB_SHELL_VERSION}"
+    exit 1
+fi
+
+if [[ -n ${CACHE_GITLAB_WORKHORSE_VERSION} && $(vercmp ${GITLAB_WORKHORSE_VERSION} ${CACHE_GITLAB_WORKHORSE_VERSION}) -lt 0 ]]; then
+    echo "Gitlab Workhorse server version is less than required, installed ${GITLAB_WORKHORSE_VERSION} ; required ${CACHE_GITLAB_WORKHORSE_VERSION}"
+    exit 1
+fi
+
+if [[ -n ${CACHE_GITLAB_PAGES_VERSION} && $(vercmp ${GITLAB_PAGES_VERSION} ${CACHE_GITLAB_PAGES_VERSION}) -lt 0 ]]; then
+    echo "Gitlab Pages server version is less than required, installed ${GITLAB_PAGES_VERSION} ; required ${CACHE_GITLAB_PAGES_VERSION}"
+    exit 1
+fi
+
+if [[ -n ${CACHE_GITALY_SERVER_VERSION} && $(vercmp ${GITLAB_GITALY_VERSION} ${CACHE_GITALY_SERVER_VERSION}) -lt 0 ]]; then
+    echo "Gitaly server version is less than required, installed ${GITLAB_GITALY_VERSION} ; required ${CACHE_GITALY_SERVER_VERSION}"
+    exit 1
+fi
+
 # install gems, use local cache if available
 if [[ -d ${GEM_CACHE_DIR} ]]; then
   mv ${GEM_CACHE_DIR} ${GITLAB_INSTALL_DIR}/vendor/cache
