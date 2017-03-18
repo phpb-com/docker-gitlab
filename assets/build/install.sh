@@ -47,7 +47,10 @@ PATH=\$HOME/.yarn/bin:/usr/local/sbin:/usr/local/bin:\$PATH
 EOF
 
 # download and install fresh yarn
-curl -s --location https://yarnpkg.com/install.sh | exec_as_git bash - >/dev/null 2>&1
+curl -sSL https://yarnpkg.com/install.sh | exec_as_git bash - >/dev/null 2>&1
+
+# download consul template engin XXX add this if we decide to have network based service config, and why not
+### curl -sSL https://releases.hashicorp.com/consul-template/0.18.1/consul-template_0.18.1_linux_amd64.tgz | tar zxf - -C /usr/local/bin/
 
 # configure git for ${GITLAB_USER}
 exec_as_git git config --global core.autocrlf input
