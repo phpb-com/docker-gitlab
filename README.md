@@ -5,6 +5,8 @@
 
 # quay.io/gotfix/gitlab:9.0.0-rc4
 
+> Alternatively image is available from docker hub `gotfix/gitlab:9.0.0-rc4`
+
 **NOTE:** This project was forked from [sameersbn/docker-gitlab](https://github.com/sameersbn/docker-gitlab) to maintain slightly more modern and less conservative (i.e., things will  break) version of GitLab docker image.
 
 ## Canonical source
