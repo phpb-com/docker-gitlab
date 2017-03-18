@@ -93,9 +93,9 @@ RUN update-locale LANG=C.UTF-8 LC_MESSAGES=POSIX \
 RUN gem install bundler --no-ri --no-rdoc
 
 COPY assets/build/ ${GITLAB_BUILD_DIR}/
+COPY assets/runtime/ ${GITLAB_RUNTIME_DIR}/
 RUN bash ${GITLAB_BUILD_DIR}/install.sh
 
-COPY assets/runtime/ ${GITLAB_RUNTIME_DIR}/
 COPY entrypoint.sh /sbin/entrypoint.sh
 RUN chmod 755 /sbin/entrypoint.sh
 
