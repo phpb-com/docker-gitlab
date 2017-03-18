@@ -16,7 +16,7 @@ The canonical source of the repository is [hosted on gotfix.com](https://gotfix.
 
 ### Why did you fork instead of contributing to the original project?
 
-Long story short, since the original project tends to be conservative and their goal is stability, it is not what I would like to run fr myself. I prefer to follow Gitlab development cycle closer (when time allows) and play with new features. If you rely on Gitlab for your business and require stability, backwards compatibility, and do not want to update often, I would suggest using the original project. You are welcome to use this fork if you do not mind doing testing yourself.
+Long story short, since the original project tends to be conservative and their goal is stability, it is not what I would like to run for myself. I preffer to follow Gitlab development cycle closer (when time allows) and play with new features. If you rely on Gitlab for your business and require stability, backwards compatibility, and do not want to update often, I would suggest using the original project. You are welcome to use this fork if you do not mind doing testing yoursef.
 
 ### Why MySQL support is not available, it is in the original project?
 
