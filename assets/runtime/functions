@@ -19,6 +19,7 @@ GITLAB_MONITOR_CONFIG="${GITLAB_MONITOR_INSTALL_DIR}/config/gitlab-monitor.yml"
 GITLAB_NGINX_CONFIG="/etc/nginx/sites-enabled/gitlab"
 GITLAB_CI_NGINX_CONFIG="/etc/nginx/sites-enabled/gitlab_ci"
 GITLAB_REGISTRY_NGINX_CONFIG="/etc/nginx/sites-enabled/gitlab-registry"
+GITLAB_PAGES_NGINX_CONFIG="/etc/nginx/sites-enabled/gitlab-pages"
 
 # Compares two version strings `a` and `b`
 # Returns
@@ -916,6 +917,20 @@ gitlab_configure_pages() {
     GITLAB_PAGES_PORT \
     GITLAB_PAGES_PROXY_PORT \
     GITLAB_PAGES_HTTPS 
+
+    if [[ -n ${GITLAB_PAGES_EXTERNAL_HTTP} ]]; then
+      update_template ${GITLAB_CONFIG} \
+        GITLAB_PAGES_EXTERNAL_HTTP
+    else
+      exec_as_git sed -ie "/{{GITLAB_PAGES_EXTERNAL_HTTP}}/d" ${GITLAB_CONFIG}
+    fi
+  
+    if [[ -n ${GITLAB_PAGES_EXTERNAL_HTTPS} ]]; then
+      update_template ${GITLAB_CONFIG} \
+        GITLAB_PAGES_EXTERNAL_HTTPS
+    else
+      exec_as_git sed -ie "/{{GITLAB_PAGES_EXTERNAL_HTTPS}}/d" ${GITLAB_CONFIG}
+    fi
 }
 
 nginx_configure_gitlab_ssl() {
@@ -982,6 +997,7 @@ nginx_configure_gitlab() {
   nginx_configure_gitlab_hsts
   nginx_configure_gitlab_ipv6
   nginx_configure_gitlab_retain_ip_header
+  nginx_configure_pages
 }
 
 nginx_configure_gitlab_ci() {
@@ -1009,6 +1025,28 @@ nginx_configure_gitlab_registry() {
   fi
 }
 
+nginx_configure_pages(){
+  local GITLAB_PAGES_DOMAIN=$(echo $GITLAB_PAGES_DOMAIN | sed 's/\./\\\\./g')
+  if [[ ${GITLAB_PAGES_ENABLED} == true ]]; then
+    if [[ ${GITLAB_PAGES_HTTPS} == true ]]; then
+      echo "Configuring nginx::gitlab-pages..."
+      update_template ${GITLAB_PAGES_NGINX_CONFIG} \
+        GITLAB_PAGES_DOMAIN \
+        GITLAB_PAGES_PORT \
+        GITLAB_LOG_DIR \
+        GITLAB_PAGES_DOMAIN \
+        SSL_PAGES_CERT_PATH \
+        SSL_PAGES_KEY_PATH \
+        SSL_DHPARAM_PATH \
+        GITLAB_LOG_DIR
+    else
+      echo "Configuring nginx::gitlab-pages..."
+      update_template ${GITLAB_PAGES_NGINX_CONFIG} \
+        GITLAB_PAGES_DOMAIN \
+        GITLAB_LOG_DIR 
+    fi
+  fi
+}
 
 #   _|_|_|              _|        _|  _|
 #   _|    _|  _|    _|  _|_|_|    _|        _|_|_|
@@ -1274,6 +1312,19 @@ install_configuration_templates() {
       install_template root: nginx/gitlab ${GITLAB_NGINX_CONFIG}
     fi
 
+    ## ${GITLAB_PAGES_NGINX_CONFIG}
+    if [[ ${GITLAB_PAGES_ENABLED} == true ]]; then
+      if [[ -f ${SSL_PAGES_CERT_PATH} && -f ${SSL_PAGES_KEY_PATH} ]]; then
+        install_template root: nginx/gitlab-pages-ssl ${GITLAB_PAGES_NGINX_CONFIG}
+      else
+        echo "SSL Key, SSL Certificate were not found."
+        echo "Assuming that the container is running behind a HTTPS enabled load balancer."
+        install_template root: nginx/gitlab-pages ${GITLAB_PAGES_NGINX_CONFIG}
+      fi
+    else
+      install_template root: nginx/gitlab-pages ${GITLAB_PAGES_NGINX_CONFIG}
+    fi
+
     if [[ -n $GITLAB_CI_HOST ]]; then
       install_template root: nginx/gitlab_ci ${GITLAB_CI_NGINX_CONFIG}
     fi
@@ -1334,6 +1385,7 @@ configure_gitlab() {
   gitlab_configure_analytics
   gitlab_configure_backups
   gitlab_configure_registry
+  gitlab_configure_pages
 
   # remove stale gitlab.socket
   rm -rf ${GITLAB_INSTALL_DIR}/tmp/sockets/gitlab.socket
@@ -1353,23 +1405,60 @@ configure_gitlab_shell() {
 }
 
 configure_gitlab_pages() {
+  if [[ ${GITLAB_PAGES_ENABLED} == true ]]; then
   echo "Configuring gitlab-pages..."
-  # configure gitlab-pages supervise settings
-  # GITLAB_UID and GITLAB_GID are used for downgrade of process privileges 
-  GITLAB_UID=$(id -u ${GITLAB_USER})
-  GITLAB_GID=$(id -g ${GITLAB_USER})
-  update_template /etc/supervisor/conf.d/gitlab-pages.conf \
-    GITLAB_PAGES_DOMAIN \
-    GITLAB_PAGES_DIR \
-    GITLAB_PAGES_PORT \
-    GITLAB_UID \
-    GITLAB_GID \
-    GITLAB_PAGES_ENABLED \
-    GITLAB_PAGES_METRICS_PORT
+cat > /etc/supervisor/conf.d/gitlab-pages.conf <<EOF
+[program:gitlab-pages]
+priority=20
+directory=${GITLAB_INSTALL_DIR}
+environment=HOME=${GITLAB_HOME}
+command=/usr/local/bin/gitlab-pages
+  -pages-domain ${GITLAB_PAGES_DOMAIN}
+  -pages-root ${GITLAB_PAGES_DIR}
+  -listen-proxy :8090
+EOF
 
-  # congiure gitlab-pages 
-  gitlab_configure_pages
+if [[ -n ${GITLAB_PAGES_EXTERNAL_HTTP} ]]; then
+cat >> /etc/supervisor/conf.d/gitlab-pages.conf <<EOF
+  -listen-http ${GITLAB_PAGES_EXTERNAL_HTTP}
+EOF
+fi
+
+
+if [[ -n ${GITLAB_PAGES_EXTERNAL_HTTPS} ]]; then
+cat >> /etc/supervisor/conf.d/gitlab-pages.conf <<EOF
+  -listen-https ${GITLAB_PAGES_EXTERNAL_HTTPS}
+  -root-cert ${SSL_PAGES_CERT_PATH}
+  -root-key ${SSL_PAGES_KEY_PATH}
+EOF
+fi
+
+cat >> /etc/supervisor/conf.d/gitlab-pages.conf <<EOF
+user=git
+autostart=true
+autorestart=true
+stdout_logfile=${GITLAB_INSTALL_DIR}/log/%(program_name)s.log
+stderr_logfile=${GITLAB_INSTALL_DIR}/log/%(program_name)s.log
+EOF
+fi
 }
+
+# XXX This should be the norm once templating system has support for more flexible syntax
+#configure_gitlab_pages() {
+#  echo "Configuring gitlab-pages..."
+#  # configure gitlab-pages supervise settings
+#  # GITLAB_UID and GITLAB_GID are used for downgrade of process privileges 
+#  GITLAB_UID=$(id -u ${GITLAB_USER})
+#  GITLAB_GID=$(id -g ${GITLAB_USER})
+#  update_template /etc/supervisor/conf.d/gitlab-pages.conf \
+#    GITLAB_PAGES_DOMAIN \
+#    GITLAB_PAGES_DIR \
+#    GITLAB_PAGES_PORT \
+#    GITLAB_UID \
+#    GITLAB_GID \
+#    GITLAB_PAGES_ENABLED \
+#    GITLAB_PAGES_METRICS_PORT
+#}
 
 configure_gitlab_monitor() {
   echo "Configuring gitlab-monitor..."
