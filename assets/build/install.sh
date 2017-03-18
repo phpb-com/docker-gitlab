@@ -43,11 +43,8 @@ passwd -d ${GITLAB_USER}
 
 # set PATH (fixes cron job PATH issues)
 cat >> ${GITLAB_HOME}/.profile <<EOF
-PATH=\$HOME/.yarn/bin:/usr/local/sbin:/usr/local/bin:\$PATH
+PATH=/usr/local/sbin:/usr/local/bin:\$PATH
 EOF
-
-# download and install fresh yarn
-curl -sSL https://yarnpkg.com/install.sh | exec_as_git bash - >/dev/null 2>&1
 
 # download consul template engin XXX add this if we decide to have network based service config, and why not
 ### curl -sSL https://releases.hashicorp.com/consul-template/0.18.1/consul-template_0.18.1_linux_amd64.tgz | tar zxf - -C /usr/local/bin/
@@ -185,7 +182,7 @@ exec_as_git cp ${GITLAB_INSTALL_DIR}/config/database.yml.postgresql ${GITLAB_INS
 echo "Compiling assets. Please be patient, this could take a while..."
 # Compile assets
 # Installs nodejs packages required to compile webpack
-exec_as_git ${GITLAB_HOME}/.yarn/bin/yarn install --production --pure-lockfile
+exec_as_git yarn install --production --pure-lockfile
 
 echo "Executing rake commands to clean and compile assets"
 # Adding webpack compile needed since 8.17
