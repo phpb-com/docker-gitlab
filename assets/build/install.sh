@@ -1,6 +1,8 @@
 #!/bin/bash
 set -e
 
+source ${GITLAB_RUNTIME_DIR}/functions
+
 GITLAB_CLONE_URL=https://gitlab.com/gitlab-org/gitlab-ce.git
 GITLAB_SHELL_CLONE_URL=https://gitlab.com/gitlab-org/gitlab-shell.git
 GITLAB_WORKHORSE_CLONE_URL=https://gitlab.com/gitlab-org/gitlab-workhorse.git
