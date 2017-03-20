@@ -1,4 +1,7 @@
-[![build status](https://gotfix.com/docker/gitlab/badges/master/build.svg)](https://gotfix.com/docker/gitlab/commits/master) [![Docker Repository on Quay](https://quay.io/repository/gotfix/gitlab/status "Docker Repository on Quay")](https://quay.io/repository/gotfix/gitlab)
+[![build status](https://gotfix.com/docker/gitlab/badges/master/build.svg)](https://gotfix.com/docker/gitlab/commits/master)
+[![Docker Repository on Quay](https://quay.io/repository/gotfix/gitlab/status "Docker Repository on Quay")](https://quay.io/repository/gotfix/gitlab)
+[![](https://images.microbadger.com/badges/image/gotfix/gitlab.svg)](https://microbadger.com/images/gotfix/gitlab "Get your own image badge on microbadger.com")
+[![](https://images.microbadger.com/badges/version/gotfix/gitlab.svg)](https://microbadger.com/images/gotfix/gitlab "Get your own version badge on microbadger.com")
 
 # quay.io/gotfix/gitlab:8.17.3-7
 
