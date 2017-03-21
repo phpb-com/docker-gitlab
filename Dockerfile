@@ -1,7 +1,27 @@
 FROM ubuntu:xenial
 MAINTAINER ian@phpb.com
 
-ENV DOCKER_GITLAB_IMAGE_VERSION=9.0.0-rc4
+ARG HTTP_PROXY
+ARG HTTPS_PROXY
+ARG http_proxy
+ARG https_proxy
+
+ARG BUILD_DATE
+ARG VCS_REF
+ARG VERSION
+
+LABEL org.label-schema.schema-version="1.0" \
+      org.label-schema.name="Docker Gitlab CE" \
+      org.label-schema.description="Dockerized Gitlab CE built from source" \
+      org.label-schema.usage="https://gotfix.com/docker/gitlab/blob/master/README.md" \
+      org.label-schema.url="https://gotfix.com/docker/gitlab" \
+      org.label-schema.vcs-url="https://gotfix.com/docker/gitlab.git" \
+      org.label-schema.vendor="Ian Matyssik <ian@phpb.com>" \
+      org.label-schema.vcs-ref="${VCS_REF}" \
+      org.label-schema.version="${VERSION}" \
+      org.label-schema.build-date="${BUILD_DATE}" \
+      maintainer="ian@phpb.com"
+
 ENV GITLAB_VERSION=9.0.0-rc4 \
     RUBY_VERSION=2.3 \
     GOLANG_VERSION=1.8 \
@@ -26,11 +46,6 @@ ENV GITLAB_INSTALL_DIR="${GITLAB_HOME}/gitlab" \
     GITLAB_DATA_DIR="${GITLAB_HOME}/data" \
     GITLAB_BUILD_DIR="${GITLAB_CACHE_DIR}/build" \
     GITLAB_RUNTIME_DIR="${GITLAB_CACHE_DIR}/runtime"
-
-ARG HTTP_PROXY
-ARG HTTPS_PROXY
-ARG http_proxy
-ARG https_proxy
 
 RUN echo 'APT::Install-Recommends 0;' >> /etc/apt/apt.conf.d/01norecommends \
  && echo 'APT::Install-Suggests 0;' >> /etc/apt/apt.conf.d/01norecommends \
