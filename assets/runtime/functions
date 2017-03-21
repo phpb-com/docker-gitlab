@@ -1031,6 +1031,7 @@ nginx_configure_pages(){
     if [[ ${GITLAB_PAGES_HTTPS} == true ]]; then
       echo "Configuring nginx::gitlab-pages..."
       update_template ${GITLAB_PAGES_NGINX_CONFIG} \
+        GITLAB_PORT \
         GITLAB_PAGES_DOMAIN \
         GITLAB_PAGES_PORT \
         GITLAB_LOG_DIR \
@@ -1322,8 +1323,6 @@ install_configuration_templates() {
         echo "Assuming that the container is running behind a HTTPS enabled load balancer."
         install_template root: nginx/gitlab-pages ${GITLAB_PAGES_NGINX_CONFIG}
       fi
-    else
-      install_template root: nginx/gitlab-pages ${GITLAB_PAGES_NGINX_CONFIG}
     fi
 
     if [[ -n $GITLAB_CI_HOST ]]; then
