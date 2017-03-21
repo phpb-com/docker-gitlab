@@ -14,7 +14,10 @@ build:
 	@docker build --tag=quay.io/gotfix/gitlab .
 
 release: build
-	@docker build --tag=quay.io/gotfix/gitlab:$(shell cat VERSION) .
+	@docker build --build-arg BUILD_DATE=$(shell date -u +"%Y-%m-%dT%H:%M:%SZ") \
+	              --build-arg VCS_REF=$(shell git rev-parse --short HEAD) \
+	              --build-arg VERSION=$(shell cat VERSION) \
+	              --tag=quay.io/gotfix/gitlab:$(shell cat VERSION) .
 
 quickstart:
 	@echo "Starting postgresql container..."
