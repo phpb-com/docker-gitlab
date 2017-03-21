@@ -236,4 +236,3 @@ To avoid user interaction in the restore operation, specify the timestamp of the
 docker run --name gitlab -it --rm [OPTIONS] \
     quay.io/gotfix/gitlab:9.0.0-rc6 app:rake gitlab:backup:restore BACKUP=1417624827
 ```
-

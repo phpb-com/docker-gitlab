@@ -2,6 +2,7 @@
 
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list of changes in GitLab.
 
+
 **9.0.0-rc6**
 - gitlab: Gitlab CE v9.0.0-rc6
 
@@ -14,6 +15,9 @@ This file only reflects the changes that are made in this image. Please refer to
 - Add Gitaly to the build (no started)
 - Use yarn instead of npm
 - Multiple refactoring to the supporting scripts and documentation
+
+**8.17.4**
+- gitlab: Gitlab CE v8.17.4
 
 **8.17.3-7**
 - Fix gitlab pages supervisor config
