@@ -1,11 +1,6 @@
 FROM ubuntu:xenial
 MAINTAINER ian@phpb.com
 
-ARG HTTP_PROXY
-ARG HTTPS_PROXY
-ARG http_proxy
-ARG https_proxy
-
 ARG BUILD_DATE
 ARG VCS_REF
 ARG VERSION
