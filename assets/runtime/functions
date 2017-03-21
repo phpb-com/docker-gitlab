@@ -907,17 +907,16 @@ gitlab_configure_registry(){
 
 gitlab_configure_pages() {
   echo "Configuring gitlab::pages..."
-#XXX Once better templating is ready
-# if [[ ${GITLAB_PAGES_PORT} == 443 || ${GITLAB_PAGES_PROXY_PORT} == 443 ]]; then
-#    local GITLAB_PAGES_HTTPS=true
-# fi
+  if [[ ${GITLAB_PAGES_PORT} == 443 || ${GITLAB_PAGES_PROXY_PORT} == 443 ]]; then
+     local GITLAB_PAGES_HTTPS=true
+  fi
 
-#  update_template ${GITLAB_CONFIG} \
-#    GITLAB_PAGES_ENABLED \
-#    GITLAB_PAGES_DOMAIN \
-#    GITLAB_PAGES_PORT \
-#    GITLAB_PAGES_PROXY_PORT \
-#    GITLAB_PAGES_HTTPS 
+  update_template ${GITLAB_CONFIG} \
+    GITLAB_PAGES_ENABLED \
+    GITLAB_PAGES_DOMAIN \
+    GITLAB_PAGES_PORT \
+    GITLAB_PAGES_PROXY_PORT \
+    GITLAB_PAGES_HTTPS 
 
     if [[ -n ${GITLAB_PAGES_EXTERNAL_HTTP} ]]; then
       update_template ${GITLAB_CONFIG} \
