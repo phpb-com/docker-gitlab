@@ -1434,7 +1434,10 @@ EOF
 fi
 
 cat >> /etc/supervisor/conf.d/gitlab-pages.conf <<EOF
-user=git
+  -metrics-address :${GITLAB_PAGES_METRICS_PORT}
+  -daemon-uid ${GITLAB_UID}
+  -daemon-gid ${GITLAB_GID}
+user=root
 autostart=true
 autorestart=true
 stdout_logfile=${GITLAB_INSTALL_DIR}/log/%(program_name)s.log
