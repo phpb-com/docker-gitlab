@@ -27,6 +27,7 @@ GITLAB_PAGES_NGINX_CONFIG="/etc/nginx/sites-enabled/gitlab-pages"
 #   - 0, if `a` and `b` are equal
 #   - non-negative integer, if `a` is greater than `b`
 vercmp() {
+  #XXX This does not play well with RC version, should be fixed
   expr '(' "$1" : '\([^.]*\)' ')' '-' '(' "$2" : '\([^.]*\)' ')' '|' \
        '(' "$1.0" : '[^.]*[.]\([^.]*\)' ')' '-' '(' "$2.0" : '[^.]*[.]\([^.]*\)' ')' '|' \
        '(' "$1.0.0" : '[^.]*[.][^.]*[.]\([^.]*\)' ')' '-' '(' "$2.0.0" : '[^.]*[.][^.]*[.]\([^.]*\)' ')' '|' \
@@ -1445,23 +1446,6 @@ stderr_logfile=${GITLAB_INSTALL_DIR}/log/%(program_name)s.log
 EOF
 fi
 }
-
-# XXX This should be the norm once templating system has support for more flexible syntax
-#configure_gitlab_pages() {
-#  echo "Configuring gitlab-pages..."
-#  # configure gitlab-pages supervise settings
-#  # GITLAB_UID and GITLAB_GID are used for downgrade of process privileges 
-#  GITLAB_UID=$(id -u ${GITLAB_USER})
-#  GITLAB_GID=$(id -g ${GITLAB_USER})
-#  update_template /etc/supervisor/conf.d/gitlab-pages.conf \
-#    GITLAB_PAGES_DOMAIN \
-#    GITLAB_PAGES_DIR \
-#    GITLAB_PAGES_PORT \
-#    GITLAB_UID \
-#    GITLAB_GID \
-#    GITLAB_PAGES_ENABLED \
-#    GITLAB_PAGES_METRICS_PORT
-#}
 
 configure_gitlab_monitor() {
   echo "Configuring gitlab-monitor..."
