@@ -1408,6 +1408,8 @@ configure_gitlab_shell() {
 configure_gitlab_pages() {
   if [[ ${GITLAB_PAGES_ENABLED} == true ]]; then
   echo "Configuring gitlab-pages..."
+  GITLAB_UID=$(id -u ${GITLAB_USER})
+  GITLAB_GID=$(id -g ${GITLAB_USER})
 cat > /etc/supervisor/conf.d/gitlab-pages.conf <<EOF
 [program:gitlab-pages]
 priority=20
