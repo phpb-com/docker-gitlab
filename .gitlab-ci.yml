@@ -17,8 +17,8 @@ stages:
  - mirror
 
 before_script:
-  - export IMAGE_TAG=$(echo -en $CI_BUILD_REF_NAME | tr -c '[:alnum:]_.-' '-')
-  - docker login -u "gitlab-ci-token" -p "$CI_BUILD_TOKEN" $CI_REGISTRY
+  - export IMAGE_TAG=$(echo -en ${CI_COMMIT_REF_NAME} | tr -c '[:alnum:]_.-' '-')
+  - docker login -u "${CI_REGISTRY_USER}" -p "${CI_REGISTRY_PASSWORD}" $CI_REGISTRY
 
 build:
   stage: build
@@ -67,7 +67,7 @@ github_mirror:
   image: docker:git
   script:
     - mkdir -p "${WORK_DIR}/mirror" && cd "${WORK_DIR}/mirror"
-    - git clone -q --mirror "${CI_BUILD_REPO}"
+    - git clone -q --mirror "${CI_REPOSITORY_URL}"
     - cd "${CI_PROJECT_NAME}.git"
     - git push -q --mirror "${GITHUB_REPO_URL}"
   except:
