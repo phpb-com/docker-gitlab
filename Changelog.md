@@ -3,6 +3,15 @@
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list of changes in GitLab.
 
 
+**9.0.0**
+- Gitlab CE v9.0.0
+- Gitlab Workhorse 1.4.1
+- Gitlab Shell 5.0.0
+- Gitlab Pages 0.4.0
+- Gitlab Monitor 1.3.1
+- Golang 1.8
+- Ruby 2.3
+
 **9.0.0-rc6**
 - gitlab: Gitlab CE v9.0.0-rc6
 
