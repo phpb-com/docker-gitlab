@@ -1,14 +1,30 @@
 FROM ubuntu:xenial
 MAINTAINER ian@phpb.com
 
-ENV DOCKER_GITLAB_IMAGE_VERSION=8.17.4
-ENV GITLAB_VERSION=8.17.4 \
+ARG BUILD_DATE
+ARG VCS_REF
+ARG VERSION
+
+LABEL org.label-schema.schema-version="1.0" \
+      org.label-schema.name="Docker Gitlab CE" \
+      org.label-schema.description="Dockerized Gitlab CE built from source" \
+      org.label-schema.usage="https://gotfix.com/docker/gitlab/blob/master/README.md" \
+      org.label-schema.url="https://gotfix.com/docker/gitlab" \
+      org.label-schema.vcs-url="https://gotfix.com/docker/gitlab.git" \
+      org.label-schema.vendor="Ian Matyssik <ian@phpb.com>" \
+      org.label-schema.vcs-ref="${VCS_REF}" \
+      org.label-schema.version="${VERSION}" \
+      org.label-schema.build-date="${BUILD_DATE}" \
+      maintainer="ian@phpb.com"
+
+ENV GITLAB_VERSION=9.0.0 \
     RUBY_VERSION=2.3 \
     GOLANG_VERSION=1.8 \
     GITLAB_SHELL_VERSION=5.0.0 \
     GITLAB_WORKHORSE_VERSION=1.4.1 \
     GITLAB_PAGES_VERSION=0.4.0 \
-    GITLAB_MONITOR_VERSION=1.2.0 \
+    GITLAB_MONITOR_VERSION=1.3.1 \
+    GITLAB_GITALY_VERSION=0.3.0 \
     GITLAB_USER="git" \
     GITLAB_HOME="/home/git" \
     GITLAB_LOG_DIR="/var/log/gitlab" \
@@ -21,14 +37,10 @@ ENV GITLAB_INSTALL_DIR="${GITLAB_HOME}/gitlab" \
     GITLAB_WORKHORSE_INSTALL_DIR="${GITLAB_HOME}/gitlab-workhorse" \
     GITLAB_PAGES_INSTALL_DIR="${GITLAB_HOME}/gitlab-pages" \
     GITLAB_MONITOR_INSTALL_DIR="${GITLAB_HOME}/gitlab-monitor" \
+    GITLAB_GITALY_INSTALL_DIR="${GITLAB_HOME}/gitaly" \
     GITLAB_DATA_DIR="${GITLAB_HOME}/data" \
     GITLAB_BUILD_DIR="${GITLAB_CACHE_DIR}/build" \
     GITLAB_RUNTIME_DIR="${GITLAB_CACHE_DIR}/runtime"
-
-ARG HTTP_PROXY
-ARG HTTPS_PROXY
-ARG http_proxy
-ARG https_proxy
 
 RUN echo 'APT::Install-Recommends 0;' >> /etc/apt/apt.conf.d/01norecommends \
  && echo 'APT::Install-Suggests 0;' >> /etc/apt/apt.conf.d/01norecommends \
@@ -51,6 +63,8 @@ RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv E1DD270288B4E60
  && echo 'deb http://apt.postgresql.org/pub/repos/apt/ xenial-pgdg main' > /etc/apt/sources.list.d/pgdg.list \
  && wget --quiet -O - https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add - \
  && echo 'deb https://deb.nodesource.com/node_7.x xenial main' > /etc/apt/sources.list.d/nodesource.list \
+ && wget --quiet -O - https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
+ && echo 'deb https://dl.yarnpkg.com/debian/ stable main' > /etc/apt/sources.list.d/yarn.list \
  && apt-get update \
  && apt-get -yy upgrade
 
@@ -58,7 +72,6 @@ RUN apt-get install -y \
     curl \
     gettext-base \
     git-core \
-    libmysqlclient20 \
     libpq5 \
     libyaml-0-2 \
     libssl1.0.0 \
@@ -73,7 +86,6 @@ RUN apt-get install -y \
     libicu55 \
     logrotate \
     locales \
-    mysql-client \
     nginx \
     nodejs \
     openssh-server \
@@ -83,6 +95,7 @@ RUN apt-get install -y \
     redis-tools \
     ruby${RUBY_VERSION} \
     supervisor \
+    yarn \
     zlib1g \
  && rm -rf /var/lib/apt/lists/*
 
@@ -93,9 +106,9 @@ RUN update-locale LANG=C.UTF-8 LC_MESSAGES=POSIX \
 RUN gem install bundler --no-ri --no-rdoc
 
 COPY assets/build/ ${GITLAB_BUILD_DIR}/
+COPY assets/runtime/ ${GITLAB_RUNTIME_DIR}/
 RUN bash ${GITLAB_BUILD_DIR}/install.sh
 
-COPY assets/runtime/ ${GITLAB_RUNTIME_DIR}/
 COPY entrypoint.sh /sbin/entrypoint.sh
 RUN chmod 755 /sbin/entrypoint.sh
 

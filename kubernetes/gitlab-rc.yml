@@ -14,10 +14,10 @@ spec:
     spec:
       containers:
       - name: gitlab
-        image: quay.io/gotfix/gitlab:8.17.4
+        image: quay.io/gotfix/gitlab:9.0.0
         env:
         - name: TZ
-          value: Asia/Kolkata
+          value: UTC
         - name: GITLAB_TIMEZONE
           value: Kolkata
 

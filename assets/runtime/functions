@@ -19,6 +19,7 @@ GITLAB_MONITOR_CONFIG="${GITLAB_MONITOR_INSTALL_DIR}/config/gitlab-monitor.yml"
 GITLAB_NGINX_CONFIG="/etc/nginx/sites-enabled/gitlab"
 GITLAB_CI_NGINX_CONFIG="/etc/nginx/sites-enabled/gitlab_ci"
 GITLAB_REGISTRY_NGINX_CONFIG="/etc/nginx/sites-enabled/gitlab-registry"
+GITLAB_PAGES_NGINX_CONFIG="/etc/nginx/sites-enabled/gitlab-pages"
 
 # Compares two version strings `a` and `b`
 # Returns
@@ -26,6 +27,7 @@ GITLAB_REGISTRY_NGINX_CONFIG="/etc/nginx/sites-enabled/gitlab-registry"
 #   - 0, if `a` and `b` are equal
 #   - non-negative integer, if `a` is greater than `b`
 vercmp() {
+  #XXX This does not play well with RC version, should be fixed
   expr '(' "$1" : '\([^.]*\)' ')' '-' '(' "$2" : '\([^.]*\)' ')' '|' \
        '(' "$1.0" : '[^.]*[.]\([^.]*\)' ')' '-' '(' "$2.0" : '[^.]*[.]\([^.]*\)' ')' '|' \
        '(' "$1.0.0" : '[^.]*[.][^.]*[.]\([^.]*\)' ')' '-' '(' "$2.0.0" : '[^.]*[.][^.]*[.]\([^.]*\)' ')' '|' \
@@ -90,25 +92,10 @@ update_template() {
 }
 
 gitlab_finalize_database_parameters() {
-  # is a mysql or postgresql database linked?
-  # requires that the mysql or postgresql containers have exposed
-  # port 3306 and 5432 respectively.
-  if [[ -n ${MYSQL_PORT_3306_TCP_ADDR} ]]; then
-    DB_ADAPTER=${DB_ADAPTER:-mysql2}
-    DB_HOST=${DB_HOST:-${MYSQL_PORT_3306_TCP_ADDR}}
-    DB_PORT=${DB_PORT:-${MYSQL_PORT_3306_TCP_PORT}}
-
-    # support for linked sameersbn/mysql image
-    DB_USER=${DB_USER:-${MYSQL_ENV_DB_USER}}
-    DB_PASS=${DB_PASS:-${MYSQL_ENV_DB_PASS}}
-    DB_NAME=${DB_NAME:-${MYSQL_ENV_DB_NAME}}
-
-    # support for linked orchardup/mysql and enturylink/mysql image
-    # also supports official mysql image
-    DB_USER=${DB_USER:-${MYSQL_ENV_MYSQL_USER}}
-    DB_PASS=${DB_PASS:-${MYSQL_ENV_MYSQL_PASSWORD}}
-    DB_NAME=${DB_NAME:-${MYSQL_ENV_MYSQL_DATABASE}}
-  elif [[ -n ${POSTGRESQL_PORT_5432_TCP_ADDR} ]]; then
+  # is postgresql database linked?
+  # requires that the postgresql containers have exposed
+  # port 5432. 
+  if [[ -n ${POSTGRESQL_PORT_5432_TCP_ADDR} ]]; then
     DB_ADAPTER=${DB_ADAPTER:-postgresql}
     DB_HOST=${DB_HOST:-${POSTGRESQL_PORT_5432_TCP_ADDR}}
     DB_PORT=${DB_PORT:-${POSTGRESQL_PORT_5432_TCP_PORT}}
@@ -139,7 +126,7 @@ gitlab_finalize_database_parameters() {
     echo
     echo "ERROR: "
     echo "  Please configure the database connection."
-    echo "  Refer http://git.io/wkYhyA for more information."
+    echo "  Refer https://gotfix.com/docker/gitlab/blob/master/README.md#database for more information."
     echo "  Cannot continue without a database. Aborting..."
     echo
     return 1
@@ -148,10 +135,6 @@ gitlab_finalize_database_parameters() {
   # set default port number if not specified
   DB_ADAPTER=${DB_ADAPTER:-postgresql}
   case ${DB_ADAPTER} in
-    mysql2)
-      DB_ENCODING=${DB_ENCODING:-utf8}
-      DB_PORT=${DB_PORT:-3306}
-      ;;
     postgresql)
       DB_ENCODING=${DB_ENCODING:-unicode}
       DB_PORT=${DB_PORT:-5432}
@@ -160,7 +143,7 @@ gitlab_finalize_database_parameters() {
       echo
       echo "ERROR: "
       echo "  Please specify the database type in use via the DB_ADAPTER configuration option."
-      echo "  Accepted values are \"postgresql\" or \"mysql2\". Aborting..."
+      echo "  Accepted values is \"postgresql\" only, see README.md for guidance. Aborting..."
       echo
       return 1
       ;;
@@ -173,9 +156,6 @@ gitlab_finalize_database_parameters() {
 
 gitlab_check_database_connection() {
   case ${DB_ADAPTER} in
-    mysql2)
-      prog="mysqladmin -h ${DB_HOST} -P ${DB_PORT} -u ${DB_USER} ${DB_PASS:+-p$DB_PASS} status"
-      ;;
     postgresql)
       prog=$(find /usr/lib/postgresql/ -name pg_isready)
       prog="${prog} -h ${DB_HOST} -p ${DB_PORT} -U ${DB_USER} -d ${DB_NAME} -t 1"
@@ -938,6 +918,20 @@ gitlab_configure_pages() {
     GITLAB_PAGES_PORT \
     GITLAB_PAGES_PROXY_PORT \
     GITLAB_PAGES_HTTPS 
+
+    if [[ -n ${GITLAB_PAGES_EXTERNAL_HTTP} ]]; then
+      update_template ${GITLAB_CONFIG} \
+        GITLAB_PAGES_EXTERNAL_HTTP
+    else
+      exec_as_git sed -ie "/{{GITLAB_PAGES_EXTERNAL_HTTP}}/d" ${GITLAB_CONFIG}
+    fi
+  
+    if [[ -n ${GITLAB_PAGES_EXTERNAL_HTTPS} ]]; then
+      update_template ${GITLAB_CONFIG} \
+        GITLAB_PAGES_EXTERNAL_HTTPS
+    else
+      exec_as_git sed -ie "/{{GITLAB_PAGES_EXTERNAL_HTTPS}}/d" ${GITLAB_CONFIG}
+    fi
 }
 
 nginx_configure_gitlab_ssl() {
@@ -1004,6 +998,7 @@ nginx_configure_gitlab() {
   nginx_configure_gitlab_hsts
   nginx_configure_gitlab_ipv6
   nginx_configure_gitlab_retain_ip_header
+  nginx_configure_pages
 }
 
 nginx_configure_gitlab_ci() {
@@ -1031,6 +1026,30 @@ nginx_configure_gitlab_registry() {
   fi
 }
 
+nginx_configure_pages(){
+  local GITLAB_PAGES_DOMAIN=$(echo $GITLAB_PAGES_DOMAIN | sed 's/\./\\\\./g')
+  if [[ ${GITLAB_PAGES_ENABLED} == true ]]; then
+    if [[ ${GITLAB_PAGES_HTTPS} == true ]]; then
+      echo "Configuring nginx::gitlab-pages..."
+      update_template ${GITLAB_PAGES_NGINX_CONFIG} \
+        GITLAB_PORT \
+        GITLAB_PAGES_DOMAIN \
+        GITLAB_PAGES_PORT \
+        GITLAB_LOG_DIR \
+        GITLAB_PAGES_DOMAIN \
+        SSL_PAGES_CERT_PATH \
+        SSL_PAGES_KEY_PATH \
+        SSL_DHPARAM_PATH \
+        GITLAB_LOG_DIR
+    else
+      echo "Configuring nginx::gitlab-pages..."
+      update_template ${GITLAB_PAGES_NGINX_CONFIG} \
+        GITLAB_PAGES_DOMAIN \
+        GITLAB_LOG_DIR \
+        GITLAB_PAGES_PORT
+    fi
+  fi
+}
 
 #   _|_|_|              _|        _|  _|
 #   _|    _|  _|    _|  _|_|_|    _|        _|_|_|
@@ -1296,6 +1315,17 @@ install_configuration_templates() {
       install_template root: nginx/gitlab ${GITLAB_NGINX_CONFIG}
     fi
 
+    ## ${GITLAB_PAGES_NGINX_CONFIG}
+    if [[ ${GITLAB_PAGES_ENABLED} == true ]]; then
+      if [[ -f ${SSL_PAGES_CERT_PATH} && -f ${SSL_PAGES_KEY_PATH} ]]; then
+        install_template root: nginx/gitlab-pages-ssl ${GITLAB_PAGES_NGINX_CONFIG}
+      else
+        echo "SSL Key, SSL Certificate were not found."
+        echo "Assuming that the container is running behind a HTTPS enabled load balancer."
+        install_template root: nginx/gitlab-pages ${GITLAB_PAGES_NGINX_CONFIG}
+      fi
+    fi
+
     if [[ -n $GITLAB_CI_HOST ]]; then
       install_template root: nginx/gitlab_ci ${GITLAB_CI_NGINX_CONFIG}
     fi
@@ -1356,6 +1386,7 @@ configure_gitlab() {
   gitlab_configure_analytics
   gitlab_configure_backups
   gitlab_configure_registry
+  gitlab_configure_pages
 
   # remove stale gitlab.socket
   rm -rf ${GITLAB_INSTALL_DIR}/tmp/sockets/gitlab.socket
@@ -1375,22 +1406,47 @@ configure_gitlab_shell() {
 }
 
 configure_gitlab_pages() {
+  if [[ ${GITLAB_PAGES_ENABLED} == true ]]; then
   echo "Configuring gitlab-pages..."
-  # configure gitlab-pages supervise settings
-  # GITLAB_UID and GITLAB_GID are used for downgrade of process privileges 
   GITLAB_UID=$(id -u ${GITLAB_USER})
   GITLAB_GID=$(id -g ${GITLAB_USER})
-  update_template /etc/supervisor/conf.d/gitlab-pages.conf \
-    GITLAB_PAGES_DOMAIN \
-    GITLAB_PAGES_DIR \
-    GITLAB_PAGES_PORT \
-    GITLAB_UID \
-    GITLAB_GID \
-    GITLAB_PAGES_ENABLED \
-    GITLAB_PAGES_METRICS_PORT
+cat > /etc/supervisor/conf.d/gitlab-pages.conf <<EOF
+[program:gitlab-pages]
+priority=20
+directory=${GITLAB_INSTALL_DIR}
+environment=HOME=${GITLAB_HOME}
+command=/usr/local/bin/gitlab-pages
+  -pages-domain ${GITLAB_PAGES_DOMAIN}
+  -pages-root ${GITLAB_PAGES_DIR}
+  -listen-proxy :${GITLAB_PAGES_PORT}
+EOF
 
-  # congiure gitlab-pages 
-  gitlab_configure_pages
+if [[ -n ${GITLAB_PAGES_EXTERNAL_HTTP} ]]; then
+cat >> /etc/supervisor/conf.d/gitlab-pages.conf <<EOF
+  -listen-http ${GITLAB_PAGES_EXTERNAL_HTTP}
+EOF
+fi
+
+
+if [[ -n ${GITLAB_PAGES_EXTERNAL_HTTPS} ]]; then
+cat >> /etc/supervisor/conf.d/gitlab-pages.conf <<EOF
+  -listen-https ${GITLAB_PAGES_EXTERNAL_HTTPS}
+  -root-cert ${SSL_PAGES_CERT_PATH}
+  -root-key ${SSL_PAGES_KEY_PATH}
+EOF
+fi
+
+cat >> /etc/supervisor/conf.d/gitlab-pages.conf <<EOF
+  -metrics-address :${GITLAB_PAGES_METRICS_PORT}
+  -daemon-uid ${GITLAB_UID}
+  -daemon-gid ${GITLAB_GID}
+user=root
+autostart=true
+autorestart=true
+stdout_logfile=${GITLAB_INSTALL_DIR}/log/%(program_name)s.log
+stderr_logfile=${GITLAB_INSTALL_DIR}/log/%(program_name)s.log
+EOF
+fi
 }
 
 configure_gitlab_monitor() {
@@ -1429,10 +1485,6 @@ configure_nginx() {
 migrate_database() {
   # run the `gitlab:setup` rake task if required
   case ${DB_ADAPTER} in
-    mysql2)
-      QUERY="SELECT count(*) FROM information_schema.tables WHERE table_schema = '${DB_NAME}';"
-      COUNT=$(mysql -h ${DB_HOST} -P ${DB_PORT} -u ${DB_USER} ${DB_PASS:+-p$DB_PASS} -ss -e "${QUERY}")
-      ;;
     postgresql)
       QUERY="SELECT count(*) FROM information_schema.tables WHERE table_schema = 'public';"
       COUNT=$(PGPASSWORD="${DB_PASS}" psql -h ${DB_HOST} -p ${DB_PORT} -U ${DB_USER} -d ${DB_NAME} -Atw -c "${QUERY}")
@@ -1477,10 +1529,6 @@ migrate_database() {
     echo "Migrating database..."
     exec_as_git bundle exec rake db:migrate >/dev/null
 
-    if [[ ${DB_ADAPTER} == mysql2 ]]; then
-      exec_as_git bundle exec rake add_limits_mysql >/dev/null
-    fi
-
     echo "${GITLAB_VERSION}" > ${GITLAB_TEMP_DIR}/VERSION
     rm -rf ${GITLAB_TEMP_DIR}/GITLAB_RELATIVE_URL_ROOT # force cache cleanup
   fi
@@ -1491,7 +1539,7 @@ migrate_database() {
     # assets need to be recompiled when GITLAB_RELATIVE_URL_ROOT is used
     if [[ -n ${GITLAB_RELATIVE_URL_ROOT} ]]; then
       echo "Recompiling assets (relative_url in use), this could take a while..."
-      exec_as_git bundle exec rake assets:clean assets:precompile >/dev/null 2>&1
+      exec_as_git bundle exec rake assets:clean assets:precompile webpack:compile RAILS_ENV=${RAILS_ENV} NODE_ENV=${RAILS_ENV} >/dev/null 2>&1
     fi
 
     echo "Clearing cache..."

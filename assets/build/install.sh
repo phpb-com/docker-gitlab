@@ -1,17 +1,20 @@
 #!/bin/bash
 set -e
 
+source ${GITLAB_RUNTIME_DIR}/functions
+
 GITLAB_CLONE_URL=https://gitlab.com/gitlab-org/gitlab-ce.git
-GITLAB_SHELL_URL=https://gitlab.com/gitlab-org/gitlab-shell/repository/archive.tar.gz
-GITLAB_WORKHORSE_URL=https://gitlab.com/gitlab-org/gitlab-workhorse/repository/archive.tar.gz
-GITLAB_PAGES_URL=https://gitlab.com/gitlab-org/gitlab-pages/repository/archive.tar.gz
-GITLAB_MONITOR_URL=https://gitlab.com/gitlab-org/gitlab-monitor/repository/archive.tar.gz
+GITLAB_SHELL_CLONE_URL=https://gitlab.com/gitlab-org/gitlab-shell.git
+GITLAB_WORKHORSE_CLONE_URL=https://gitlab.com/gitlab-org/gitlab-workhorse.git
+GITLAB_PAGES_CLONE_URL=https://gitlab.com/gitlab-org/gitlab-pages.git
+GITLAB_GITALY_CLONE_URL=https://gitlab.com/gitlab-org/gitaly.git
+GITLAB_MONITOR_CLONE_URL=https://gitlab.com/gitlab-org/gitlab-monitor.git
 
 GEM_CACHE_DIR="${GITLAB_BUILD_DIR}/cache"
 
 BUILD_DEPENDENCIES="gcc g++ make patch pkg-config cmake paxctl \
   libc6-dev ruby${RUBY_VERSION}-dev libkrb5-dev \
-  libmysqlclient-dev libpq-dev zlib1g-dev libyaml-dev libssl-dev \
+  libpq-dev zlib1g-dev libyaml-dev libssl-dev \
   libgdbm-dev libreadline-dev libncurses5-dev libffi-dev \
   libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev"
 
@@ -40,65 +43,62 @@ passwd -d ${GITLAB_USER}
 
 # set PATH (fixes cron job PATH issues)
 cat >> ${GITLAB_HOME}/.profile <<EOF
-PATH=$HOME/.yarn/bin:/usr/local/sbin:/usr/local/bin:\$PATH
+PATH=/usr/local/sbin:/usr/local/bin:\$PATH
 EOF
 
-# install fresh yarn
-curl --location https://yarnpkg.com/install.sh | exec_as_git bash -
+# download consul template engin XXX add this if we decide to have network based service config, and why not
+### curl -sSL https://releases.hashicorp.com/consul-template/0.18.1/consul-template_0.18.1_linux_amd64.tgz | tar zxf - -C /usr/local/bin/
 
 # configure git for ${GITLAB_USER}
 exec_as_git git config --global core.autocrlf input
 exec_as_git git config --global gc.auto 0
 exec_as_git git config --global repack.writeBitmaps true
 
-# install gitlab-shell
-echo "Downloading gitlab-shell v.${GITLAB_SHELL_VERSION}..."
-mkdir -p ${GITLAB_SHELL_INSTALL_DIR}
-wget -cq ${GITLAB_SHELL_URL}?ref=v${GITLAB_SHELL_VERSION} -O ${GITLAB_BUILD_DIR}/gitlab-shell-${GITLAB_SHELL_VERSION}.tar.gz
-tar xf ${GITLAB_BUILD_DIR}/gitlab-shell-${GITLAB_SHELL_VERSION}.tar.gz --strip 1 -C ${GITLAB_SHELL_INSTALL_DIR}
-rm -rf ${GITLAB_BUILD_DIR}/gitlab-shell-${GITLAB_SHELL_VERSION}.tar.gz
-chown -R ${GITLAB_USER}: ${GITLAB_SHELL_INSTALL_DIR}
+#
+# Download necessary sources
+#
 
-cd ${GITLAB_SHELL_INSTALL_DIR}
-exec_as_git cp -a ${GITLAB_SHELL_INSTALL_DIR}/config.yml.example ${GITLAB_SHELL_INSTALL_DIR}/config.yml
-exec_as_git ./bin/install
-
-# remove unused repositories directory created by gitlab-shell install
-exec_as_git rm -rf ${GITLAB_HOME}/repositories
+# download gitlab-shell
+echo "Cloning gitlab-shell v.${GITLAB_SHELL_VERSION}..."
+exec_as_git git clone -q -b v${GITLAB_SHELL_VERSION} --depth 1 ${GITLAB_SHELL_CLONE_URL} ${GITLAB_SHELL_INSTALL_DIR}
 
 # download gitlab-monitor
-echo "Downloading gitlab-monitor v.${GITLAB_MONITOR_VERSION}..."
-mkdir -p ${GITLAB_MONITOR_INSTALL_DIR}
-wget -cq ${GITLAB_MONITOR_URL}?ref=v${GITLAB_MONITOR_VERSION} -O ${GITLAB_BUILD_DIR}/gitlab-monitor-${GITLAB_MONITOR_VERSION}.tar.gz
-tar xf ${GITLAB_BUILD_DIR}/gitlab-monitor-${GITLAB_MONITOR_VERSION}.tar.gz --strip 1 -C ${GITLAB_MONITOR_INSTALL_DIR}
-rm -rf ${GITLAB_BUILD_DIR}/gitlab-monitor-${GITLAB_MONITOR_VERSION}.tar.gz
-chown -R ${GITLAB_USER}: ${GITLAB_MONITOR_INSTALL_DIR}
+echo "Cloning gitlab-monitor v.${GITLAB_MONITOR_VERSION}..."
+exec_as_git git clone -q -b v${GITLAB_MONITOR_VERSION} --depth 1 ${GITLAB_MONITOR_CLONE_URL} ${GITLAB_MONITOR_INSTALL_DIR}
 
-# install gitlab-monitor
-cd ${GITLAB_MONITOR_INSTALL_DIR}
-exec_as_git bundle install -j$(nproc) --deployment
-
+# download gitaly
+echo "Cloning gitlab-pages v.${GITLAB_GITALY_VERSION}..."
+exec_as_git git clone -q -b v${GITLAB_GITALY_VERSION} --depth 1 ${GITLAB_GITALY_CLONE_URL} ${GITLAB_GITALY_INSTALL_DIR}
 
 # download gitlab-workhose
-echo "Downloading gitlab-workhorse v.${GITLAB_WORKHORSE_VERSION}..."
-mkdir -p ${GITLAB_WORKHORSE_INSTALL_DIR}
-wget -cq ${GITLAB_WORKHORSE_URL}?ref=v${GITLAB_WORKHORSE_VERSION} -O ${GITLAB_BUILD_DIR}/gitlab-workhorse-${GITLAB_WORKHORSE_VERSION}.tar.gz
-tar xf ${GITLAB_BUILD_DIR}/gitlab-workhorse-${GITLAB_WORKHORSE_VERSION}.tar.gz --strip 1 -C ${GITLAB_WORKHORSE_INSTALL_DIR}
-rm -rf ${GITLAB_BUILD_DIR}/gitlab-workhorse-${GITLAB_WORKHORSE_VERSION}.tar.gz
-chown -R ${GITLAB_USER}: ${GITLAB_WORKHORSE_INSTALL_DIR}
+echo "Cloning gitlab-workhorse v.${GITLAB_WORKHORSE_VERSION}..."
+exec_as_git git clone -q -b v${GITLAB_WORKHORSE_VERSION} --depth 1 ${GITLAB_WORKHORSE_CLONE_URL} ${GITLAB_WORKHORSE_INSTALL_DIR}
 
 # download pages
-echo "Downloading gitlab-pages v.${GITLAB_PAGES_VERSION}..."
-mkdir -p ${GITLAB_PAGES_INSTALL_DIR}
-wget -cq ${GITLAB_PAGES_URL}?ref=v${GITLAB_PAGES_VERSION} -O ${GITLAB_BUILD_DIR}/gitlab-pages-${GITLAB_PAGES_VERSION}.tar.gz
-tar xf ${GITLAB_BUILD_DIR}/gitlab-pages-${GITLAB_PAGES_VERSION}.tar.gz --strip 1 -C ${GITLAB_PAGES_INSTALL_DIR}
-rm -rf ${GITLAB_BUILD_DIR}/gitlab-pages-${GITLAB_PAGES_VERSION}.tar.gz
-chown -R ${GITLAB_USER}: ${GITLAB_PAGES_INSTALL_DIR}
+echo "Cloning gitlab-pages v.${GITLAB_PAGES_VERSION}..."
+exec_as_git git clone -q -b v${GITLAB_PAGES_VERSION} --depth 1 ${GITLAB_PAGES_CLONE_URL} ${GITLAB_PAGES_INSTALL_DIR}
 
 # download golang
 echo "Downloading Go ${GOLANG_VERSION}..."
 wget -cnv https://storage.googleapis.com/golang/go${GOLANG_VERSION}.linux-amd64.tar.gz -P ${GITLAB_BUILD_DIR}/
 tar -xf ${GITLAB_BUILD_DIR}/go${GOLANG_VERSION}.linux-amd64.tar.gz -C /tmp/
+
+#
+# Build and Install downloaded sources
+#
+
+# install gitlab-shell
+cd ${GITLAB_SHELL_INSTALL_DIR}
+exec_as_git cp -a ${GITLAB_SHELL_INSTALL_DIR}/config.yml.example ${GITLAB_SHELL_INSTALL_DIR}/config.yml
+exec_as_git ./bin/install
+
+# install gitlab-monitor
+cd ${GITLAB_MONITOR_INSTALL_DIR}
+exec_as_git bundle install -j$(nproc) --deployment
+
+# install gitaly
+cd ${GITLAB_GITALY_INSTALL_DIR}
+PATH=/tmp/go/bin:$PATH GOROOT=/tmp/go make install
 
 # install gitlab-workhorse
 cd ${GITLAB_WORKHORSE_INSTALL_DIR}
@@ -113,8 +113,19 @@ cd "$GODIR"
 PATH=/tmp/go/bin:$PATH GOROOT=/tmp/go make gitlab-pages
 mv gitlab-pages /usr/local/bin/
 
-# remove go
+#
+# Cleanup
+#
+
+# remove unused repositories directory created by gitlab-shell install
+exec_as_git rm -rf ${GITLAB_HOME}/repositories
+
+# remove golang archive and executable
 rm -rf ${GITLAB_BUILD_DIR}/go${GOLANG_VERSION}.linux-amd64.tar.gz /tmp/go
+
+#
+# Download and Install Gitlab CE from source
+#
 
 # shallow clone gitlab-ce
 echo "Cloning gitlab-ce v.${GITLAB_VERSION}..."
@@ -128,47 +139,81 @@ exec_as_git sed -i 's/db:reset/db:setup/' ${GITLAB_INSTALL_DIR}/lib/tasks/gitlab
 
 cd ${GITLAB_INSTALL_DIR}
 
+# check versions in the source, exit 1 if less then required
+CACHE_GITALY_SERVER_VERSION=$(cat GITALY_SERVER_VERSION)
+CACHE_GITLAB_PAGES_VERSION=$(cat GITLAB_PAGES_VERSION)
+CACHE_GITLAB_SHELL_VERSION=$(cat GITLAB_SHELL_VERSION)
+CACHE_GITLAB_WORKHORSE_VERSION=$(cat GITLAB_WORKHORSE_VERSION)
+
+if [[ -n ${CACHE_GITLAB_SHELL_VERSION} && $(vercmp ${GITLAB_SHELL_VERSION} ${CACHE_GITLAB_SHELL_VERSION}) -lt 0 ]]; then
+    echo "Gitlab Shell server version is less than required, installed ${GITLAB_SHELL_VERSION} ; required ${CACHE_GITLAB_SHELL_VERSION}"
+    exit 1
+fi
+
+if [[ -n ${CACHE_GITLAB_WORKHORSE_VERSION} && $(vercmp ${GITLAB_WORKHORSE_VERSION} ${CACHE_GITLAB_WORKHORSE_VERSION}) -lt 0 ]]; then
+    echo "Gitlab Workhorse server version is less than required, installed ${GITLAB_WORKHORSE_VERSION} ; required ${CACHE_GITLAB_WORKHORSE_VERSION}"
+    exit 1
+fi
+
+if [[ -n ${CACHE_GITLAB_PAGES_VERSION} && $(vercmp ${GITLAB_PAGES_VERSION} ${CACHE_GITLAB_PAGES_VERSION}) -lt 0 ]]; then
+    echo "Gitlab Pages server version is less than required, installed ${GITLAB_PAGES_VERSION} ; required ${CACHE_GITLAB_PAGES_VERSION}"
+    exit 1
+fi
+
+if [[ -n ${CACHE_GITALY_SERVER_VERSION} && $(vercmp ${GITLAB_GITALY_VERSION} ${CACHE_GITALY_SERVER_VERSION}) -lt 0 ]]; then
+    echo "Gitaly server version is less than required, installed ${GITLAB_GITALY_VERSION} ; required ${CACHE_GITALY_SERVER_VERSION}"
+    exit 1
+fi
+
 # install gems, use local cache if available
 if [[ -d ${GEM_CACHE_DIR} ]]; then
   mv ${GEM_CACHE_DIR} ${GITLAB_INSTALL_DIR}/vendor/cache
   chown -R ${GITLAB_USER}: ${GITLAB_INSTALL_DIR}/vendor/cache
 fi
-exec_as_git bundle install -j$(nproc) --deployment --without development test aws
+#XXX workaround for transient error see: https://gotfix.com/docker/gitlab/issues/16 (docker/gitlab#16)
+unset http_proxy https_proxy HTTP_PROXY HTTPS_PROXY
+#/XXX workaround for transient error see: https://gotfix.com/docker/gitlab/issues/16
+
+exec_as_git bundle install -j$(nproc) --deployment --without mysql development test aws
 
 # make sure everything in ${GITLAB_HOME} is owned by ${GITLAB_USER} user
 chown -R ${GITLAB_USER}: ${GITLAB_HOME}
 
 # gitlab.yml and database.yml are required for `assets:precompile`
 exec_as_git cp ${GITLAB_INSTALL_DIR}/config/gitlab.yml.example ${GITLAB_INSTALL_DIR}/config/gitlab.yml
-exec_as_git cp ${GITLAB_INSTALL_DIR}/config/database.yml.mysql ${GITLAB_INSTALL_DIR}/config/database.yml
-
-# Installs nodejs packages required to compile webpack
-npm install --production
+exec_as_git cp ${GITLAB_INSTALL_DIR}/config/database.yml.postgresql ${GITLAB_INSTALL_DIR}/config/database.yml
 
 echo "Compiling assets. Please be patient, this could take a while..."
-#Adding webpack compile needed since 8.17
-exec_as_git bundle exec rake assets:clean assets:precompile webpack:compile USE_DB=false SKIP_STORAGE_VALIDATION=true RAILS_ENV=${RAILS_ENV}>/dev/null 2>&1
+# Compile assets
+# Installs nodejs packages required to compile webpack
+exec_as_git yarn install --production --pure-lockfile
 
+echo "Executing rake commands to clean and compile assets"
+# Adding webpack compile needed since 8.17
+exec_as_git bundle exec rake assets:clean assets:precompile webpack:compile USE_DB=false SKIP_STORAGE_VALIDATION=true RAILS_ENV=${RAILS_ENV} NODE_ENV=${RAILS_ENV}>/dev/null 2>&1
 
-# remove auto generated ${GITLAB_DATA_DIR}/config/secrets.yml
+echo "remove auto generated ${GITLAB_DATA_DIR}/config/secrets.yml"
 rm -rf ${GITLAB_DATA_DIR}/config/secrets.yml
 
-exec_as_git mkdir -p ${GITLAB_INSTALL_DIR}/tmp/pids/ ${GITLAB_INSTALL_DIR}/tmp/sockets/
+exec_as_git mkdir -p ${GITLAB_INSTALL_DIR}/tmp/pids/ ${GITLAB_INSTALL_DIR}/tmp/sockets/private/
 chmod -R u+rwX ${GITLAB_INSTALL_DIR}/tmp
 
-# symlink ${GITLAB_HOME}/.ssh -> ${GITLAB_LOG_DIR}/gitlab
+# Make a private socket dir for gitaly
+chmod 0700 ${GITLAB_INSTALL_DIR}/tmp/sockets/private
+
+echo "symlink ${GITLAB_HOME}/.ssh -> ${GITLAB_LOG_DIR}/gitlab"
 rm -rf ${GITLAB_HOME}/.ssh
 exec_as_git ln -sf ${GITLAB_DATA_DIR}/.ssh ${GITLAB_HOME}/.ssh
 
-# symlink ${GITLAB_INSTALL_DIR}/log -> ${GITLAB_LOG_DIR}/gitlab
+echo "symlink ${GITLAB_INSTALL_DIR}/log -> ${GITLAB_LOG_DIR}/gitlab"
 rm -rf ${GITLAB_INSTALL_DIR}/log
 ln -sf ${GITLAB_LOG_DIR}/gitlab ${GITLAB_INSTALL_DIR}/log
 
-# symlink ${GITLAB_INSTALL_DIR}/public/uploads -> ${GITLAB_DATA_DIR}/uploads
+echo "symlink ${GITLAB_INSTALL_DIR}/public/uploads -> ${GITLAB_DATA_DIR}/uploads"
 rm -rf ${GITLAB_INSTALL_DIR}/public/uploads
 exec_as_git ln -sf ${GITLAB_DATA_DIR}/uploads ${GITLAB_INSTALL_DIR}/public/uploads
 
-# symlink ${GITLAB_INSTALL_DIR}/.secret -> ${GITLAB_DATA_DIR}/.secret
+echo "symlink ${GITLAB_INSTALL_DIR}/.secret -> ${GITLAB_DATA_DIR}/.secret"
 rm -rf ${GITLAB_INSTALL_DIR}/.secret
 exec_as_git ln -sf ${GITLAB_DATA_DIR}/.secret ${GITLAB_INSTALL_DIR}/.secret
 
@@ -176,13 +221,14 @@ exec_as_git ln -sf ${GITLAB_DATA_DIR}/.secret ${GITLAB_INSTALL_DIR}/.secret
 rm -rf ${GITLAB_INSTALL_DIR}/builds
 rm -rf ${GITLAB_INSTALL_DIR}/shared
 
-# install gitlab bootscript, to silence gitlab:check warnings
+echo "install gitlab bootscript, to silence gitlab:check warnings"
 cp ${GITLAB_INSTALL_DIR}/lib/support/init.d/gitlab /etc/init.d/gitlab
 chmod +x /etc/init.d/gitlab
 
 # disable default nginx configuration and enable gitlab's nginx configuration
 rm -rf /etc/nginx/sites-enabled/default
 
+echo "Configuring SSHD"
 # configure sshd
 sed -i \
   -e "s|^[#]*UsePAM yes|UsePAM no|" \
@@ -192,15 +238,16 @@ sed -i \
   /etc/ssh/sshd_config
 echo "UseDNS no" >> /etc/ssh/sshd_config
 
-# move supervisord.log file to ${GITLAB_LOG_DIR}/supervisor/
+echo "move supervisord.log file to ${GITLAB_LOG_DIR}/supervisor/"
 sed -i "s|^[#]*logfile=.*|logfile=${GITLAB_LOG_DIR}/supervisor/supervisord.log ;|" /etc/supervisor/supervisord.conf
 
-# move nginx logs to ${GITLAB_LOG_DIR}/nginx
+echo "move nginx logs to ${GITLAB_LOG_DIR}/nginx"
 sed -i \
   -e "s|access_log /var/log/nginx/access.log;|access_log ${GITLAB_LOG_DIR}/nginx/access.log;|" \
   -e "s|error_log /var/log/nginx/error.log;|error_log ${GITLAB_LOG_DIR}/nginx/error.log;|" \
   /etc/nginx/nginx.conf
 
+echo "Configuring log rotations"
 # configure supervisord log rotation
 cat > /etc/logrotate.d/supervisord <<EOF
 ${GITLAB_LOG_DIR}/supervisor/*.log {
@@ -253,6 +300,7 @@ ${GITLAB_LOG_DIR}/nginx/*.log {
 }
 EOF
 
+echo "Configuring supervisord scripts"
 # configure supervisord to start unicorn
 cat > /etc/supervisor/conf.d/unicorn.conf <<EOF
 [program:unicorn]
@@ -303,26 +351,6 @@ command=/usr/local/bin/gitlab-workhorse
   -proxyHeadersTimeout {{GITLAB_WORKHORSE_TIMEOUT}}
 user=git
 autostart=true
-autorestart=true
-stdout_logfile=${GITLAB_INSTALL_DIR}/log/%(program_name)s.log
-stderr_logfile=${GITLAB_INSTALL_DIR}/log/%(program_name)s.log
-EOF
-
-# configure supervisord to start gitlab-pages
-cat > /etc/supervisor/conf.d/gitlab-pages.conf <<EOF
-[program:gitlab-pages]
-priority=20
-directory=${GITLAB_INSTALL_DIR}
-environment=HOME=${GITLAB_HOME}
-command=/usr/local/bin/gitlab-pages
-  -pages-domain {{GITLAB_PAGES_DOMAIN}}
-  -pages-root {{GITLAB_PAGES_DIR}}
-  -listen-proxy :{{GITLAB_PAGES_PORT}}
-  -metrics-address :{{GITLAB_PAGES_METRICS_PORT}}
-  -daemon-uid {{GITLAB_UID}}
-  -daemon-gid {{GITLAB_GID}}
-user=root
-autostart={{GITLAB_PAGES_ENABLED}}
 autorestart=true
 stdout_logfile=${GITLAB_INSTALL_DIR}/log/%(program_name)s.log
 stderr_logfile=${GITLAB_INSTALL_DIR}/log/%(program_name)s.log
@@ -395,6 +423,7 @@ stdout_logfile=${GITLAB_LOG_DIR}/supervisor/%(program_name)s.log
 stderr_logfile=${GITLAB_LOG_DIR}/supervisor/%(program_name)s.log
 EOF
 
+echo "Cleaning-up ..."
 # purge build dependencies and cleanup apt
-DEBIAN_FRONTEND=noninteractive apt-get purge -y --auto-remove ${BUILD_DEPENDENCIES}
+apt-get purge -y --auto-remove ${BUILD_DEPENDENCIES}
 rm -rf /var/lib/apt/lists/*

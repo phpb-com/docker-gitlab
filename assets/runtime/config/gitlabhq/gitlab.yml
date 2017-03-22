@@ -53,7 +53,7 @@ production: &base
       - {{GITLAB_TRUSTED_PROXIES}}
 
     # Uncomment and customize if you can't use the default user to run GitLab (default: 'git')
-    # user: git
+    user: git
 
     ## Date & Time settings
     # Uncomment and customize if you want to change the default time zone of GitLab application.
@@ -166,8 +166,8 @@ production: &base
     host: {{GITLAB_PAGES_DOMAIN}}
     port: {{GITLAB_PAGES_PROXY_PORT}} # Set to 443 if you serve the pages with HTTPS
     https: {{GITLAB_PAGES_HTTPS}} # Set to true if you serve the pages with HTTPS
-    # external_http: "1.1.1.1:80" # If defined, enables custom domain support in GitLab Pages
-    # external_https: "1.1.1.1:443" # If defined, enables custom domain and certificate support in GitLab Pages
+    external_http: {{GITLAB_PAGES_EXTERNAL_HTTP}} # If defined, enables custom domain support in GitLab Pages
+    external_https: {{GITLAB_PAGES_EXTERNAL_HTTPS}} # If defined, enables custom domain and certificate support in GitLab Pages
 
 
   ## Mattermost
@@ -458,6 +458,16 @@ production: &base
   shared:
     path: {{GITLAB_SHARED_DIR}}
 
+  # Gitaly settings
+  gitaly:
+    # The socket_path setting is optional and obsolete. When this is set
+    # GitLab assumes it can reach a Gitaly services via a Unix socket at
+    # this path. When this is commented out GitLab will not use Gitaly.
+    # 
+    # This setting is obsolete because we expect it to be moved under
+    # repositories/storages in GitLab 9.1.
+    #
+    # socket_path: tmp/sockets/gitaly.socket
 
   #
   # 4. Advanced settings
@@ -478,7 +488,8 @@ production: &base
     # gitlab-shell invokes Dir.pwd inside the repository path and that results
     # real path not the symlink.
     storages: # You must have at least a `default` storage path.
-      default: {{GITLAB_REPOS_DIR}}/
+      default: 
+        path: {{GITLAB_REPOS_DIR}}/
 
   ## Backup settings
   backup:
@@ -540,6 +551,16 @@ production: &base
     max_size: {{GITLAB_MAX_OBJECT_SIZE}} # 20.megabytes
     # Git timeout to read a commit, in seconds
     timeout: {{GITLAB_TIMEOUT}}
+
+  ## Webpack settings
+  # If enabled, this will tell rails to serve frontend assets from the webpack-dev-server running
+  # on a given port instead of serving directly from /assets/webpack. This is only indended for use
+  # in development.
+  webpack:
+    # dev_server:
+    #   enabled: true
+    #   host: localhost
+    #   port: 3808
 
   #
   # 5. Extra customization

@@ -3,9 +3,11 @@
 [![](https://images.microbadger.com/badges/image/gotfix/gitlab.svg)](https://microbadger.com/images/gotfix/gitlab "Get your own image badge on microbadger.com")
 [![](https://images.microbadger.com/badges/version/gotfix/gitlab.svg)](https://microbadger.com/images/gotfix/gitlab "Get your own version badge on microbadger.com")
 
-# quay.io/gotfix/gitlab:8.17.4
+# quay.io/gotfix/gitlab:9.0.0
 
-**NOTE:** This project was forked from [sameersbn/docker-gitlab](https://github.com/sameersbn/docker-gitlab) to maintain slightly more modern and less conservative (i.e., things will  break) version of GitLab docker image. This is hopefuly a shortlived fork, and the upstream will get there someday.
+> Alternatively image is available from docker hub `gotfix/gitlab:9.0.0`
+
+**NOTE:** This project was forked from [sameersbn/docker-gitlab](https://github.com/sameersbn/docker-gitlab) to maintain slightly more modern and less conservative (i.e., things will  break) version of GitLab docker image.
 
 ## Canonical source
 
@@ -17,7 +19,7 @@ The canonical source of the repository is [hosted on gotfix.com](https://gotfix.
 
 ### Why did you fork instead of contributing to the original project?
 
-Long story short, since the original project tends to be conservative and their goal is stability, it is not what I would like to run fr myself. I prefer to follow Gitlab development cycle closer (when time allows) and play with new features. If you rely on Gitlab for your business and require stability, backwards compatibility, and do not want to update often, I would suggest using the original project. You are welcome to use this fork if you do not mind doing testing yourself.
+Long story short, since the original project tends to be conservative and their goal is stability, it is not what I would like to run for myself. I preffer to follow Gitlab development cycle closer (when time allows) and play with new features. If you rely on Gitlab for your business and require stability, backwards compatibility, and do not want to update often, I would suggest using the original project. You are welcome to use this fork if you do not mind doing testing yoursef.
 
 ### Why MySQL support is not available, it is in the original project?
 
@@ -45,7 +47,6 @@ Since I do not have unlimited time on my hands, it is very difficult to add/supp
 # Table of Content
 
 - [Introduction](#introduction)
-    - [Changelog](Changelog.md)
 - [Contributing](#contributing)
 - [Team](#team)
 - [Issues](#issues)
@@ -53,57 +54,58 @@ Since I do not have unlimited time on my hands, it is very difficult to add/supp
 - [Installation](#installation)
 - [Quick Start](#quick-start)
 - [Configuration](#configuration)
-    - [Data Store](#data-store)
-    - [Database](#database)
-        - [PostgreSQL (Recommended)](#postgresql)
-            - [External PostgreSQL Server](#external-postgresql-server)
-            - [Linking to PostgreSQL Container](#linking-to-postgresql-container)
-        - [MySQL](#mysql)
-    - [Redis](#redis)
-        - [Internal Redis Server](#internal-redis-server)
-        - [External Redis Server](#external-redis-server)
-        - [Linking to Redis Container](#linking-to-redis-container)
-    - [Mail](#mail)
-        - [Reply by email](#reply-by-email)
-    - [SSL](#ssl)
-        - [Generation of a Self Signed Certificate](#generation-of-a-self-signed-certificate)
-        - [Strengthening the server security](#strengthening-the-server-security)
-        - [Installation of the SSL Certificates](#installation-of-the-ssl-certificates)
-        - [Enabling HTTPS support](#enabling-https-support)
-        - [Configuring HSTS](#configuring-hsts)
-        - [Using HTTPS with a load balancer](#using-https-with-a-load-balancer)
-        - [Establishing trust with your server](#establishing-trust-with-your-server)
-        - [Installing Trusted SSL Server Certificates](#installing-trusted-ssl-server-certificates)
-    - [Deploy to a subdirectory (relative url root)](#deploy-to-a-subdirectory-relative-url-root)
-    - [OmniAuth Integration](#omniauth-integration)
-        - [CAS3](#cas3)
-        - [Authentiq](#authentiq)
-        - [Google](#google)
-        - [Twitter](#twitter)
-        - [GitHub](#github)
-        - [GitLab](#gitlab)
-        - [BitBucket](#bitbucket)
-        - [SAML](#saml)
-        - [Crowd](#crowd)
-        - [Microsoft Azure](#microsoft-azure)
-    - [External Issue Trackers](#external-issue-trackers)
-    - [Host UID / GID Mapping](#host-uid--gid-mapping)
-    - [Reuse docker host SSH daemon](docs/docker_host_ssh.md)
-    - [Piwik](#piwik)
-    - [Grafana Metrics](#grafana)
-    - [Available Configuration Parameters](#available-configuration-parameters)
+  * [Data Store](#data-store)
+  * [Database](#database)
+    + [PostgreSQL](#postgresql)
+      - [External PostgreSQL Server](#external-postgresql-server)
+      - [Linking to PostgreSQL Container](#linking-to-postgresql-container)
+    + [MySQL](#mysql)
+  * [Redis](#redis)
+    + [Internal Redis Server](#internal-redis-server)
+    + [External Redis Server](#external-redis-server)
+    + [Linking to Redis Container](#linking-to-redis-container)
+    + [Mail](#mail)
+      - [Reply by email](#reply-by-email)
+    + [SSL](#ssl)
+      - [Generation of a Self Signed Certificate](#generation-of-a-self-signed-certificate)
+      - [Strengthening the server security](#strengthening-the-server-security)
+      - [Installation of the SSL Certificates](#installation-of-the-ssl-certificates)
+      - [Enabling HTTPS support](#enabling-https-support)
+      - [Configuring HSTS](#configuring-hsts)
+      - [Using HTTPS with a load balancer](#using-https-with-a-load-balancer)
+      - [Establishing trust with your server](#establishing-trust-with-your-server)
+      - [Installing Trusted SSL Server Certificates](#installing-trusted-ssl-server-certificates)
+    + [Deploy to a subdirectory (relative url root)](#deploy-to-a-subdirectory-relative-url-root)
+    + [OmniAuth Integration](#omniauth-integration)
+      - [CAS3](#cas3)
+      - [Authentiq](#authentiq)
+      - [Google](#google)
+      - [Facebook](#facebook)
+      - [Twitter](#twitter)
+      - [GitHub](#github)
+      - [GitLab](#gitlab)
+      - [BitBucket](#bitbucket)
+      - [SAML](#saml)
+      - [Crowd](#crowd)
+      - [Auth0](#auth0)
+      - [Microsoft Azure](#microsoft-azure)
+    + [Host UID / GID Mapping](#host-uid--gid-mapping)
+    + [Piwik](#piwik)
+    + [Grafana](#grafana)
+    + [Available Configuration Parameters](#available-configuration-parameters)
+      - [GitLab Pages](#gitlab-pages)
+      - [GitLab specific](#gitlab-specific)
 - [Maintenance](#maintenance)
-    - [Creating Backups](#creating-backups)
-    - [Restoring Backups](#restoring-backups)
-    - [Automated Backups](#automated-backups)
-    - [Amazon Web Services (AWS) Remote Backups](#amazon-web-services-aws-remote-backups)
-    - [Google Cloud Storage (GCS) Remote Backups](#google-cloud-storage-gcs-remote-backup)
-    - [Rake Tasks](#rake-tasks)
-    - [Import Repositories](#import-repositories)
-    - [Upgrading](#upgrading)
-    - [Shell Access](#shell-access)
-- [Features](#features)
- - [Container Registry](docs/container_registry.md)
+  * [Creating backups](#creating-backups)
+  * [Restoring Backups](#restoring-backups)
+  * [Host Key Backups (ssh)](#host-key-backups-ssh)
+  * [Automated Backups](#automated-backups)
+    + [Amazon Web Services (AWS) Remote Backups](#amazon-web-services-aws-remote-backups)
+    + [Google Cloud Storage (GCS) Remote Backups](#google-cloud-storage-gcs-remote-backups)
+  * [Rake Tasks](#rake-tasks)
+  * [Import Repositories](#import-repositories)
+  * [Upgrading](#upgrading)
+  * [Shell Access](#shell-access)
 - [References](#references)
 
 # Introduction
@@ -161,7 +163,7 @@ Your docker host needs to have 1GB or more of available RAM to run GitLab. Pleas
 Automated builds of the image are available on [Quay](https://quay.io/repository/gotfix/gitlab) and [Dockerhub](https://hub.docker.com/r/gotfix/gitlab) and is the recommended method of installation.
 
 ```bash
-docker pull quay.io/gotfix/gitlab:8.17.4
+docker pull quay.io/gotfix/gitlab:9.0.0
 ```
 
 You can also pull the `latest` tag which is built from the repository *HEAD*
@@ -230,7 +232,7 @@ docker run --name gitlab -d \
     --env 'GITLAB_SECRETS_SECRET_KEY_BASE=long-and-random-alpha-numeric-string' \
     --env 'GITLAB_SECRETS_OTP_KEY_BASE=long-and-random-alpha-numeric-string' \
     --volume /srv/docker/gitlab/gitlab:/home/git/data \
-    quay.io/gotfix/gitlab:8.17.4
+    quay.io/gotfix/gitlab:9.0.0
 ```
 
 *Please refer to [Available Configuration Parameters](#available-configuration-parameters) to understand `GITLAB_PORT` and other configuration options*
@@ -265,14 +267,14 @@ Volumes can be mounted in docker by specifying the `-v` option in the docker run
 ```bash
 docker run --name gitlab -d \
     --volume /srv/docker/gitlab/gitlab:/home/git/data \
-    quay.io/gotfix/gitlab:8.17.4
+    quay.io/gotfix/gitlab:9.0.0
 ```
 
 ## Database
 
-GitLab uses a database backend to store its data. You can configure this image to use either MySQL or PostgreSQL.
+GitLab uses a database backend to store its data. You can configure this image to use PostgreSQL only.
 
-*Note: GitLab HQ recommends using PostgreSQL over MySQL*
+*Note: GitLab HQ recommends using PostgreSQL*
 
 ### PostgreSQL
 
@@ -298,7 +300,7 @@ docker run --name gitlab -d \
     --env 'DB_NAME=gitlabhq_production' \
     --env 'DB_USER=gitlab' --env 'DB_PASS=password' \
     --volume /srv/docker/gitlab/gitlab:/home/git/data \
-    quay.io/gotfix/gitlab:8.17.4
+    quay.io/gotfix/gitlab:9.0.0
 ```
 
 #### Linking to PostgreSQL Container
@@ -342,7 +344,7 @@ We are now ready to start the GitLab application.
 ```bash
 docker run --name gitlab -d --link gitlab-postgresql:postgresql \
     --volume /srv/docker/gitlab/gitlab:/home/git/data \
-    quay.io/gotfix/gitlab:8.17.4
+    quay.io/gotfix/gitlab:9.0.0
 ```
 
 Here the image will also automatically fetch the `DB_NAME`, `DB_USER` and `DB_PASS` variables from the postgresql container as they are specified in the `docker run` command for the postgresql container. This is made possible using the magic of docker links and works with the following images:
@@ -354,7 +356,7 @@ Here the image will also automatically fetch the `DB_NAME`, `DB_USER` and `DB_PA
 
 ### MySQL
 
-*Please use [original project](https://github.com/sameersbn/docker-gitlab) for mysql support*
+*Please use [sameersbn/docker-gitlab](https://github.com/sameersbn/docker-gitlab) for mysql support*
 
 ## Redis
 
@@ -373,7 +375,7 @@ The image can be configured to use an external redis server. The configuration s
 ```bash
 docker run --name gitlab -it --rm \
     --env 'REDIS_HOST=192.168.1.100' --env 'REDIS_PORT=6379' \
-    quay.io/gotfix/gitlab:8.17.4
+    quay.io/gotfix/gitlab:9.0.0
 ```
 
 ### Linking to Redis Container
@@ -400,7 +402,7 @@ We are now ready to start the GitLab application.
 
 ```bash
 docker run --name gitlab -d --link gitlab-redis:redisio \
-    quay.io/gotfix/gitlab:8.17.4
+    quay.io/gotfix/gitlab:9.0.0
 ```
 
 ### Mail
@@ -413,7 +415,7 @@ If you are using Gmail then all you need to do is:
 docker run --name gitlab -d \
     --env 'SMTP_USER=USER@gmail.com' --env 'SMTP_PASS=PASSWORD' \
     --volume /srv/docker/gitlab/gitlab:/home/git/data \
-    quay.io/gotfix/gitlab:8.17.4
+    quay.io/gotfix/gitlab:9.0.0
 ```
 
 Please refer the [Available Configuration Parameters](#available-configuration-parameters) section for the list of SMTP parameters that can be specified.
@@ -433,7 +435,7 @@ docker run --name gitlab -d \
     --env 'IMAP_USER=USER@gmail.com' --env 'IMAP_PASS=PASSWORD' \
     --env 'GITLAB_INCOMING_EMAIL_ADDRESS=USER+%{key}@gmail.com' \
     --volume /srv/docker/gitlab/gitlab:/home/git/data \
-    quay.io/gotfix/gitlab:8.17.4
+    quay.io/gotfix/gitlab:9.0.0
 ```
 
 Please refer the [Available Configuration Parameters](#available-configuration-parameters) section for the list of IMAP parameters that can be specified.
@@ -510,7 +512,7 @@ docker run --name gitlab -d \
     --env 'GITLAB_SSH_PORT=10022' --env 'GITLAB_PORT=10443' \
     --env 'GITLAB_HTTPS=true' --env 'SSL_SELF_SIGNED=true' \
     --volume /srv/docker/gitlab/gitlab:/home/git/data \
-    quay.io/gotfix/gitlab:8.17.4
+    quay.io/gotfix/gitlab:9.0.0
 ```
 
 In this configuration, any requests made over the plain http protocol will automatically be redirected to use the https protocol. However, this is not optimal when using a load balancer.
@@ -526,7 +528,7 @@ docker run --name gitlab -d \
  --env 'GITLAB_HTTPS=true' --env 'SSL_SELF_SIGNED=true' \
  --env 'NGINX_HSTS_MAXAGE=2592000' \
  --volume /srv/docker/gitlab/gitlab:/home/git/data \
- quay.io/gotfix/gitlab:8.17.4
+ quay.io/gotfix/gitlab:9.0.0
 ```
 
 If you want to completely disable HSTS set `NGINX_HSTS_ENABLED` to `false`.
@@ -549,7 +551,7 @@ docker run --name gitlab -d \
     --env 'GITLAB_SSH_PORT=10022' --env 'GITLAB_PORT=443' \
     --env 'GITLAB_HTTPS=true' --env 'SSL_SELF_SIGNED=true' \
     --volume /srv/docker/gitlab/gitlab:/home/git/data \
-    quay.io/gotfix/gitlab:8.17.4
+    quay.io/gotfix/gitlab:9.0.0
 ```
 
 Again, drop the `--env 'SSL_SELF_SIGNED=true'` option if you are using CA certified SSL certificates.
@@ -597,7 +599,7 @@ Let's assume we want to deploy our application to '/git'. GitLab needs to know t
 docker run --name gitlab -it --rm \
     --env 'GITLAB_RELATIVE_URL_ROOT=/git' \
     --volume /srv/docker/gitlab/gitlab:/home/git/data \
-    quay.io/gotfix/gitlab:8.17.4
+    quay.io/gotfix/gitlab:9.0.0
 ```
 
 GitLab will now be accessible at the `/git` path, e.g. `http://www.example.com/git`.
@@ -717,14 +719,14 @@ Also the container processes seem to be executed as the host's user/group `1000`
 ```bash
 docker run --name gitlab -it --rm [options] \
     --env "USERMAP_UID=$(id -u git)" --env "USERMAP_GID=$(id -g git)" \
-    quay.io/gotfix/gitlab:8.17.4
+    quay.io/gotfix/gitlab:9.0.0
 ```
 
 When changing this mapping, all files and directories in the mounted data volume `/home/git/data` have to be re-owned by the new ids. This can be achieved automatically using the following command:
 
 ```bash
 docker run --name gitlab -d [OPTIONS] \
-    quay.io/gotfix/gitlab:8.17.4 app:sanitize
+    quay.io/gotfix/gitlab:9.0.0 app:sanitize
 ```
 
 ### Piwik
@@ -764,12 +766,16 @@ Below is the complete list of available configuration options segregated by cate
 
 | Parameter | Description |
 |-----------|-------------|
-| `GITLAB_PAGES_ENABLED`      | Enable GitLab Pages. Default to `false` |
-| `GITLAB_PAGES_DOMAIN`       | GitLab Pages domain. Default tp `example.com` |
-| `GITLAB_PAGES_PORT`         | Port that is used by gitlab-pages daemon to listen for requests. Default to `8090` |
-| `GITLAB_PAGES_PROXY_PORT`   | Port that is used by upstream proxy to listen for requests. Default to `GITLAB_PAGES_PORT` |
-| `GITLAB_PAGES_HTTPS`        | Run gitlab-pages in HTTPS mode. Default to `false` |
-| `GITLAB_PAGES_METRICS_PORT` | This will expose general metrics about the Go runtime and pages application for Prometheus to scrape. Default to `9235` |
+| `GITLAB_PAGES_ENABLED`        | Enable GitLab Pages. Default to `false` |
+| `GITLAB_PAGES_DOMAIN`         | GitLab Pages domain. Default tp `example.com` |
+| `GITLAB_PAGES_PORT`           | Port that is used by gitlab-pages daemon to listen for requests. Default to `8090` |
+| `GITLAB_PAGES_PROXY_PORT`     | Port that is used by upstream proxy to listen for requests. Default to `GITLAB_PAGES_PORT` |
+| `GITLAB_PAGES_HTTPS`          | Run gitlab-pages in HTTPS mode. Default to `false` |
+| `GITLAB_PAGES_METRICS_PORT`   | This will expose general metrics about the Go runtime and pages application for Prometheus to scrape. Default to `9235` |
+| `SSL_PAGES_KEY_PATH`          | Path to the gitlab-pages SSL key. Default to `$GITLAB_DATA_DIR/certs/pages.key` |
+| `SSL_PAGES_CERT_PATH`         | Path to the gitlab-pages SSL certificate. Default to `$GITLAB_DATA_DIR/certs/pages.crt` |
+| `GITLAB_PAGES_EXTERNAL_HTTP`  | External IP for gitlab-pages that will accept HTTP requests. Used to enable custom domain setup by the user. |
+| `GITLAB_PAGES_EXTERNAL_HTTPS` | External IP for gitlab-pages that will accept HTTPS requests. Used to enable custom domain setup by the user. |
 
 #### GitLab specific
 
@@ -865,10 +871,10 @@ Below is the complete list of available configuration options segregated by cate
 | `SIDEKIQ_CONCURRENCY` | The number of concurrent sidekiq jobs to run. Defaults to `25` |
 | `SIDEKIQ_SHUTDOWN_TIMEOUT` | Timeout for sidekiq shutdown. Defaults to `4` |
 | `SIDEKIQ_MEMORY_KILLER_MAX_RSS` | Non-zero value enables the SidekiqMemoryKiller. Defaults to `1000000`. For additional options refer [Configuring the MemoryKiller](http://doc.gitlab.com/ce/operations/sidekiq_memory_killer.html) |
-| `DB_ADAPTER` | The database type. Possible values: `mysql2`, `postgresql`. Defaults to `postgresql`. |
-| `DB_ENCODING` | The database encoding. For `DB_ADAPTER` values `postresql` and `mysql2`, this parameter defaults to `unicode` and `utf8` respectively. |
+| `DB_ADAPTER` | The database type. Possible values: `postgresql`. Defaults to `postgresql`. |
+| `DB_ENCODING` | The database encoding. For `DB_ADAPTER` values `postresql`, this parameter defaults to `unicode` and `utf8` respectively. |
 | `DB_HOST` | The database server hostname. Defaults to `localhost`. |
-| `DB_PORT` | The database server port. Defaults to `3306` for mysql and `5432` for postgresql. |
+| `DB_PORT` | The database server port. Defaults to `5432` for postgresql. |
 | `DB_NAME` | The database database name. Defaults to `gitlabhq_production` |
 | `DB_USER` | The database database user. Defaults to `root` |
 | `DB_PASS` | The database database password. Defaults to no password |
@@ -1003,7 +1009,7 @@ Execute the rake task to create a backup.
 
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    quay.io/gotfix/gitlab:8.17.4 app:rake gitlab:backup:create
+    quay.io/gotfix/gitlab:9.0.0 app:rake gitlab:backup:create
 ```
 
 A backup will be created in the backups folder of the [Data Store](#data-store). You can change the location of the backups using the `GITLAB_BACKUP_DIR` configuration parameter.
@@ -1038,7 +1044,7 @@ Execute the rake task to restore a backup. Make sure you run the container in in
 
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    quay.io/gotfix/gitlab:8.17.4 app:rake gitlab:backup:restore
+    quay.io/gotfix/gitlab:9.0.0 app:rake gitlab:backup:restore
 ```
 
 The list of all available backups will be displayed in reverse chronological order. Select the backup you want to restore and continue.
@@ -1047,7 +1053,7 @@ To avoid user interaction in the restore operation, specify the timestamp of the
 
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    quay.io/gotfix/gitlab:8.17.4 app:rake gitlab:backup:restore BACKUP=1417624827
+    quay.io/gotfix/gitlab:9.0.0 app:rake gitlab:backup:restore BACKUP=1417624827
 ```
 
 When using `docker-compose` you may use the following command to execute the restore.
@@ -1096,7 +1102,7 @@ The `app:rake` command allows you to run gitlab rake tasks. To run a rake task s
 
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    quay.io/gotfix/gitlab:8.17.4 app:rake gitlab:env:info
+    quay.io/gotfix/gitlab:9.0.0 app:rake gitlab:env:info
 ```
 
 You can also use `docker exec` to run raketasks on running gitlab instance. For example,
@@ -1109,7 +1115,7 @@ Similarly, to import bare repositories into GitLab project instance
 
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    quay.io/gotfix/gitlab:8.17.4 app:rake gitlab:import:repos
+    quay.io/gotfix/gitlab:9.0.0 app:rake gitlab:import:repos
 ```
 
 Or
@@ -1140,7 +1146,7 @@ Copy all the **bare** git repositories to the `repositories/` directory of the [
 
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    quay.io/gotfix/gitlab:8.17.4 app:rake gitlab:import:repos
+    quay.io/gotfix/gitlab:9.0.0 app:rake gitlab:import:repos
 ```
 
 Watch the logs and your repositories should be available into your new gitlab container.
@@ -1161,7 +1167,7 @@ To upgrade to newer gitlab releases, simply follow this 4 step upgrade procedure
 - **Step 1**: Update the docker image.
 
 ```bash
-docker pull quay.io/gotfix/gitlab:8.17.4
+docker pull quay.io/gotfix/gitlab:9.0.0
 ```
 
 - **Step 2**: Stop and remove the currently running image
@@ -1180,6 +1186,8 @@ docker run --name gitlab -it --rm [OPTIONS] \
 
 Replace `x.x.x` with the version you are upgrading from. For example, if you are upgrading from version `6.0.0`, set `x.x.x` to `6.0.0`
 
+> Also please read through [official backup guide](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/raketasks/backup_restore.md) to have better understanding of the backup and restore steps.
+
 - **Step 4**: Start the image
 
 > **Note**: Since GitLab `8.0.0` you need to provide the `GITLAB_SECRETS_DB_KEY_BASE` parameter while starting the image.
@@ -1187,7 +1195,7 @@ Replace `x.x.x` with the version you are upgrading from. For example, if you are
 > **Note**: Since GitLab `8.11.0` you need to provide the `GITLAB_SECRETS_SECRET_KEY_BASE` and `GITLAB_SECRETS_OTP_KEY_BASE` parameters while starting the image. These should initially both have the same value as the contents of the `/home/git/data/.secret` file. See [Available Configuration Parameters](#available-configuration-parameters) for more information on these parameters.
 
 ```bash
-docker run --name gitlab -d [OPTIONS] quay.io/gotfix/gitlab:8.17.4
+docker run --name gitlab -d [OPTIONS] quay.io/gotfix/gitlab:9.0.0
 ```
 
 ## Shell Access

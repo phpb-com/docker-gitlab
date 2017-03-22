@@ -2,6 +2,13 @@
 
 Those are the steps that should be taken to upgrade GitLab, GitLab Shell, GitLab Monitor, GitLab Pages, GitLab Workhorse, etc... to the next version.
 
+# General Tips and Tricks
+
+## README.md
+
+- (Re)Generate TOC: https://github.com/jonschlinkert/markdown-toc
+- Update Version number: `sed -i -- 's/X.X.X/Y.Y.Y/g' README.md` - from version X.X.X to Y.Y.Y
+
 # Update to the next version
 
 ## GitLab
@@ -13,6 +20,7 @@ Those are the steps that should be taken to upgrade GitLab, GitLab Shell, GitLab
  - Update relevant files with new version number
    - Update DOCKER_GITLAB_IMAGE_VERSION in [Dockerfile](Dockerfile) - mainly to invalidate quay.io cache and build a fresh image.
    - check https://gitlab.com/gitlab-org/gitlab-shell/tags
+   - check https://gitlab.com/gitlab-org/gitaly/tags
    - check https://gitlab.com/gitlab-org/gitlab-monitor/tags
    - check https://gitlab.com/gitlab-org/gitlab-pages/tags
    - check https://gitlab.com/gitlab-org/gitlab-workhorse/tags
