@@ -41,6 +41,10 @@ Thanks, I would love to get some help. You can start by creating account and con
 
 Since I do not have unlimited time on my hands, it is very difficult to add/support all of the features. No worries, if you know how to add it to the image, send you Merge request and we will work it out.
 
+### Where are the kubernetes configuration files?
+
+There is a wonderful project that has a very good set of helm charts to get you started, please take a look here: https://github.com/lwolf/gitlab-chart
+
 ---
 
 
