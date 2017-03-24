@@ -32,7 +32,6 @@ services:
     - "9168:9168"
     volumes:
     - ./gitlab/data:/home/git/data:Z
-    - ./gitlab/logs:/var/log/gitlab:Z
     - ./gitlab/data/certs:/certs
     environment:
     - DEBUG=false
