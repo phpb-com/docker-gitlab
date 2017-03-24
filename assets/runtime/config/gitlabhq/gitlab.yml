@@ -467,7 +467,7 @@ production: &base
     # This setting is obsolete because we expect it to be moved under
     # repositories/storages in GitLab 9.1.
     #
-    # socket_path: tmp/sockets/gitaly.socket
+    socket_path: {{GITALY_SOCKET_PATH}}
 
   #
   # 4. Advanced settings

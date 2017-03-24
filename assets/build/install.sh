@@ -59,23 +59,23 @@ exec_as_git git config --global repack.writeBitmaps true
 #
 
 # download gitlab-shell
-echo "Cloning gitlab-shell v.${GITLAB_SHELL_VERSION}..."
+echo "Cloning gitlab-shell v${GITLAB_SHELL_VERSION}..."
 exec_as_git git clone -q -b v${GITLAB_SHELL_VERSION} --depth 1 ${GITLAB_SHELL_CLONE_URL} ${GITLAB_SHELL_INSTALL_DIR}
 
 # download gitlab-monitor
-echo "Cloning gitlab-monitor v.${GITLAB_MONITOR_VERSION}..."
+echo "Cloning gitlab-monitor v${GITLAB_MONITOR_VERSION}..."
 exec_as_git git clone -q -b v${GITLAB_MONITOR_VERSION} --depth 1 ${GITLAB_MONITOR_CLONE_URL} ${GITLAB_MONITOR_INSTALL_DIR}
 
 # download gitaly
-echo "Cloning gitlab-pages v.${GITLAB_GITALY_VERSION}..."
+echo "Cloning gitlab-pages v${GITLAB_GITALY_VERSION}..."
 exec_as_git git clone -q -b v${GITLAB_GITALY_VERSION} --depth 1 ${GITLAB_GITALY_CLONE_URL} ${GITLAB_GITALY_INSTALL_DIR}
 
 # download gitlab-workhose
-echo "Cloning gitlab-workhorse v.${GITLAB_WORKHORSE_VERSION}..."
+echo "Cloning gitlab-workhorse v${GITLAB_WORKHORSE_VERSION}..."
 exec_as_git git clone -q -b v${GITLAB_WORKHORSE_VERSION} --depth 1 ${GITLAB_WORKHORSE_CLONE_URL} ${GITLAB_WORKHORSE_INSTALL_DIR}
 
 # download pages
-echo "Cloning gitlab-pages v.${GITLAB_PAGES_VERSION}..."
+echo "Cloning gitlab-pages v${GITLAB_PAGES_VERSION}..."
 exec_as_git git clone -q -b v${GITLAB_PAGES_VERSION} --depth 1 ${GITLAB_PAGES_CLONE_URL} ${GITLAB_PAGES_INSTALL_DIR}
 
 # download golang
@@ -128,7 +128,7 @@ rm -rf ${GITLAB_BUILD_DIR}/go${GOLANG_VERSION}.linux-amd64.tar.gz /tmp/go
 #
 
 # shallow clone gitlab-ce
-echo "Cloning gitlab-ce v.${GITLAB_VERSION}..."
+echo "Cloning gitlab-ce v${GITLAB_VERSION}..."
 exec_as_git git clone -q -b v${GITLAB_VERSION} --depth 1 ${GITLAB_CLONE_URL} ${GITLAB_INSTALL_DIR}
 
 # remove HSTS config from the default headers, we configure it in nginx
@@ -301,6 +301,21 @@ ${GITLAB_LOG_DIR}/nginx/*.log {
 EOF
 
 echo "Configuring supervisord scripts"
+
+# configure supervisord to start gitaly
+cat > /etc/supervisor/conf.d/gitaly.conf <<EOF
+[program:gitaly]
+priority=5
+directory=${GITLAB_INSTALL_DIR}
+environment=HOME=${GITLAB_HOME},GITALY_PROMETHEUS_LISTEN_ADDR="{{GITALY_PROMETHEUS_LISTEN_ADDR}}",GITALY_SOCKET_PATH="{{GITALY_SOCKET_PATH}}"
+command=/usr/local/bin/gitaly
+user=git
+autostart={{GITALY_ENABLED}}
+autorestart=true
+stdout_logfile=${GITLAB_LOG_DIR}/supervisor/%(program_name)s.log
+stderr_logfile=${GITLAB_LOG_DIR}/supervisor/%(program_name)s.log
+EOF
+
 # configure supervisord to start unicorn
 cat > /etc/supervisor/conf.d/unicorn.conf <<EOF
 [program:unicorn]
