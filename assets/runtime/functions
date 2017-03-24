@@ -263,6 +263,8 @@ gitlab_configure_gitaly() {
     export GITALY_PROMETHEUS_LISTEN_ADDR
     echo "GITALY_SOCKET_PATH=${GITALY_SOCKET_PATH}" \
       exec_as_git tee -a /home/git/gitaly/env
+    echo "GITALY_PROMETHEUS_LISTEN_ADDR=${GITALY_PROMETHEUS_LISTEN_ADDR}" \
+      exec_as_git tee -a /home/git/gitaly/env
   fi
 }
 
