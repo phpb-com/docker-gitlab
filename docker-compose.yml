@@ -7,13 +7,13 @@ services:
     command:
     - --loglevel warning
     volumes:
-    - /srv/docker/gitlab/redis:/var/lib/redis:Z
+    - ./gitlab/redis:/var/lib/redis:Z
 
   postgresql:
     restart: always
     image: quay.io/gotfix/postgresql:9.6.2-3
     volumes:
-    - /srv/docker/gitlab/postgresql:/var/lib/postgresql:Z
+    - ./gitlab/postgresql:/var/lib/postgresql:Z
     environment:
     - DB_USER=gitlab
     - DB_PASS=password
@@ -31,7 +31,9 @@ services:
     - "10022:22"
     - "9168:9168"
     volumes:
-    - /srv/docker/gitlab/gitlab:/home/git/data:Z
+    - ./gitlab/data:/home/git/data:Z
+    - ./gitlab/logs:/var/log/gitlab:Z
+    - ./gitlab/data/certs:/certs
     environment:
     - DEBUG=false
 
@@ -46,7 +48,7 @@ services:
     - REDIS_PORT=6379
 
     - TZ=UTC
-    - GITLAB_TIMEZONE=Kolkata
+    - GITLAB_TIMEZONE=UTC
 
     - GITLAB_HTTPS=false
     - SSL_SELF_SIGNED=false
@@ -149,6 +151,7 @@ services:
     - OAUTH_AZURE_API_KEY=
     - OAUTH_AZURE_API_SECRET=
     - OAUTH_AZURE_TENANT_ID=
+
   prometheus-server:
     image: prom/prometheus
     ports:
