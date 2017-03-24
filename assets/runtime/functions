@@ -252,10 +252,12 @@ gitlab_configure_redis() {
 gitlab_configure_gitaly() {
   echo "Configuring gitlab::gitaly..."
   update_template /etc/supervisor/conf.d/gitaly.conf \
-    GITALY_ENABLED
+    GITALY_ENABLED \
+    GITALY_PROMETHEUS_LISTEN_ADDR \
+    GITALY_SOCKET_PATH
 
   if [[ ${GITALY_ENABLED} != true ]]; then
-    exec_as_git sed -ie "/{{GITALY_SOCKET_PATH}}/d" ${GITLAB_CONFIG}
+    exec_as_git sed -i "/{{GITALY_SOCKET_PATH}}/d" ${GITLAB_CONFIG}
   else
     export GITALY_SOCKET_PATH
     export GITALY_PROMETHEUS_LISTEN_ADDR
@@ -936,14 +938,14 @@ gitlab_configure_pages() {
       update_template ${GITLAB_CONFIG} \
         GITLAB_PAGES_EXTERNAL_HTTP
     else
-      exec_as_git sed -ie "/{{GITLAB_PAGES_EXTERNAL_HTTP}}/d" ${GITLAB_CONFIG}
+      exec_as_git sed -i "/{{GITLAB_PAGES_EXTERNAL_HTTP}}/d" ${GITLAB_CONFIG}
     fi
   
     if [[ -n ${GITLAB_PAGES_EXTERNAL_HTTPS} ]]; then
       update_template ${GITLAB_CONFIG} \
         GITLAB_PAGES_EXTERNAL_HTTPS
     else
-      exec_as_git sed -ie "/{{GITLAB_PAGES_EXTERNAL_HTTPS}}/d" ${GITLAB_CONFIG}
+      exec_as_git sed -i "/{{GITLAB_PAGES_EXTERNAL_HTTPS}}/d" ${GITLAB_CONFIG}
     fi
 }
 

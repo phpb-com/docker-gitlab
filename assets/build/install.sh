@@ -307,7 +307,7 @@ cat > /etc/supervisor/conf.d/gitaly.conf <<EOF
 [program:gitaly]
 priority=5
 directory=${GITLAB_INSTALL_DIR}
-environment=HOME=${GITLAB_HOME}
+environment=HOME=${GITLAB_HOME},GITALY_PROMETHEUS_LISTEN_ADDR="{{GITALY_PROMETHEUS_LISTEN_ADDR}}",GITALY_SOCKET_PATH="{{GITALY_SOCKET_PATH}}"
 command=/usr/local/bin/gitaly
 user=git
 autostart={{GITALY_ENABLED}}
