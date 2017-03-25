@@ -3,6 +3,11 @@
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list of changes in GitLab.
 
 
+**9.0.0-1**
+- Fix stale jobs cron
+- Fix failing startup for new installation, removed unsupported RSA1 SSH key generation
+- Add Gitaly variables (**experimental**)
+
 **9.0.0**
 - Gitlab CE v9.0.0
 - Gitlab Workhorse 1.4.1
