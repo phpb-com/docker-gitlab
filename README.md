@@ -99,6 +99,7 @@ There is a wonderful project that has a very good set of helm charts to get you 
     + [Available Configuration Parameters](#available-configuration-parameters)
       - [GitLab Pages](#gitlab-pages)
       - [GitLab specific](#gitlab-specific)
+      - [Gitaly Experimental](#gitaly-experimental)
 - [Maintenance](#maintenance)
   * [Creating backups](#creating-backups)
   * [Restoring Backups](#restoring-backups)
@@ -996,6 +997,14 @@ Below is the complete list of available configuration options segregated by cate
 | `RACK_ATTACK_MAXRETRY` | Number of failed auth attempts before which an IP should be banned. Defaults to `10` |
 | `RACK_ATTACK_FINDTIME` | Number of seconds before resetting the per IP auth attempt counter. Defaults to `60`. |
 | `RACK_ATTACK_BANTIME` | Number of seconds an IP should be banned after too many auth attempts. Defaults to `3600`. |
+
+#### Gitaly Experimental
+
+| Parameter | Description |
+|-----------|-------------|
+| `GITALY_ENABLED`                | **Experimental** Enable Gitaly. Default `false`. |
+| `GITALY_SOCKET_PATH`            | **Experimental** Set Gitaly socker path. Default `/home/git/gitlab/tmp/sockets/private/gitaly.socket`. |
+| `GITALY_PROMETHEUS_LISTEN_ADDR` | **Experimental** Specify port for Gitaly to emit metrics. Default `localhost:9236`. |
 
 # Maintenance
 
