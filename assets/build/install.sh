@@ -174,7 +174,7 @@ fi
 unset http_proxy https_proxy HTTP_PROXY HTTPS_PROXY
 #/XXX workaround for transient error see: https://gotfix.com/docker/gitlab/issues/16
 
-exec_as_git bundle install -j$(nproc) --deployment --without mysql development test aws
+exec_as_git bundle install -j$(nproc) --deployment --without mysql development test
 
 # make sure everything in ${GITLAB_HOME} is owned by ${GITLAB_USER} user
 chown -R ${GITLAB_USER}: ${GITLAB_HOME}
