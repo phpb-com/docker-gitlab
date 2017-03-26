@@ -113,6 +113,12 @@ There is a wonderful project that has a very good set of helm charts to get you 
   * [Shell Access](#shell-access)
 - [References](#references)
 
+# Other references
+
+- [GitLab Container Registry](docs/container_registry.md)
+- [Reuse docker host SSH daemon](docs/docker_host_ssh.md)
+- [GitLab Backup to s3 compatible storage](s3_compatible_storage.md)
+
 # Introduction
 
 Dockerfile to build a [GitLab](https://about.gitlab.com/) image for the [Docker](https://www.docker.com/products/docker-engine) opensource container platform.
