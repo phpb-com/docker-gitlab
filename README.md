@@ -1184,22 +1184,51 @@ To upgrade to newer gitlab releases, simply follow this 4 step upgrade procedure
 
 - **Step 1**: Update the docker image.
 
+For docker:
 ```bash
 docker pull quay.io/gotfix/gitlab:9.0.0-1
 ```
 
+For docker-compose:
+
+Update `docker-compose.yml` and change `image:` variable to `quay.io/gotfix/gitlab:9.0.0-1`, to have it look like snippet below:
+```yaml
+...
+  gitlab:
+    restart: always
+    image: quay.io/gotfix/gitlab:9.0.0-1
+...
+```
+
+And then perform the following:
+```bash
+docker-compose pull
+```
+
 - **Step 2**: Stop and remove the currently running image
 
+For docker:
 ```bash
 docker stop gitlab
 docker rm gitlab
 ```
 
+For docker-compose:
+```bash
+docker-compose down
+```
+
 - **Step 3**: Create a backup
 
+For docker:
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
     quay.io/gotfix/gitlab:x.x.x app:rake gitlab:backup:create
+```
+
+For docker-compose:
+```bash
+docker-compose run --rm gitlab app:rake gitlab:backup:create
 ```
 
 Replace `x.x.x` with the version you are upgrading from. For example, if you are upgrading from version `6.0.0`, set `x.x.x` to `6.0.0`
@@ -1212,16 +1241,28 @@ Replace `x.x.x` with the version you are upgrading from. For example, if you are
 
 > **Note**: Since GitLab `8.11.0` you need to provide the `GITLAB_SECRETS_SECRET_KEY_BASE` and `GITLAB_SECRETS_OTP_KEY_BASE` parameters while starting the image. These should initially both have the same value as the contents of the `/home/git/data/.secret` file. See [Available Configuration Parameters](#available-configuration-parameters) for more information on these parameters.
 
+For docker:
 ```bash
 docker run --name gitlab -d [OPTIONS] quay.io/gotfix/gitlab:9.0.0-1
+```
+
+For docker-compose:
+```bash
+docker-compose up -d
 ```
 
 ## Shell Access
 
 For debugging and maintenance purposes you may want access the containers shell. If you are using docker version `1.3.0` or higher you can access a running containers shell using `docker exec` command.
 
+For docker:
 ```bash
 docker exec -it gitlab bash
+```
+
+For docker-compose:
+```bash
+docker-compose exec gitlab bash
 ```
 
 # References
