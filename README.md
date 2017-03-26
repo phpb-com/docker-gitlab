@@ -19,7 +19,7 @@ The canonical source of the repository is [hosted on gotfix.com](https://gotfix.
 
 ### Why did you fork instead of contributing to the original project?
 
-Long story short, since the original project tends to be conservative and their goal is stability, it is not what I would like to run for myself. I preffer to follow Gitlab development cycle closer (when time allows) and play with new features. If you rely on Gitlab for your business and require stability, backwards compatibility, and do not want to update often, I would suggest using the original project. You are welcome to use this fork if you do not mind doing testing yoursef.
+Long story short, since the original project tends to be conservative and their goal is stability, it is not what I would like to run for myself. I prefer to follow Gitlab development cycle closer (when time allows) and play with new features. If you rely on Gitlab for your business and require stability, backwards compatibility, and do not want to update often, I would suggest using the original project. You are welcome to use this fork if you do not mind doing testing yourself.
 
 ### Why MySQL support is not available, it is in the original project?
 
@@ -113,11 +113,17 @@ There is a wonderful project that has a very good set of helm charts to get you 
   * [Shell Access](#shell-access)
 - [References](#references)
 
+# Other references
+
+- [GitLab Container Registry](docs/container_registry.md)
+- [Reuse docker host SSH daemon](docs/docker_host_ssh.md)
+- [GitLab Backup to s3 compatible storage](s3_compatible_storage.md)
+
 # Introduction
 
 Dockerfile to build a [GitLab](https://about.gitlab.com/) image for the [Docker](https://www.docker.com/products/docker-engine) opensource container platform.
 
-GitLab CE is set up in the Docker image using the [install from source](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/install/installation.md) method as documented in the the official GitLab documentation.
+GitLab CE is set up in the Docker image using the [install from source](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/install/installation.md) method as documented in the official GitLab documentation.
 
 For other methods to install GitLab please refer to the [Official GitLab Installation Guide](https://about.gitlab.com/installation/) which includes a [GitLab image for Docker](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/docker).
 
@@ -150,7 +156,7 @@ Fedora and RHEL/CentOS users should try disabling selinux with `setenforce 0` an
 
 You may also set `DEBUG=true` to enable debugging of the entrypoint script, which could help you pin point any configuration issues.
 
-If using the latest docker version and/or disabling selinux does not fix the issue then please file a issue request on the [issues](https://gotfix.com/docker/gitlab/issues) page.
+If using the latest docker version and/or disabling selinux does not fix the issue then please file an issue request on the [issues](https://gotfix.com/docker/gitlab/issues) page.
 
 In your issue report please make sure you provide the following information:
 
@@ -505,7 +511,7 @@ cp dhparam.pem /srv/docker/gitlab/gitlab/certs/
 chmod 400 /srv/docker/gitlab/gitlab/certs/gitlab.key
 ```
 
-Great! we are now just one step away from having our application secured.
+Great! We are now just one step away from having our application secured.
 
 #### Enabling HTTPS support
 
@@ -526,7 +532,7 @@ In this configuration, any requests made over the plain http protocol will autom
 
 HSTS if supported by the browsers makes sure that your users will only reach your sever via HTTPS. When the user comes for the first time it sees a header from the server which states for how long from now this site should only be reachable via HTTPS - that's the HSTS max-age value.
 
-With `NGINX_HSTS_MAXAGE` you can configure that value. The default value is `31536000` seconds. If you want to disable a already sent HSTS MAXAGE value, set it to `0`.
+With `NGINX_HSTS_MAXAGE` you can configure that value. The default value is `31536000` seconds. If you want to disable an already sent HSTS MAXAGE value, set it to `0`.
 
 ```bash
 docker run --name gitlab -d \
@@ -607,7 +613,7 @@ docker run --name gitlab -it --rm \
     quay.io/gotfix/gitlab:9.0.0-1
 ```
 
-GitLab will now be accessible at the `/git` path, e.g. `http://www.example.com/git`.
+GitLab will now be accessible at the `/git` path, e.g., `http://www.example.com/git`.
 
 **Note**: *The `GITLAB_RELATIVE_URL_ROOT` parameter should always begin with a slash and* **SHOULD NOT** *have any trailing slashes.*
 
@@ -625,7 +631,7 @@ For example, if your cas server url is `https://sso.example.com`, then adding `-
 
 #### Authentiq
 
-To enable the Authentiq OmniAuth provider for passwordless authentication you must register an application with [Authentiq](https://www.authentiq.com/). Please refer to the GitLab [documentation](https://docs.gitlab.com/ce/administration/auth/authentiq.html) for the procedure to generate the client ID and secret key with Authentiq.
+To enable the Authentiq OmniAuth provider for password-less authentication you must register an application with [Authentiq](https://www.authentiq.com/). Please refer to the GitLab [documentation](https://docs.gitlab.com/ce/administration/auth/authentiq.html) for the procedure to generate the client ID and secret key with Authentiq.
 
 Once you have the API client id and client secret generated, configure them using the `OAUTH_AUTHENTIQ_CLIENT_ID` and `OAUTH_AUTHENTIQ_CLIENT_SECRET` environment variables respectively.
 
@@ -645,7 +651,7 @@ You can also restrict logins to a single domain by adding `--env "OAUTH_GOOGLE_R
 
 #### Facebook
 
-To enable the Facebook OAuth2 OmniAuth provider you must register your application with Facebook. Facebook will generate a API key and secret for you to use. Please refer to the GitLab [documentation](http://doc.gitlab.com/ce/integration/facebook.html) for the procedure to generate the API key and secret.
+To enable the Facebook OAuth2 OmniAuth provider you must register your application with Facebook. Facebook will generate an API key and secret for you to use. Please refer to the GitLab [documentation](http://doc.gitlab.com/ce/integration/facebook.html) for the procedure to generate the API key and secret.
 
 Once you have the API key and secret generated, configure them using the `OAUTH_FACEBOOK_API_KEY` and `OAUTH_FACEBOOK_APP_SECRET` environment variables respectively.
 
@@ -653,7 +659,7 @@ For example, if your API key is `xxx` and the API secret key is `yyy`, then addi
 
 #### Twitter
 
-To enable the Twitter OAuth2 OmniAuth provider you must register your application with Twitter. Twitter will generate a API key and secret for you to use. Please refer to the GitLab [documentation](http://doc.gitlab.com/ce/integration/twitter.html) for the procedure to generate the API key and secret with twitter.
+To enable the Twitter OAuth2 OmniAuth provider you must register your application with Twitter. Twitter will generate an API key and secret for you to use. Please refer to the GitLab [documentation](http://doc.gitlab.com/ce/integration/twitter.html) for the procedure to generate the API key and secret with twitter.
 
 Once you have the API key and secret generated, configure them using the `OAUTH_TWITTER_API_KEY` and `OAUTH_TWITTER_APP_SECRET` environment variables respectively.
 
@@ -753,7 +759,7 @@ On Grafana UI :
 - Set Type Prometheus
 - Url : http://prometheus-server:9090
 
-You can now import the [following dashboard](https://grafana.net/dashboards/1575), or create a custum one using the prometheus metrics.
+You can now import the [following dashboard](https://grafana.net/dashboards/1575), or create a custom one using the prometheus metrics.
 
 | Parameter | Description |
 |-----------|-------------|
@@ -771,15 +777,15 @@ Below is the complete list of available configuration options segregated by cate
 
 | Parameter | Description |
 |-----------|-------------|
-| `GITLAB_PAGES_ENABLED`        | Enable GitLab Pages. Default to `false` |
-| `GITLAB_PAGES_DOMAIN`         | GitLab Pages domain. Default tp `example.com` |
-| `GITLAB_PAGES_PORT`           | Port that is used by gitlab-pages daemon to listen for requests. Default to `8090` |
-| `GITLAB_PAGES_PROXY_PORT`     | Port that is used by upstream proxy to listen for requests. Default to `GITLAB_PAGES_PORT` |
-| `GITLAB_PAGES_HTTPS`          | Run gitlab-pages in HTTPS mode. Default to `false` |
-| `GITLAB_PAGES_METRICS_PORT`   | This will expose general metrics about the Go runtime and pages application for Prometheus to scrape. Default to `9235` |
-| `SSL_PAGES_KEY_PATH`          | Path to the gitlab-pages SSL key. Default to `$GITLAB_DATA_DIR/certs/pages.key` |
-| `SSL_PAGES_CERT_PATH`         | Path to the gitlab-pages SSL certificate. Default to `$GITLAB_DATA_DIR/certs/pages.crt` |
-| `GITLAB_PAGES_EXTERNAL_HTTP`  | External IP for gitlab-pages that will accept HTTP requests. Used to enable custom domain setup by the user. |
+| `GITLAB_PAGES_ENABLED` | Enable GitLab Pages. Default to `false` |
+| `GITLAB_PAGES_DOMAIN` | GitLab Pages domain. Default tp `example.com` |
+| `GITLAB_PAGES_PORT` | Port that is used by gitlab-pages daemon to listen for requests. Default to `8090` |
+| `GITLAB_PAGES_PROXY_PORT` | Port that is used by upstream proxy to listen for requests. Default to `GITLAB_PAGES_PORT` |
+| `GITLAB_PAGES_HTTPS` | Run gitlab-pages in HTTPS mode. Default to `false` |
+| `GITLAB_PAGES_METRICS_PORT` | This will expose general metrics about the Go runtime and pages application for Prometheus to scrape. Default to `9235` |
+| `SSL_PAGES_KEY_PATH` | Path to the gitlab-pages SSL key. Default to `$GITLAB_DATA_DIR/certs/pages.key` |
+| `SSL_PAGES_CERT_PATH` | Path to the gitlab-pages SSL certificate. Default to `$GITLAB_DATA_DIR/certs/pages.crt` |
+| `GITLAB_PAGES_EXTERNAL_HTTP` | External IP for gitlab-pages that will accept HTTP requests. Used to enable custom domain setup by the user. |
 | `GITLAB_PAGES_EXTERNAL_HTTPS` | External IP for gitlab-pages that will accept HTTPS requests. Used to enable custom domain setup by the user. |
 
 #### GitLab specific
@@ -791,11 +797,11 @@ Below is the complete list of available configuration options segregated by cate
 | `GITLAB_CI_HOST` | If you are migrating from GitLab CI use this parameter to configure the redirection to the GitLab service so that your existing runners continue to work without any changes. No defaults. |
 | `GITLAB_PORT` | The port of the GitLab server. This value indicates the public port on which the GitLab application will be accessible on the network and appropriately configures GitLab to generate the correct urls. It does not affect the port on which the internal nginx server will be listening on. Defaults to `443` if `GITLAB_HTTPS=true`, else defaults to `80`. |
 | `GITLAB_SECRETS_DB_KEY_BASE` | Encryption key for GitLab CI secret variables, as well as import credentials, in the database. Ensure that your key is at least 32 characters long and that you don't lose it. You can generate one using `pwgen -Bsv1 64`. If you are migrating from GitLab CI, you need to set this value to the value of `GITLAB_CI_SECRETS_DB_KEY_BASE`. No defaults. |
-| `GITLAB_SECRETS_SECRET_KEY_BASE` | Encryption key for session secrets. Ensure that your key is at least 64 characters long and that you don't lose it. This secret can be rotated with minimal impact - the main effect is that previously-sent password reset emails will no longer work. You can generate one using `pwgen -Bsv1 64`. No defaults. |
+| `GITLAB_SECRETS_SECRET_KEY_BASE` | Encryption key for session secrets. Ensure that your key is at least 64 characters long and that you don't lose it. This secret can be rotated with minimal impact - the main effect is that previously sent password reset emails will no longer work. You can generate one using `pwgen -Bsv1 64`. No defaults. |
 | `GITLAB_SECRETS_OTP_KEY_BASE` |  Encryption key for OTP related stuff with  GitLab. Ensure that your key is at least 64 characters long and that you don't lose it. **If you lose or change this secret, 2FA will stop working for all users.** You can generate one using `pwgen -Bsv1 64`. No defaults. |
 | `GITLAB_TIMEZONE` | Configure the timezone for the gitlab application. This configuration does not effect cron jobs. Defaults to `UTC`. See the list of [acceptable values](http://api.rubyonrails.org/classes/ActiveSupport/TimeZone.html). |
-| `GITLAB_ROOT_PASSWORD` | The password for the root user on firstrun. Defaults to `5iveL!fe`. GitLab requires this to be at least 8 characters long. |
-| `GITLAB_ROOT_EMAIL` | The email for the root user on firstrun. Defaults to `admin@example.com` |
+| `GITLAB_ROOT_PASSWORD` | The password for the root user on first run. Defaults to `5iveL!fe`. GitLab requires this to be at least 8 characters long. |
+| `GITLAB_ROOT_EMAIL` | The email for the root user on first run. Defaults to `admin@example.com` |
 | `GITLAB_EMAIL` | The email address for the GitLab server. Defaults to value of `SMTP_USER`, else defaults to `example@example.com`. |
 | `GITLAB_EMAIL_DISPLAY_NAME` | The name displayed in emails sent out by the GitLab mailer. Defaults to `GitLab`. |
 | `GITLAB_EMAIL_REPLY_TO` | The reply-to address of emails sent out by GitLab. Defaults to value of `GITLAB_EMAIL`, else defaults to `noreply@example.com`. |
@@ -1045,8 +1051,7 @@ Before performing a restore make sure the container is stopped and removed to av
 docker stop gitlab && docker rm gitlab
 ```
 
-If this is a fresh database that you're doing the restore on, first
-you need to prepare the database:
+If this is a fresh database that you're doing the restore on, first you need to prepare the database:
 
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
@@ -1096,7 +1101,7 @@ The image can be configured to automatically upload the backups to an AWS S3 buc
 
 More details about the appropriate IAM user properties can found on [doc.gitlab.com](http://doc.gitlab.com/ce/raketasks/backup_restore.html#upload-backups-to-remote-cloud-storage)
 
-For remote backup to selfhosted s3 compatible storage, use `AWS_BACKUP_ENDPOINT`.
+For remote backup to self-hosted s3 compatible storage, use `AWS_BACKUP_ENDPOINT`.
 
 AWS uploads are performed alongside normal backups, both through the appropriate `app:rake` command and when an automatic backup is performed.
 
@@ -1179,22 +1184,51 @@ To upgrade to newer gitlab releases, simply follow this 4 step upgrade procedure
 
 - **Step 1**: Update the docker image.
 
+For docker:
 ```bash
 docker pull quay.io/gotfix/gitlab:9.0.0-1
 ```
 
+For docker-compose:
+
+Update `docker-compose.yml` and change `image:` variable to `quay.io/gotfix/gitlab:9.0.0-1`, to have it look like snippet below:
+```yaml
+...
+  gitlab:
+    restart: always
+    image: quay.io/gotfix/gitlab:9.0.0-1
+...
+```
+
+And then perform the following:
+```bash
+docker-compose pull
+```
+
 - **Step 2**: Stop and remove the currently running image
 
+For docker:
 ```bash
 docker stop gitlab
 docker rm gitlab
 ```
 
+For docker-compose:
+```bash
+docker-compose down
+```
+
 - **Step 3**: Create a backup
 
+For docker:
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
     quay.io/gotfix/gitlab:x.x.x app:rake gitlab:backup:create
+```
+
+For docker-compose:
+```bash
+docker-compose run --rm gitlab app:rake gitlab:backup:create
 ```
 
 Replace `x.x.x` with the version you are upgrading from. For example, if you are upgrading from version `6.0.0`, set `x.x.x` to `6.0.0`
@@ -1207,16 +1241,28 @@ Replace `x.x.x` with the version you are upgrading from. For example, if you are
 
 > **Note**: Since GitLab `8.11.0` you need to provide the `GITLAB_SECRETS_SECRET_KEY_BASE` and `GITLAB_SECRETS_OTP_KEY_BASE` parameters while starting the image. These should initially both have the same value as the contents of the `/home/git/data/.secret` file. See [Available Configuration Parameters](#available-configuration-parameters) for more information on these parameters.
 
+For docker:
 ```bash
 docker run --name gitlab -d [OPTIONS] quay.io/gotfix/gitlab:9.0.0-1
+```
+
+For docker-compose:
+```bash
+docker-compose up -d
 ```
 
 ## Shell Access
 
 For debugging and maintenance purposes you may want access the containers shell. If you are using docker version `1.3.0` or higher you can access a running containers shell using `docker exec` command.
 
+For docker:
 ```bash
 docker exec -it gitlab bash
+```
+
+For docker-compose:
+```bash
+docker-compose exec gitlab bash
 ```
 
 # References
