@@ -3,6 +3,12 @@
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list of changes in GitLab.
 
 
+**9.0.0-2**
+- Bugfix release
+- Cleanup README.md
+- Fix usage of AWS_BACKUP_MULTIPART_CHUNK_SIZE so it is used and respected
+- Fix Authentiq, so it can be configured and used without breaking
+
 **9.0.0-1**
 - Fix stale jobs cron
 - Fix failing startup for new installation, removed unsupported RSA1 SSH key generation
