@@ -17,11 +17,11 @@ LABEL org.label-schema.schema-version="1.0" \
       org.label-schema.build-date="${BUILD_DATE}" \
       maintainer="ian@phpb.com"
 
-ENV GITLAB_VERSION=9.0.0 \
+ENV GITLAB_VERSION=9.0.1 \
     RUBY_VERSION=2.3 \
     GOLANG_VERSION=1.8 \
     GITLAB_SHELL_VERSION=5.0.0 \
-    GITLAB_WORKHORSE_VERSION=1.4.1 \
+    GITLAB_WORKHORSE_VERSION=1.4.2 \
     GITLAB_PAGES_VERSION=0.4.0 \
     GITLAB_MONITOR_VERSION=1.3.1 \
     GITLAB_GITALY_VERSION=0.3.0 \
