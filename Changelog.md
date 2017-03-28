@@ -6,6 +6,7 @@ This file only reflects the changes that are made in this image. Please refer to
 **9.0.1**
 - gitlab: Gitlab CE 9.0.1
 - gitlab-workhorse 1.4.2
+- gitaly 0.4.0
 
 **9.0.0-2**
 - Bugfix release
