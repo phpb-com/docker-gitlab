@@ -17,9 +17,9 @@ scrape_configs:
   - job_name: 'prometheus'
 
     scrape_interval: 5s
-    scrape_timeout: 10s
+    scrape_timeout: 5s
 
-    target_groups:
+    static_configs:
       - targets: ['localhost:9090']
 
   - job_name: 'gitlab-process'
@@ -40,3 +40,9 @@ scrape_configs:
     metrics_path: '/sidekiq'
     static_configs:
       - targets: ['gitlab:9168']
+  - job_name: 'gitlab-pages'
+    scrape_interval: 30s
+    scrape_timeout: 10s
+    metrics_path: '/pages'
+    static_configs:
+      - targets: ['gitlab:9235']
