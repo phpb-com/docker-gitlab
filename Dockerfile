@@ -17,7 +17,7 @@ LABEL org.label-schema.schema-version="1.0" \
       org.label-schema.build-date="${BUILD_DATE}" \
       maintainer="ian@phpb.com"
 
-ENV GITLAB_VERSION=9.0.1 \
+ENV GITLAB_VERSION=9.0.2 \
     RUBY_VERSION=2.3 \
     GOLANG_VERSION=1.8 \
     GITLAB_SHELL_VERSION=5.0.0 \
