@@ -40,6 +40,18 @@ scrape_configs:
     metrics_path: '/sidekiq'
     static_configs:
       - targets: ['gitlab:9168']
+  - job_name: 'gitlab-git'
+    scrape_interval: 30s
+    scrape_timeout: 10s
+    metrics_path: '/git'
+    static_configs:
+      - targets: ['gitlab:9168']
+  - job_name: 'gitlab-git-process'
+    scrape_interval: 30s
+    scrape_timeout: 10s
+    metrics_path: '/git_process'
+    static_configs:
+      - targets: ['gitlab:9168']
   - job_name: 'gitlab-pages'
     scrape_interval: 30s
     scrape_timeout: 10s
