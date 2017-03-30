@@ -3,6 +3,11 @@
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list of changes in GitLab.
 
 
+**9.0.2-1**
+- gitlab: Gitlab CE 9.0.2
+- gitlab: Gitlab-shell 5.0.2
+- Improve gitlab-monitor configuration, and sample prometheus.yml file
+
 **9.0.2**
 - gitlab: Gitlab CE 9.0.2
 - Fix gitlab-pages config if ipv6 is not present
