@@ -3,6 +3,7 @@ MAINTAINER ian@phpb.com
 
 ARG BUILD_DATE
 ARG VCS_REF
+ARG VCS_BRANCH
 ARG VERSION
 
 LABEL org.label-schema.schema-version="1.0" \
@@ -13,6 +14,7 @@ LABEL org.label-schema.schema-version="1.0" \
       org.label-schema.vcs-url="https://gotfix.com/docker/gitlab.git" \
       org.label-schema.vendor="Ian Matyssik <ian@phpb.com>" \
       org.label-schema.vcs-ref="${VCS_REF}" \
+      org.label-schema.vcs-branch="${VCS_BRANCH}" \
       org.label-schema.version="${VERSION}" \
       org.label-schema.build-date="${BUILD_DATE}" \
       maintainer="ian@phpb.com"
