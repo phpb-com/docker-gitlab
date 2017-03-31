@@ -14,21 +14,22 @@ probes:
   # Each key corresponds to an endpoint, so here metrics are available at http://localhost:9168/git.
   # The server will search for a prober using the format `KeyProber`, so here it will be `GitProber`.
   # If there's no prober matching the format above, `class_name` key should be provided (see `git_process` below).
-  git:
-    # Methods to call on the prober
-    methods:
-      - probe_pull
-      - probe_push
-    # Options to pass to the prober class initializer
-    opts:
-      source: {{GITLAB_REPOS_DIR}}
+#XXX Git related metrics do not work well, see: https://gotfix.com/docker/gitlab/issues/57
+# git:
+#   # Methods to call on the prober
+#   methods:
+#     - probe_pull
+#     - probe_push
+#   # Options to pass to the prober class initializer
+#   opts:
+#     source: {{GITLAB_REPOS_DIR}}
 
-  git_process:
-    class_name: GitProcessProber # `class_name` is redundant here
-    methods:
-    - probe_git
-    opts:
-      quantiles: true
+# git_process:
+#   class_name: GitProcessProber # `class_name` is redundant here
+#   methods:
+#   - probe_git
+#   opts:
+#     quantiles: true
 
   # We can group multiple probes under a single endpoint by setting the `multiple` key to `true`, followed
   # by probe definitions as usual.
@@ -37,9 +38,10 @@ probes:
     blocked_queries:
       class_name: Database::BlockedQueriesProber
       <<: *db_common
-    ci_builds:
-      class_name: Database::CiBuildsProber
-      <<: *db_common
+#XXX Does not work on Gitlab CE due to project.mirror column missing. Ref: https://gotfix.com/docker/gitlab/issues/55
+#   ci_builds:
+#     class_name: Database::CiBuildsProber
+#     <<: *db_common
     tuple_stats:
       class_name: Database::TuplesProber
       <<: *db_common
