@@ -8,5 +8,5 @@ Changelog.md
 Makefile
 docker-compose.yml
 docs
-kubernetes
+hooks
 prometheus
