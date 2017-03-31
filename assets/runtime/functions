@@ -1571,7 +1571,8 @@ migrate_database() {
     # assets need to be recompiled when GITLAB_RELATIVE_URL_ROOT is used
     if [[ -n ${GITLAB_RELATIVE_URL_ROOT} ]]; then
       echo "Recompiling assets (relative_url in use), this could take a while..."
-      exec_as_git bundle exec rake assets:clean assets:precompile webpack:compile RAILS_ENV=${RAILS_ENV} NODE_ENV=${RAILS_ENV} >/dev/null 2>&1
+      # Should be equal to the line in install script
+      exec_as_git bundle exec rake yarn:install gitlab:assets:clean gitlab:assets:compile webpack:compile RAILS_ENV=${RAILS_ENV} NODE_ENV=${NODE_ENV} >/dev/null 2>&1
     fi
 
     echo "Clearing cache..."
