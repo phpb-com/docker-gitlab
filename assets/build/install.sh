@@ -184,13 +184,8 @@ exec_as_git cp ${GITLAB_INSTALL_DIR}/config/gitlab.yml.example ${GITLAB_INSTALL_
 exec_as_git cp ${GITLAB_INSTALL_DIR}/config/database.yml.postgresql ${GITLAB_INSTALL_DIR}/config/database.yml
 
 echo "Compiling assets. Please be patient, this could take a while..."
-# Compile assets
-# Installs nodejs packages required to compile webpack
-exec_as_git yarn install --production --pure-lockfile
-
-echo "Executing rake commands to clean and compile assets"
-# Adding webpack compile needed since 8.17
-exec_as_git bundle exec rake assets:clean assets:precompile webpack:compile USE_DB=false SKIP_STORAGE_VALIDATION=true RAILS_ENV=${RAILS_ENV} NODE_ENV=${RAILS_ENV}>/dev/null 2>&1
+# Update asstets/runtime/functions file as well, if you make any changes for the next line
+exec_as_git bundle exec rake yarn:install gitlab:assets:clean gitlab:assets:compile webpack:compile USE_DB=false SKIP_STORAGE_VALIDATION=true RAILS_ENV=${RAILS_ENV} NODE_ENV=${NODE_ENV}
 
 echo "remove auto generated ${GITLAB_DATA_DIR}/config/secrets.yml"
 rm -rf ${GITLAB_DATA_DIR}/config/secrets.yml

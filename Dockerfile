@@ -30,6 +30,7 @@ ENV GITLAB_VERSION=9.0.2 \
     GITLAB_LOG_DIR="/var/log/gitlab" \
     GITLAB_CACHE_DIR="/etc/docker-gitlab" \
     RAILS_ENV=production \
+    NODE_ENV=production \
     DEBIAN_FRONTEND=noninteractive
 
 ENV GITLAB_INSTALL_DIR="${GITLAB_HOME}/gitlab" \
