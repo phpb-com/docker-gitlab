@@ -63,7 +63,7 @@ image-test:
         ${REGISTRY_IMAGE}
     - echo "Waiting for containers to start and settle, 60 seconds ..."
     - sleep 60
-    - docker logs gitlab-demo
+    - docker logs gitlab-test
     - echo "Stopping and removing containers ..."
     - docker stop gitlab-test gitlab-redis gitlab-postgresql
     - docker rm -f gitlab-test gitlab-redis gitlab-postgresql
