@@ -1,3 +1,5 @@
+.PHONY: test help build release quickstart stop purge logs
+
 all: build
 
 help:
