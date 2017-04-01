@@ -44,6 +44,7 @@ build:
 image-test:
   stage: test
   script:
+    - apt-get update && apt-get install -y make
     - make test IMAGE=${REGISTRY_IMAGE}
   except:
     - latest
