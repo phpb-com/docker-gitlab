@@ -44,8 +44,7 @@ build:
 image-test:
   stage: test
   script:
-    - echo "TODO:Add test target to Makefile"
-    - docker pull "${REGISTRY_IMAGE}"
+    - make test IMAGE=${REGISTRY_IMAGE}
   except:
     - latest
 
