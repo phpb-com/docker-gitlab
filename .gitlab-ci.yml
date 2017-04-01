@@ -50,16 +50,20 @@ image-test:
     - docker pull gotfix/postgresql:latest
     - docker run --name=gitlab-postgresql -d
         --env='DB_NAME=gitlabhq_production' 
+        --env='DB_EXTENSION=pg_trgm'
         --env='DB_USER=gitlab' --env='DB_PASS=password'
         gotfix/postgresql:latest
     - echo "Pulling and starting redis containers ..."
     - docker run --name=gitlab-redis -d
         gotfix/redis:latest
     - echo "Starting ${REGISTRY_IMAGE} container..."
-    - docker run --name='gitlab-test' -d
+    - docker run --name=gitlab-test -d
         --link=gitlab-postgresql:postgresql --link=gitlab-redis:redisio
         --publish=40022:22 --publish=40080:80
-        --env='GITLAB_PORT=40080' --env='GITLAB_SSH_PORT=40022'
+        --env="GITLAB_PORT=40080" --env="GITLAB_SSH_PORT=40022"
+        --env="GITLAB_SECRETS_DB_KEY_BASE=${CI_COMMIT_SHA}"
+        --env="GITLAB_SECRETS_SECRET_KEY_BASE=${CI_COMMIT_SHA}"
+        --env="GITLAB_SECRETS_OTP_KEY_BASE=${CI_COMMIT_SHA}"
         ${REGISTRY_IMAGE}
     - echo "Waiting for containers to start and settle, 60 seconds ..."
     - sleep 60
