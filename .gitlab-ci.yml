@@ -125,7 +125,7 @@ tag-latest:
     - git tag -fa latest -m "CI Build auto-tagged, latest master branch ref"
     - git push --force https://${ACCESS_USER}:${ACCESS_TOKEN}@gotfix.com/docker/gitlab.git refs/tags/latest
   only:
-    - master
+    - /^[0-9.]+$/
 
 release:
   stage: release
@@ -139,10 +139,9 @@ release:
     - docker push "${REGISTRY_IMAGE_BASE}:${IMAGE_TAG}"
     - docker push "${REGISTRY_IMAGE_BASE}:latest"
   only:
-    - master
-    - tags
-  except:
-    - latest
+    - /^[0-9.-]+-stable$/
+    - /^[0-9.]+$/
+    - /^[0-9.]+-rc[0-9]+$/
 
 github_mirror:
   type: mirror
