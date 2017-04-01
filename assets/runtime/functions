@@ -1035,6 +1035,12 @@ nginx_configure_gitlab() {
   nginx_configure_gitlab_ipv6
   nginx_configure_gitlab_retain_ip_header
   nginx_configure_pages
+
+  if [[ ${VERBOSE} == true ]]; then
+    echo "Conten of ${GITLAB_NGINX_CONFIG} ..."
+    cat ${GITLAB_NGINX_CONFIG}
+  fi
+
 }
 
 nginx_configure_gitlab_ci() {
@@ -1046,6 +1052,12 @@ nginx_configure_gitlab_ci() {
       GITLAB_HOST \
       GITLAB_CI_HOST \
       DNS_RESOLVERS
+
+    if [[ ${VERBOSE} == true ]]; then
+      echo "Conten of ${GITLAB_CI_NGINX_CONFIG} ..."
+      cat ${GITLAB_CI_NGINX_CONFIG}
+    fi
+
   fi
 }
 
@@ -1059,6 +1071,12 @@ nginx_configure_gitlab_registry() {
       GITLAB_REGISTRY_API_URL \
       SSL_REGISTRY_KEY_PATH \
       SSL_REGISTRY_CERT_PATH
+
+    if [[ ${VERBOSE} == true ]]; then
+      echo "Conten to ${GITLAB_REGISTRY_NGINX_CONFIG} ..."
+      cat ${GITLAB_REGISTRY_NGINX_CONFIG}
+    fi
+
   fi
 }
 
@@ -1083,6 +1101,10 @@ nginx_configure_pages(){
         GITLAB_PAGES_DOMAIN \
         GITLAB_LOG_DIR \
         GITLAB_PAGES_PORT
+    fi
+    if [[ ${VERBOSE} == true ]]; then
+      echo "Conten of ${GITLAB_PAGES_NGINX_CONFIG} ..."
+      cat ${GITLAB_PAGES_NGINX_CONFIG}
     fi
   fi
 }
@@ -1448,7 +1470,7 @@ configure_gitlab_shell() {
     REDIS_DB_NUMBER
 
   if [[ ${VERBOSE} == true ]]; then
-    echo "Content of config/gitlab-shell.yml ... "
+    echo "Content of ${GITLAB_SHELL_CONFIG} ... "
     cat ${GITLAB_SHELL_CONFIG}
   fi
 
@@ -1537,18 +1559,12 @@ configure_nginx() {
     nginx_configure_gitlab
     nginx_configure_gitlab_ci
     nginx_configure_gitlab_registry
+
     if [[ ${VERBOSE} == true ]]; then
-      echo "Conten to nginx.conf ..."
+      echo "Conten of nginx.conf ..."
       cat /etc/nginx/nginx.conf
-      echo "Conten to nginx gitlab conf ..."
-      cat ${GITLAB_NGINX_CONFIG}
-      echo "Conten to nginx ci.gitlab conf ..."
-      cat ${GITLAB_CI_NGINX_CONFIG}
-      echo "Conten to nginx registry conf ..."
-      cat ${GITLAB_REGISTRY_NGINX_CONFIG}
-      echo "Conten to nginx pages conf ..."
-      cat ${GITLAB_PAGES_NGINX_CONFIG}
     fi
+
   else
     rm -f /etc/supervisor/conf.d/nginx.conf
   fi
