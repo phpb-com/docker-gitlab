@@ -106,7 +106,6 @@ image-test:
     - echo "Waiting for containers to start and settle, 60 seconds ..."
     - sleep 60
     - docker logs gitlab-test
-    - docker exec -it gitlab-test cat /home/git/gitlab/config/gitlab.yml
     - export RC=0
     - if [[ $(docker logs gitlab-test | grep -i "error\|fail\|exit" | grep -c -i -v info) != 0 ]]; then export RC=1; fi
     - echo "Stopping and removing containers ..."
