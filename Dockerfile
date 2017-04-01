@@ -17,7 +17,9 @@ LABEL org.label-schema.schema-version="1.0" \
       org.label-schema.vcs-branch="${VCS_BRANCH}" \
       org.label-schema.version="${VERSION}" \
       org.label-schema.build-date="${BUILD_DATE}" \
-      maintainer="ian@phpb.com"
+      com.gotfix.maintainer="ian@phpb.com" \
+      com.gotfix.license=MIT \
+      com.gotfix.docker.dockerfile="/Dockerfile"
 
 ENV GITLAB_VERSION=9.0.2 \
     RUBY_VERSION=2.3 \
