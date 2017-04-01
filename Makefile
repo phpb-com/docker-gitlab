@@ -1,4 +1,4 @@
-.PHONY: test help build release quickstart stop purge logs
+.PHONY: help build release quickstart stop purge logs
 
 all: build
 
@@ -39,31 +39,6 @@ quickstart:
 	@echo "Please be patient. This could take a while..."
 	@echo "GitLab will be available at http://localhost:10080"
 	@echo "Type 'make logs' for the logs"
-
-test:
-	@echo "Pulling docker container ${IMAGE} ..."
-	@docker pull ${IMAGE}
-	@echo "Pulling and starting postgresql containers ..."
-	@docker pull gotfix/postgresql:latest
-	@docker run --name=gitlab-postgresql -d \
-		--env='DB_NAME=gitlabhq_production' \
-		--env='DB_USER=gitlab' --env='DB_PASS=password' \
-		gotfix/postgresql:latest
-	@echo "Pulling and starting redis containers ..."
-	@docker run --name=gitlab-redis -d \
-		gotfix/redis:latest
-	@echo "Starting ${IMAGE} container..."
-	@docker run --name='gitlab-test' -d \
-		--link=gitlab-postgresql:postgresql --link=gitlab-redis:redisio \
-		--publish=40022:22 --publish=40080:80 \
-		--env='GITLAB_PORT=40080' --env='GITLAB_SSH_PORT=40022' \
-		${IMAGE}
-	@echo "Waiting for containers to start and settle, 60 seconds ..."
-	@sleep 60
-	@docker logs gitlab-demo
-	@echo "Stopping and removing containers ..."
-	@docker stop gitlab-test gitlab-redis gitlab-postgresql
-	@docker rm -f gitlab-test gitlab-redis gitlab-postgresql
 
 stop:
 	@echo "Stopping gitlab..."
