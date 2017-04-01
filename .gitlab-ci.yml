@@ -151,6 +151,4 @@ github_mirror:
     - git clone -q --mirror "${CI_REPOSITORY_URL}"
     - cd "${CI_PROJECT_NAME}.git"
     - git push -q --mirror "${GITHUB_REPO_URL}"
-  except:
-    - latest
   when: always
