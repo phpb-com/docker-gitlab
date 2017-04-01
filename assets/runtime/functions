@@ -494,6 +494,7 @@ gitlab_configure_oauth_authentiq() {
   if [[ -n ${OAUTH_AUTHENTIQ_CLIENT_ID} && -n ${OAUTH_AUTHENTIQ_CLIENT_SECRET} ]]; then
     echo "Configuring gitlab::oauth::authentiq..."
     OAUTH_ENABLED=${OAUTH_ENABLED:-true}
+    OAUTH_AUTHENTIQ_SCOPE=$(echo ${OAUTH_AUTHENTIQ_SCOPE} | sed "s/^\([\"']\)\(.*\)\1\$/\2/")
     update_template ${GITLAB_CONFIG} \
       OAUTH_AUTHENTIQ_CLIENT_ID \
       OAUTH_AUTHENTIQ_CLIENT_SECRET \
@@ -508,6 +509,7 @@ gitlab_configure_oauth_github() {
   if [[ -n ${OAUTH_GITHUB_API_KEY} && -n ${OAUTH_GITHUB_APP_SECRET} ]]; then
     echo "Configuring gitlab::oauth::github..."
     OAUTH_ENABLED=${OAUTH_ENABLED:-true}
+    OAUTH_GITHUB_SCOPE=$(echo ${OAUTH_GITHUB_SCOPE} | sed "s/^\([\"']\)\(.*\)\1\$/\2/")
     update_template ${GITLAB_CONFIG} \
       OAUTH_GITHUB_API_KEY \
       OAUTH_GITHUB_APP_SECRET \
@@ -523,6 +525,7 @@ gitlab_configure_oauth_gitlab() {
   if [[ -n ${OAUTH_GITLAB_API_KEY} && -n ${OAUTH_GITLAB_APP_SECRET} ]]; then
     echo "Configuring gitlab::oauth::gitlab..."
     OAUTH_ENABLED=${OAUTH_ENABLED:-true}
+    OAUTH_GITLAB_SCOPE=$(echo ${OAUTH_GITLAB_SCOPE} | sed "s/^\([\"']\)\(.*\)\1\$/\2/")
     update_template ${GITLAB_CONFIG} \
       OAUTH_GITLAB_API_KEY \
       OAUTH_GITLAB_APP_SECRET \
