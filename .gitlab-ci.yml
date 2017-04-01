@@ -101,6 +101,7 @@ image-test:
         --env="OAUTH_AZURE_TENANT_ID=${CI_COMMIT_SHA}"
         --env="GOOGLE_ANALYTICS_ID=UA-123-ab"
         --env="GITALY_ENABLED=true"
+        --env="VERBOSE=true"
         ${REGISTRY_IMAGE}
     - echo "Waiting for containers to start and settle, 60 seconds ..."
     - sleep 60
