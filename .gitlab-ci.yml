@@ -103,17 +103,17 @@ image-test:
         --env="GITALY_ENABLED=true"
         --env="VERBOSE=true"
         ${REGISTRY_IMAGE}
-    - echo "Wait for gitlab to recompile assets ..."
-    - while $(docker logs gitlab-test | tail -n 1 | grep -c "^Recompiling assets") != 0; do sleep 30; echo "Still waiting ..."; done
     - echo "Waiting for containers to start and settle, 90 seconds ..."
     - sleep 90
+    - echo "Wait for gitlab to recompile assets ..."
+    - while [[ $(docker logs gitlab-test | tail -n 1 | grep -c "Recompiling assets") != 0 ]]; do sleep 30; echo "Still waiting ..."; done
     - docker logs gitlab-test
     - export RC=0
     - if [[ $(docker logs gitlab-test | grep -i "error\|fail\|exit" | grep -c -i -v info) != 0 ]]; then export RC=1; fi
     - echo "Stopping and removing containers ..."
     - docker stop gitlab-test gitlab-redis gitlab-postgresql
     - docker rm -f gitlab-test gitlab-redis gitlab-postgresql
-    - exit $RC
+    - if [[ $RC != 0 ]]; then docker logs gitlab-test | grep -i "error\|fail\|exit" | grep -i -v info; exit $RC; fi
   except:
     - latest
 
