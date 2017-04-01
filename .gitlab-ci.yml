@@ -18,7 +18,7 @@ stages:
  - mirror
 
 before_script:
-  - export VCS_REF=${CI_COMMIT_SHA:0:8}
+  - export VCS_REF=${CI_COMMIT_SHA:0:7}
   - export VCS_BRANCH=${CI_COMMIT_REF_NAME}
   - export IMAGE_TAG=${CI_COMMIT_REF_SLUG}
   - export IMAGE_TAG_SHA=${VCS_REF}
