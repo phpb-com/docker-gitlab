@@ -262,9 +262,9 @@ gitlab_configure_gitaly() {
     export GITALY_SOCKET_PATH
     export GITALY_PROMETHEUS_LISTEN_ADDR
     echo "GITALY_SOCKET_PATH=${GITALY_SOCKET_PATH}" \
-      exec_as_git tee -a /home/git/gitaly/env
+      | exec_as_git tee -a /home/git/gitaly/env
     echo "GITALY_PROMETHEUS_LISTEN_ADDR=${GITALY_PROMETHEUS_LISTEN_ADDR}" \
-      exec_as_git tee -a /home/git/gitaly/env
+      | exec_as_git tee -a /home/git/gitaly/env
   fi
 }
 
@@ -494,6 +494,7 @@ gitlab_configure_oauth_authentiq() {
   if [[ -n ${OAUTH_AUTHENTIQ_CLIENT_ID} && -n ${OAUTH_AUTHENTIQ_CLIENT_SECRET} ]]; then
     echo "Configuring gitlab::oauth::authentiq..."
     OAUTH_ENABLED=${OAUTH_ENABLED:-true}
+    OAUTH_AUTHENTIQ_SCOPE=$(echo ${OAUTH_AUTHENTIQ_SCOPE} | sed "s/^\([\"']\)\(.*\)\1\$/\2/")
     update_template ${GITLAB_CONFIG} \
       OAUTH_AUTHENTIQ_CLIENT_ID \
       OAUTH_AUTHENTIQ_CLIENT_SECRET \
@@ -508,6 +509,7 @@ gitlab_configure_oauth_github() {
   if [[ -n ${OAUTH_GITHUB_API_KEY} && -n ${OAUTH_GITHUB_APP_SECRET} ]]; then
     echo "Configuring gitlab::oauth::github..."
     OAUTH_ENABLED=${OAUTH_ENABLED:-true}
+    OAUTH_GITHUB_SCOPE=$(echo ${OAUTH_GITHUB_SCOPE} | sed "s/^\([\"']\)\(.*\)\1\$/\2/")
     update_template ${GITLAB_CONFIG} \
       OAUTH_GITHUB_API_KEY \
       OAUTH_GITHUB_APP_SECRET \
@@ -523,6 +525,7 @@ gitlab_configure_oauth_gitlab() {
   if [[ -n ${OAUTH_GITLAB_API_KEY} && -n ${OAUTH_GITLAB_APP_SECRET} ]]; then
     echo "Configuring gitlab::oauth::gitlab..."
     OAUTH_ENABLED=${OAUTH_ENABLED:-true}
+    OAUTH_GITLAB_SCOPE=$(echo ${OAUTH_GITLAB_SCOPE} | sed "s/^\([\"']\)\(.*\)\1\$/\2/")
     update_template ${GITLAB_CONFIG} \
       OAUTH_GITLAB_API_KEY \
       OAUTH_GITLAB_APP_SECRET \
@@ -732,6 +735,12 @@ gitlab_configure_backups_schedule() {
         esac
         echo "$min $hour $day_of_month $month $day_of_week /bin/bash -l -c 'cd ${GITLAB_INSTALL_DIR} && bundle exec rake gitlab:backup:create SKIP=${GITLAB_BACKUP_SKIP} RAILS_ENV=${RAILS_ENV}'" >> /tmp/cron.${GITLAB_USER}
         crontab -u ${GITLAB_USER} /tmp/cron.${GITLAB_USER}
+
+        if [[ ${VERBOSE} == true ]]; then
+          echo "Content of git user crontab ... "
+          crontab -u ${GITLAB_USER} -l
+        fi
+
       fi
       rm -rf /tmp/cron.${GITLAB_USER}
       ;;
@@ -1029,6 +1038,12 @@ nginx_configure_gitlab() {
   nginx_configure_gitlab_ipv6
   nginx_configure_gitlab_retain_ip_header
   nginx_configure_pages
+
+  if [[ ${VERBOSE} == true ]]; then
+    echo "Conten of ${GITLAB_NGINX_CONFIG} ..."
+    cat ${GITLAB_NGINX_CONFIG}
+  fi
+
 }
 
 nginx_configure_gitlab_ci() {
@@ -1040,6 +1055,12 @@ nginx_configure_gitlab_ci() {
       GITLAB_HOST \
       GITLAB_CI_HOST \
       DNS_RESOLVERS
+
+    if [[ ${VERBOSE} == true ]]; then
+      echo "Conten of ${GITLAB_CI_NGINX_CONFIG} ..."
+      cat ${GITLAB_CI_NGINX_CONFIG}
+    fi
+
   fi
 }
 
@@ -1053,6 +1074,12 @@ nginx_configure_gitlab_registry() {
       GITLAB_REGISTRY_API_URL \
       SSL_REGISTRY_KEY_PATH \
       SSL_REGISTRY_CERT_PATH
+
+    if [[ ${VERBOSE} == true ]]; then
+      echo "Conten to ${GITLAB_REGISTRY_NGINX_CONFIG} ..."
+      cat ${GITLAB_REGISTRY_NGINX_CONFIG}
+    fi
+
   fi
 }
 
@@ -1077,6 +1104,10 @@ nginx_configure_pages(){
         GITLAB_PAGES_DOMAIN \
         GITLAB_LOG_DIR \
         GITLAB_PAGES_PORT
+    fi
+    if [[ ${VERBOSE} == true ]]; then
+      echo "Conten of ${GITLAB_PAGES_NGINX_CONFIG} ..."
+      cat ${GITLAB_PAGES_NGINX_CONFIG}
     fi
   fi
 }
@@ -1420,6 +1451,11 @@ configure_gitlab() {
   gitlab_configure_registry
   gitlab_configure_pages
 
+  if [[ ${VERBOSE} == true ]]; then
+    echo "Content of ${GITLAB_CONFIG} ... "
+    cat ${GITLAB_CONFIG}
+  fi
+
   # remove stale gitlab.socket
   rm -rf ${GITLAB_INSTALL_DIR}/tmp/sockets/gitlab.socket
 }
@@ -1435,6 +1471,12 @@ configure_gitlab_shell() {
     REDIS_HOST \
     REDIS_PORT \
     REDIS_DB_NUMBER
+
+  if [[ ${VERBOSE} == true ]]; then
+    echo "Content of ${GITLAB_SHELL_CONFIG} ... "
+    cat ${GITLAB_SHELL_CONFIG}
+  fi
+
 }
 
 configure_gitlab_pages() {
@@ -1478,6 +1520,12 @@ autorestart=true
 stdout_logfile=${GITLAB_INSTALL_DIR}/log/%(program_name)s.log
 stderr_logfile=${GITLAB_INSTALL_DIR}/log/%(program_name)s.log
 EOF
+
+  if [[ ${VERBOSE} == true ]]; then
+    echo "Content of /etc/supervisor/conf.d/gitlab-pages.conf ... "
+    cat /etc/supervisor/conf.d/gitlab-pages.conf
+  fi
+
 fi
 }
 
@@ -1494,6 +1542,11 @@ configure_gitlab_monitor() {
   REDIS_HOST \
   REDIS_PORT
 
+  if [[ ${VERBOSE} == true ]]; then
+    echo "Content of ${GITLAB_MONITOR_CONFIG} ... "
+    cat ${GITLAB_MONITOR_CONFIG}
+  fi
+
   # enable/disable startup of gitlab-monitor
   update_template /etc/supervisor/conf.d/gitlab-monitor.conf GITLAB_MONITOR_ENABLED
 }
@@ -1509,6 +1562,12 @@ configure_nginx() {
     nginx_configure_gitlab
     nginx_configure_gitlab_ci
     nginx_configure_gitlab_registry
+
+    if [[ ${VERBOSE} == true ]]; then
+      echo "Conten of nginx.conf ..."
+      cat /etc/nginx/nginx.conf
+    fi
+
   else
     rm -f /etc/supervisor/conf.d/nginx.conf
   fi
@@ -1572,7 +1631,7 @@ migrate_database() {
     if [[ -n ${GITLAB_RELATIVE_URL_ROOT} ]]; then
       echo "Recompiling assets (relative_url in use), this could take a while..."
       # Should be equal to the line in install script
-      exec_as_git bundle exec rake yarn:install gitlab:assets:clean gitlab:assets:compile webpack:compile RAILS_ENV=${RAILS_ENV} NODE_ENV=${NODE_ENV} >/dev/null 2>&1
+      exec_as_git bundle exec rake gitlab:assets:clean gitlab:assets:compile webpack:compile RAILS_ENV=${RAILS_ENV} NODE_ENV=${NODE_ENV} >/dev/null 2>&1
     fi
 
     echo "Clearing cache..."

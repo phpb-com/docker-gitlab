@@ -39,9 +39,9 @@ probes:
       class_name: Database::BlockedQueriesProber
       <<: *db_common
 #XXX Does not work on Gitlab CE due to project.mirror column missing. Ref: https://gotfix.com/docker/gitlab/issues/55
-#   ci_builds:
-#     class_name: Database::CiBuildsProber
-#     <<: *db_common
+    ci_builds:
+      class_name: Database::CiBuildsProber
+      <<: *db_common
     tuple_stats:
       class_name: Database::TuplesProber
       <<: *db_common
