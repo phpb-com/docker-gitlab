@@ -74,7 +74,6 @@ image-test:
         --env="GITLAB_SECRETS_OTP_KEY_BASE=${CI_COMMIT_SHA}"
         --env="GITLAB_MONITOR_ENABLED=true"
         --env="GITLAB_PAGES_ENABLED=true"
-        --env="GITLAB_PAGES_EXTERNAL_HTTP=1.1.1.1:8080"
         --env="GITLAB_PROJECTS_SNIPPETS=true"
         --env="GITLAB_NOTIFY_PUSHER=true"
         --env="GITLAB_MATTERMOST_ENABLED=true"
@@ -119,6 +118,7 @@ image-test:
     - docker logs gitlab-test > logs/docker-logs-gitlab.log 2>&1
     - docker logs gitlab-postgresql > logs/docker-logs-postgresql.log 2>&1
     - docker logs gitlab-redis > logs/docker-logs-redis.log 2>&1
+    - env > logs/env-variables.log
     - docker logs gitlab-test
     - export RC=0
     - if [[ $(docker logs gitlab-test 2>&1 | grep -i "error\|fail\|fatal" | grep -c -i -v "error_page\|error_log\|fail_timeout\|#") != 0 ]]; then
