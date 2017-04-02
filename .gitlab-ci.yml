@@ -75,7 +75,6 @@ image-test:
         --env="GITLAB_MONITOR_ENABLED=true"
         --env="GITLAB_PAGES_ENABLED=true"
         --env="GITLAB_PAGES_EXTERNAL_HTTP=1.1.1.1"
-        --env="GITLAB_PAGES_EXTERNAL_HTTPS=1.1.1.1"
         --env="GITLAB_PROJECTS_SNIPPETS=true"
         --env="GITLAB_NOTIFY_PUSHER=true"
         --env="GITLAB_MATTERMOST_ENABLED=true"
@@ -122,8 +121,8 @@ image-test:
     - docker logs gitlab-redis > logs/docker-logs-redis.log 2>&1
     - docker logs gitlab-test
     - export RC=0
-    - if [[ $(docker logs gitlab-test | grep -i "error\|fail\|exit\|fatal" | grep -c -i -v info) != 0 ]]; then
-        export RC=1; docker logs gitlab-test | grep -i "error\|fail\|exit\|fatal" | grep -i -v info; fi
+    - if [[ $(docker logs gitlab-test 2>&1 | grep -i "error\|fail\|exit\|fatal" | grep -c -i -v "error_page\|error_log\|fail_timeout\|#") != 0 ]]; then
+        export RC=1; docker logs gitlab-test 2>&1 | grep -i "error\|fail\|exit\|fatal" | grep -i -v "error_page\|error_log\|fail_timeout\|#"; fi
     - echo "Stopping and removing containers ..."
     - docker stop gitlab-test gitlab-redis gitlab-postgresql
     - docker rm -f gitlab-test gitlab-redis gitlab-postgresql
