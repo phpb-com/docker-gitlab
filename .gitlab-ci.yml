@@ -20,7 +20,7 @@ stages:
 before_script:
   - export VCS_REF=${CI_COMMIT_SHA:0:7}
   - export VCS_BRANCH=${CI_COMMIT_REF_NAME}
-  - export IMAGE_TAG=${CI_COMMIT_REF_SLUG}
+  - export IMAGE_TAG=$(echo -en $CI_BUILD_REF_NAME | tr -c '[:alnum:]_.-' '-')
   - export IMAGE_TAG_SHA=${VCS_REF}
   - export REGISTRY_IMAGE_BASE=${DOCKER_HUB_BASE}
   - export REGISTRY_IMAGE="${REGISTRY_IMAGE_BASE}:${IMAGE_TAG_SHA}"
