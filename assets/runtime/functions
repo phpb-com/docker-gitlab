@@ -1501,14 +1501,9 @@ cat >> /etc/supervisor/conf.d/gitlab-pages.conf <<EOF
 EOF
 fi
 
-if [[ -n ${GITLAB_PAGES_EXTERNAL_HTTPS} ]]; then
+if [[ -n ${GITLAB_PAGES_EXTERNAL_HTTPS} && -f ${SSL_PAGES_CERT_PATH} && -f ${SSL_PAGES_KEY_PATH} ]]; then
 cat >> /etc/supervisor/conf.d/gitlab-pages.conf <<EOF
   -listen-https :${GITLAB_PAGES_EXTERNAL_HTTPS}
-EOF
-fi
-
-if [[ -f ${SSL_PAGES_CERT_PATH} && -f ${SSL_PAGES_KEY_PATH} ]]; then
-cat >> /etc/supervisor/conf.d/gitlab-pages.conf <<EOF
   -root-cert ${SSL_PAGES_CERT_PATH}
   -root-key ${SSL_PAGES_KEY_PATH}
 EOF
