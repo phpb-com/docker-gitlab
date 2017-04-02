@@ -166,8 +166,8 @@ production: &base
     host: {{GITLAB_PAGES_DOMAIN}}
     port: {{GITLAB_PAGES_PROXY_PORT}} # Set to 443 if you serve the pages with HTTPS
     https: {{GITLAB_PAGES_HTTPS}} # Set to true if you serve the pages with HTTPS
-    external_http: {{GITLAB_PAGES_EXTERNAL_HTTP}} # If defined, enables custom domain support in GitLab Pages
-    external_https: {{GITLAB_PAGES_EXTERNAL_HTTPS}} # If defined, enables custom domain and certificate support in GitLab Pages
+    external_http: {{GITLAB_PAGES_EXTERNAL_HTTP_IP}} # If defined, enables custom domain support in GitLab Pages
+    external_https: {{GITLAB_PAGES_EXTERNAL_HTTPS_IP}} # If defined, enables custom domain and certificate support in GitLab Pages
 
 
   ## Mattermost

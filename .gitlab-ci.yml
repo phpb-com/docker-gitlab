@@ -74,6 +74,7 @@ image-test:
         --env="GITLAB_SECRETS_OTP_KEY_BASE=${CI_COMMIT_SHA}"
         --env="GITLAB_MONITOR_ENABLED=true"
         --env="GITLAB_PAGES_ENABLED=true"
+        --env="GITLAB_PAGES_EXTERNAL_HTTP_IP=1.1.1.1"
         --env="GITLAB_PROJECTS_SNIPPETS=true"
         --env="GITLAB_NOTIFY_PUSHER=true"
         --env="GITLAB_MATTERMOST_ENABLED=true"

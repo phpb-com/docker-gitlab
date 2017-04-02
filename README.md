@@ -784,8 +784,10 @@ Below is the complete list of available configuration options segregated by cate
 | `GITLAB_PAGES_METRICS_PORT` | This will expose general metrics about the Go runtime and pages application for Prometheus to scrape. Default to `9235` |
 | `SSL_PAGES_KEY_PATH` | Path to the gitlab-pages SSL key. Default to `$GITLAB_DATA_DIR/certs/pages.key` |
 | `SSL_PAGES_CERT_PATH` | Path to the gitlab-pages SSL certificate. Default to `$GITLAB_DATA_DIR/certs/pages.crt` |
-| `GITLAB_PAGES_EXTERNAL_HTTP` | External IP for gitlab-pages that will accept HTTP requests. Used to enable custom domain setup by the user. |
-| `GITLAB_PAGES_EXTERNAL_HTTPS` | External IP for gitlab-pages that will accept HTTPS requests. Used to enable custom domain setup by the user. |
+| `GITLAB_PAGES_EXTERNAL_HTTP` | Port for gitlab-pages that will accept HTTP requests. Default `8888` |
+| `GITLAB_PAGES_EXTERNAL_HTTPS` | Port for gitlab-pages that will accept HTTPS requests. Default `8443` |
+| `GITLAB_PAGES_EXTERNAL_HTTP_IP` | External IP for gitlab-pages that will accept HTTP requests. Used to enable custom domain setup by the user. No Defaults. |
+| `GITLAB_PAGES_EXTERNAL_HTTPS_IP` | External IP for gitlab-pages that will accept HTTPS requests. Used to enable custom domain setup by the user. No Defaults. |
 
 #### GitLab specific
 
