@@ -25,6 +25,13 @@ Those are the steps that should be taken to upgrade GitLab, GitLab Shell, GitLab
    - check https://gitlab.com/gitlab-org/gitlab-workhorse/tags
    - check https://gitlab.com/gitlab-org/gitlab-ce/tags
    - Update each version in a separate commit in Dockerfile
- - Handy oneliner to update version `sed -i -- 's/X\.X\.X/Y.Y.Y/g' README.md VERSION docker-compose.yml docs/* Dockerfile
+ - Handy oneliner to update version `sed -i -- 's/X\.X\.X/Y.Y.Y/g' README.md VERSION docker-compose.yml docs/* Dockerfile`
  - Try to build image (run `make`) after changes are applied.
  - **NOTE** Watch for availability of [Gitaly](https://gitlab.com/gitlab-org/gitaly) to include in defailt image. Should be available in 9.1~
+
+## Release
+
+ - Update Version in all relevant files (see above)
+ - Tag the commit with release `git tag -a X.X.X-X -m "Release X.X.X-X"`
+ - Set git config for tags `git config --global push.followTags true`
+ - Push commit and tag `git push --follow-tags`
