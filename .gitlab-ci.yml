@@ -139,7 +139,7 @@ tag-latest:
     - git tag -fa latest -m "CI Build auto-tagged, latest master branch ref"
     - git push --force https://${ACCESS_USER}:${ACCESS_TOKEN}@gotfix.com/docker/gitlab.git refs/tags/latest
   only:
-    - /^[0-9.]+$/
+    - /^[0-9-.]+$/
 
 release:
   stage: release
