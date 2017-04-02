@@ -85,7 +85,7 @@ image-test:
         --env="GITLAB_HTTPS=true"
         --env="NGINX_RETAIN_IP_HEADER=true"
         --env="SMTP_ENABLED=true"
-        --env="IMAP_ENABLED=true"
+        --env="IMAP_ENABLED=false"
         --env="OAUTH_ENABLED=true"
         --env="OAUTH_GOOGLE_API_KEY=${CI_COMMIT_SHA}"
         --env="OAUTH_GOOGLE_APP_SECRET=${CI_COMMIT_SHA}"
