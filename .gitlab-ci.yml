@@ -74,7 +74,7 @@ image-test:
         --env="GITLAB_SECRETS_OTP_KEY_BASE=${CI_COMMIT_SHA}"
         --env="GITLAB_MONITOR_ENABLED=true"
         --env="GITLAB_PAGES_ENABLED=true"
-        --env="GITLAB_PAGES_EXTERNAL_HTTP=1.1.1.1"
+        --env="GITLAB_PAGES_EXTERNAL_HTTP=1.1.1.1:8080"
         --env="GITLAB_PROJECTS_SNIPPETS=true"
         --env="GITLAB_NOTIFY_PUSHER=true"
         --env="GITLAB_MATTERMOST_ENABLED=true"
@@ -114,15 +114,15 @@ image-test:
     - echo "Waiting for containers to start and settle, 90 seconds ..."
     - sleep 90
     - echo "Wait for gitlab to recompile assets ..."
-    - while [[ $(docker logs gitlab-test | tail -n 1 | grep -c "Recompiling assets") != 0 ]]; do sleep 30; echo "Still waiting ..."; done
+    - while [[ $(docker logs gitlab-test 2>&1 | tail -n 1 | grep -c "Recompiling assets") != 0 ]]; do sleep 30; echo "Still waiting ..."; done
     - sleep 30
     - docker logs gitlab-test > logs/docker-logs-gitlab.log 2>&1
     - docker logs gitlab-postgresql > logs/docker-logs-postgresql.log 2>&1
     - docker logs gitlab-redis > logs/docker-logs-redis.log 2>&1
     - docker logs gitlab-test
     - export RC=0
-    - if [[ $(docker logs gitlab-test 2>&1 | grep -i "error\|fail\|exit\|fatal" | grep -c -i -v "error_page\|error_log\|fail_timeout\|#") != 0 ]]; then
-        export RC=1; docker logs gitlab-test 2>&1 | grep -i "error\|fail\|exit\|fatal" | grep -i -v "error_page\|error_log\|fail_timeout\|#"; fi
+    - if [[ $(docker logs gitlab-test 2>&1 | grep -i "error\|fail\|fatal" | grep -c -i -v "error_page\|error_log\|fail_timeout\|#") != 0 ]]; then
+        export RC=1; docker logs gitlab-test 2>&1 | grep -i "error\|fail\|fatal" | grep -i -v "error_page\|error_log\|fail_timeout\|#"; fi
     - echo "Stopping and removing containers ..."
     - docker stop gitlab-test gitlab-redis gitlab-postgresql
     - docker rm -f gitlab-test gitlab-redis gitlab-postgresql
