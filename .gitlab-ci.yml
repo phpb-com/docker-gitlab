@@ -50,6 +50,8 @@ image-test:
     paths:
       - logs/
   script:
+    - mkdir -p $(pwd)/logs
+    - chmod 777 $(pwd)/logs
     - echo "Pulling docker container ${REGISTRY_IMAGE} ..."
     - docker pull ${REGISTRY_IMAGE}
     - echo "Pulling and starting postgresql containers ..."
@@ -108,7 +110,7 @@ image-test:
         --env="GOOGLE_ANALYTICS_ID=UA-123-ab"
         --env="GITALY_ENABLED=true"
         --env="VERBOSE=true"
-        --volume ./logs:/var/log/gitlab
+        --volume "$(pwd)/logs:/var/log/gitlab"
         ${REGISTRY_IMAGE}
     - echo "Waiting for containers to start and settle, 90 seconds ..."
     - sleep 90
