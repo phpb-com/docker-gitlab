@@ -45,7 +45,7 @@ image-test:
   stage: test
   artifacts:
     name: "${CI_JOB_STAGE}_${CI_COMMIT_REF_NAME}"
-    when: on_failure
+    when: always
     expire_in: 1 week
     paths:
       - logs/
