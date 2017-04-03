@@ -927,6 +927,11 @@ Below is the complete list of available configuration options segregated by cate
 | `LDAP_BLOCK_AUTO_CREATED_USERS` | Locks down those users until they have been cleared by the admin. Defaults to `false`. |
 | `LDAP_BASE` | Base where we can search for users. No default. |
 | `LDAP_USER_FILTER` | Filter LDAP users. No default. |
+| `LDAP_USER_ATTRIBUTE_USERNAME` | fields for the identification of a user. Default to `['uid', 'userid', 'sAMAccountName']`. |
+| `LDAP_USER_ATTRIBUTE_MAIL` | fields for the shown mail address. Default to `['mail', 'email', 'userPrincipalName']`. |
+| `LDAP_USER_ATTRIBUTE_NAME` | field for the used username of a user. Default to `cn`. |
+| `LDAP_USER_ATTRIBUTE_FIRSTNAME` | field for the forename of a user. Default to `givenName`. |
+| `LDAP_USER_ATTRIBUTE_LASTNAME` | field for the surname of a user. Default to `sn`. |
 | `OAUTH_ENABLED` | Enable OAuth support. Defaults to `true` if any of the support OAuth providers is configured, else defaults to `false`. |
 | `OAUTH_AUTO_SIGN_IN_WITH_PROVIDER` | Automatically sign in with a specific OAuth provider without showing GitLab sign-in page. Accepted values are `cas3`, `github`, `bitbucket`, `gitlab`, `google_oauth2`, `facebook`, `twitter`, `saml`, `crowd`, `auth0` and `azure_oauth2`. No default. |
 | `OAUTH_ALLOW_SSO` | Comma separated list of oauth providers for single sign-on. This allows users to login without having a user account. The account is created automatically when authentication is successful. Accepted values are `cas3`, `github`, `bitbucket`, `gitlab`, `google_oauth2`, `facebook`, `twitter`, `saml`, `crowd`, `auth0` and `azure_oauth2`. No default. |
@@ -971,6 +976,9 @@ Below is the complete list of available configuration options segregated by cate
 | `OAUTH_SAML_ATTRIBUTE_STATEMENTS_NAME` | Map 'name' attribute in a SAMLResponse to entries in the OmniAuth info hash, No defaults. See [GitLab documentation](http://doc.gitlab.com/ce/integration/saml.html#attribute_statements) for more details. |
 | `OAUTH_SAML_ATTRIBUTE_STATEMENTS_FIRST_NAME` | Map 'first_name' attribute in a SAMLResponse to entries in the OmniAuth info hash, No defaults. See [GitLab documentation](http://doc.gitlab.com/ce/integration/saml.html#attribute_statements) for more details. |
 | `OAUTH_SAML_ATTRIBUTE_STATEMENTS_LAST_NAME` | Map 'last_name' attribute in a SAMLResponse to entries in the OmniAuth info hash, No defaults. See [GitLab documentation](http://doc.gitlab.com/ce/integration/saml.html#attribute_statements) for more details. |
+| `OAUTH_SAML_PRIVATE_KEY` | Provide gitlab a private key to use for secure saml requests and assertions. No default, and must be coupled with `OAUTH_SAML_CERTIFICATE` to take effect. See [ruby-saml](https://github.com/onelogin/ruby-saml#signing) for more details. |
+|
+| `OAUTH_SAML_CERTIFICATE` | Provide gitlab a public certificate to use for secure saml requests and assertions. No default, and must be coupled with `OAUTH_SAML_PRIVATE_KEY` to take effect. |
 | `OAUTH_CROWD_SERVER_URL` | Crowd server url. No defaults. |
 | `OAUTH_CROWD_APP_NAME` | Crowd server application name. No defaults. |
 | `OAUTH_CROWD_APP_PASSWORD` | Crowd server application password. No defaults. |
