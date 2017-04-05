@@ -3,6 +3,14 @@
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list of changes in GitLab.
 
 
+**9.0.3**
+- gitlab: Gitlab CE 9.0.3
+- gitaly 0.5.0
+- Fix bug that assigns wrong variable value to pages certificate and key for nginx
+- Fix race-condition for nginx gitlab pages config
+- Fix that pages only start listening for external https if certs exist
+- Fix default variables for pages
+
 **9.0.2-3**
 - gitlab: Gitlab CE 9.0.2
 - Various improvements to CI process and build

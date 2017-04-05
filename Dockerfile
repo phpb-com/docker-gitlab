@@ -20,14 +20,14 @@ LABEL org.label-schema.schema-version="1.0" \
       com.gotfix.license=MIT \
       com.gotfix.docker.dockerfile="/Dockerfile"
 
-ENV GITLAB_VERSION=9.0.2 \
+ENV GITLAB_VERSION=9.0.3 \
     RUBY_VERSION=2.3 \
     GOLANG_VERSION=1.8 \
     GITLAB_SHELL_VERSION=5.0.2 \
     GITLAB_WORKHORSE_VERSION=1.4.2 \
     GITLAB_PAGES_VERSION=0.4.0 \
     GITLAB_MONITOR_VERSION=1.3.1 \
-    GITLAB_GITALY_VERSION=0.4.0 \
+    GITLAB_GITALY_VERSION=0.5.0 \
     GITLAB_USER="git" \
     GITLAB_HOME="/home/git" \
     GITLAB_LOG_DIR="/var/log/gitlab" \
