@@ -80,7 +80,7 @@ services:
 
   postgresql:
     restart: always
-    image: gotfix/postgresql:9.6.2-3
+    image: gotfix/postgresql:latest
     volumes:
     - /tmp/docker/gitlab/postgresql:/var/lib/postgresql:Z
     environment:

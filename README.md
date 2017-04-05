@@ -222,7 +222,7 @@ docker run --name gitlab-postgresql -d \
     --env 'DB_USER=gitlab' --env 'DB_PASS=password' \
     --env 'DB_EXTENSION=pg_trgm' \
     --volume /srv/docker/gitlab/postgresql:/var/lib/postgresql \
-    gotfix/postgresql:9.6.2-3
+    gotfix/postgresql:latest
 ```
 
 Step 2. Launch a redis container
@@ -326,7 +326,7 @@ To illustrate linking with a postgresql container, we will use the [gotfix/postg
 First, lets pull the postgresql image from the docker index.
 
 ```bash
-docker pull gotfix/postgresql:9.6.2-3
+docker pull gotfix/postgresql:latest
 ```
 
 For data persistence lets create a store for the postgresql and start the container.
@@ -346,7 +346,7 @@ docker run --name gitlab-postgresql -d \
     --env 'DB_USER=gitlab' --env 'DB_PASS=password' \
     --env 'DB_EXTENSION=pg_trgm' \
     --volume /srv/docker/gitlab/postgresql:/var/lib/postgresql \
-    gotfix/postgresql:9.6.2-3
+    gotfix/postgresql:latest
 ```
 
 The above command will create a database named `gitlabhq_production` and also create a user named `gitlab` with the password `password` with access to the `gitlabhq_production` database.
