@@ -88,8 +88,10 @@ RUN apt-get install -y \
     libxslt1.1 \
     libcurl3 \
     libicu55 \
+    libmysqlclient20 \
     logrotate \
     locales \
+    mysql-client \
     nginx \
     nodejs \
     openssh-server \
