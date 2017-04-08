@@ -23,7 +23,7 @@ gitlab_ce_cleanup_dir_post() {
 
 # Function that is executed before build process starts
 prebuild_gitlab_ce() {
-  gitlab_ce_update_gems_to_latest
+# gitlab_ce_update_gems_to_latest
   return 0
 }
 
