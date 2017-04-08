@@ -2,15 +2,14 @@
 set -e
 
 # Patch gitlab-ce to use redis gem >= 3.3.3 to be compatible with ruby 2.4
-gitlab_ce_update_redis_gem_to_3_3_3() {
-  # gem 'redis', '~> 3.3', '>= 3.3.3'
-  echo "Updating redis gem to version >= 3.3.3"
-  sed -ri "s/^gem 'redis', '~> 3.2'$/gem 'redis', '~> 3.3', '>= 3.3.3'/g" Gemfile
+gitlab_ce_update_redis_gem_to_latest() {
+  echo "Updating redis gem to the latest allowed"
+  exec_as_git bundle update redis
 }
 
 # Function that is executed before build process starts
 prebuild_gitlab_ce() {
-  gitlab_ce_update_redis_gem_to_3_3_3
+  gitlab_ce_update_redis_gem_to_latest
   return 0
 }
 
