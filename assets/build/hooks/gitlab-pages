@@ -1,0 +1,13 @@
+#!/bin/bash
+set -e
+
+# Function that is executed before build process starts
+prebuild_gitlab_pages() {
+  return 0
+}
+
+# Function that is executed after build process is done
+postbuild_gitlab_pages() {
+  return 0
+}
+
