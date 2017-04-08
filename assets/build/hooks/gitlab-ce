@@ -7,14 +7,29 @@ gitlab_ce_update_redis_gem_to_latest() {
   exec_as_git bundle update redis
 }
 
+gitlab_ce_update_gems_to_latest() {
+  echo "Updating gems to the latest version"
+  exec_as_git bundle update --jobs=$(nproc)
+  exec_as_git bundle lock
+  rm -rf ${GITLAB_INSTALL_DIR}/vendor/bundle
+}
+
+gitlab_ce_cleanup_dir_post() {
+  echo "Cleaning unused assets"
+  rm -rf ${GITLAB_INSTALL_DIR}/.git
+  rm -rf ${GITLAB_INSTALL_DIR}/.gitlab
+  rm -rf ${GITLAB_INSTALL_DIR}/.github
+}
+
 # Function that is executed before build process starts
 prebuild_gitlab_ce() {
-  gitlab_ce_update_redis_gem_to_latest
+# gitlab_ce_update_gems_to_latest
   return 0
 }
 
 # Function that is executed after build process is done
 postbuild_gitlab_ce() {
+  gitlab_ce_cleanup_dir_post
   return 0
 }
 
