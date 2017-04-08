@@ -39,6 +39,7 @@ rm -rf /etc/ssh/ssh_host_*_key /etc/ssh/ssh_host_*_key.pub
 
 # add ${GITLAB_USER} user
 adduser --disabled-login --gecos 'GitLab' ${GITLAB_USER}
+usermod -aG sudo ${GITLAB_USER}
 passwd -d ${GITLAB_USER}
 
 # set PATH (fixes cron job PATH issues)
