@@ -87,31 +87,91 @@ tar -xf ${GITLAB_BUILD_DIR}/go${GOLANG_VERSION}.linux-amd64.tar.gz -C /tmp/
 # Build and Install downloaded sources
 #
 
-# install gitlab-shell
+### install gitlab-shell
 cd ${GITLAB_SHELL_INSTALL_DIR}
+
+# Source build hooks
+source ${GITLAB_BUILD_DIR}/hooks/gitlab-shell
+
+# Execute pre-build hook
+echo "Executing pre-build hook for gitlab-shell"
+prebuild_gitlab_shell
+
 exec_as_git cp -a ${GITLAB_SHELL_INSTALL_DIR}/config.yml.example ${GITLAB_SHELL_INSTALL_DIR}/config.yml
 exec_as_git ./bin/install
 
-# install gitlab-monitor
+# Execute post-build hook
+echo "Executing post-build hook for gitlab-shell"
+postbuild_gitlab_shell
+
+### install gitlab-monitor
 cd ${GITLAB_MONITOR_INSTALL_DIR}
+
+# Source build hooks
+source ${GITLAB_BUILD_DIR}/hooks/gitlab-monitor
+
+# Execute pre-build hook
+echo "Executing pre-build hook for gitlab-monitor"
+prebuild_gitlab_monitor
+
 exec_as_git bundle install -j$(nproc) --deployment
 
-# install gitaly
+# Execute post-build hook
+echo "Executing post-build hook for gitlab-monitor"
+postbuild_gitlab_monitor
+
+### install gitaly
 cd ${GITLAB_GITALY_INSTALL_DIR}
+
+# Source build hooks
+source ${GITLAB_BUILD_DIR}/hooks/gitlab-gitaly
+
+# Execute pre-build hook
+echo "Executing pre-build hook for gitlab-gitaly"
+prebuild_gitlab_gitaly
+
 PATH=/tmp/go/bin:$PATH GOROOT=/tmp/go make install
 
-# install gitlab-workhorse
+# Execute post-build hook
+echo "Executing post-build hook for gitlab-gitaly"
+postbuild_gitlab_gitaly
+
+### install gitlab-workhorse
 cd ${GITLAB_WORKHORSE_INSTALL_DIR}
+
+# Source build hooks
+source ${GITLAB_BUILD_DIR}/hooks/gitlab-workhorse
+
+# Execute pre-build hook
+echo "Executing pre-build hook for gitlab-workhorse"
+prebuild_gitlab_workhorse
+
 PATH=/tmp/go/bin:$PATH GOROOT=/tmp/go make install
 
-# install gitlab-pages
+# Execute post-build hook
+echo "Executing post-build hook for gitlab-workhorse"
+postbuild_gitlab_workhorse
+
+### install gitlab-pages
 cd ${GITLAB_PAGES_INSTALL_DIR}
+
+# Source build hooks
+source ${GITLAB_BUILD_DIR}/hooks/gitlab-pages
+
+# Execute pre-build hook
+echo "Executing pre-build hook for gitlab-pages"
+prebuild_gitlab_pages
+
 GODIR=/tmp/go/src/gitlab.com/gitlab-org/gitlab-pages
 mkdir -p "$(dirname "$GODIR")"
 ln -sfv "$(pwd -P)" "$GODIR"
 cd "$GODIR"
 PATH=/tmp/go/bin:$PATH GOROOT=/tmp/go make gitlab-pages
 mv gitlab-pages /usr/local/bin/
+
+# Execute post-build hook
+echo "Executing post-build hook for gitlab-pages"
+postbuild_gitlab_pages
 
 #
 # Cleanup
@@ -138,6 +198,13 @@ exec_as_git sed -i "/headers\['Strict-Transport-Security'\]/d" ${GITLAB_INSTALL_
 exec_as_git sed -i 's/db:reset/db:setup/' ${GITLAB_INSTALL_DIR}/lib/tasks/gitlab/setup.rake
 
 cd ${GITLAB_INSTALL_DIR}
+
+# Source build hooks
+source ${GITLAB_BUILD_DIR}/hooks/gitlab-ce
+
+# Execute pre-build hook
+echo "Executing pre-build hook for gitlab-ce"
+prebuild_gitlab_ce
 
 # check versions in the source, exit 1 if less then required
 CACHE_GITALY_SERVER_VERSION=$(cat GITALY_SERVER_VERSION)
@@ -186,6 +253,10 @@ exec_as_git cp ${GITLAB_INSTALL_DIR}/config/database.yml.postgresql ${GITLAB_INS
 echo "Compiling assets. Please be patient, this could take a while..."
 # Update asstets/runtime/functions file as well, if you make any changes for the next line
 exec_as_git bundle exec rake yarn:install gitlab:assets:clean gitlab:assets:compile webpack:compile USE_DB=false SKIP_STORAGE_VALIDATION=true RAILS_ENV=${RAILS_ENV} NODE_ENV=${NODE_ENV}
+
+# Execute post-build hook
+echo "Executing post-build hook for gitlab-ce"
+postbuild_gitlab_ce
 
 echo "remove auto generated ${GITLAB_DATA_DIR}/config/secrets.yml"
 rm -rf ${GITLAB_DATA_DIR}/config/secrets.yml
