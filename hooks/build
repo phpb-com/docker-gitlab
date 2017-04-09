@@ -1,2 +1,2 @@
 #!/bin/bash
-docker build --build-arg VCS_REF=${SOURCE_COMMIT:0:8} --build-arg VCS_BRANCH=$SOURCE_BRANCH --build-arg BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ") --build-arg VERSION=$(cat VERSION) -t $IMAGE_NAME .
+docker build --compress --build-arg VCS_REF=${SOURCE_COMMIT:0:8} --build-arg VCS_BRANCH=$SOURCE_BRANCH --build-arg BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ") --build-arg VERSION=$(cat VERSION) -t $IMAGE_NAME .
