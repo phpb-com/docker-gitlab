@@ -508,4 +508,16 @@ EOF
 echo "Cleaning-up ..."
 # purge build dependencies and cleanup apt
 apt-get purge -y --auto-remove ${BUILD_DEPENDENCIES}
+apt-get autoremove -y
+apt-get autoclean
+apt-get clean
 rm -rf /var/lib/apt/lists/*
+rm -rdf /tmp/*
+rm -rdf /var/tmp/*
+rm -rf /var/lib/apt/lists/*
+
+# purge not needed files in /usr/share
+echo "Removing documentation..." >&2
+find /usr/share/doc -depth -type f ! -name copyright|xargs rm || true
+find /usr/share/doc -empty|xargs rmdir || true
+rm -rf /usr/share/man /usr/share/groff /usr/share/info /usr/share/lintian /usr/share/linda /var/cache/man

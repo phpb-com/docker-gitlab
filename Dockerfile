@@ -46,6 +46,10 @@ ENV GITLAB_INSTALL_DIR="${GITLAB_HOME}/gitlab" \
     GITLAB_BUILD_DIR="${GITLAB_CACHE_DIR}/build" \
     GITLAB_RUNTIME_DIR="${GITLAB_CACHE_DIR}/runtime"
 
+# Make image a little slimmer 
+RUN mkdir -p /etc/dpkg/dpkg.cfg.d/
+COPY assets/build/01_nodoc /etc/dpkg/dpkg.cfg.d/01_nodoc
+
 RUN echo 'APT::Install-Recommends 0;' >> /etc/apt/apt.conf.d/01norecommends \
  && echo 'APT::Install-Suggests 0;' >> /etc/apt/apt.conf.d/01norecommends \
  && apt-get update && apt-get install -y \
@@ -103,7 +107,13 @@ RUN apt-get install -y \
     supervisor \
     yarn \
     zlib1g \
- && rm -rf /var/lib/apt/lists/*
+ && find /usr/share/locale -mindepth 1 -maxdepth 1 ! -name 'en' | xargs rm -r \
+ && apt-get autoremove -y \
+ && apt-get autoclean \
+ && apt-get clean \
+ && rm -rf /var/lib/apt/lists/* \
+ && rm -rdf /tmp/*  \
+ && rm -rdf /var/tmp/*
 
 RUN update-locale LANG=C.UTF-8 LC_MESSAGES=POSIX \
  && locale-gen en_US.UTF-8 \
