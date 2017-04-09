@@ -10,7 +10,7 @@ gitlab_shell_update_redis_gem_to_3_3_3() {
 
 # Function that is executed before build process starts
 prebuild_gitlab_shell() {
-  gitlab_shell_update_redis_gem_to_3_3_3
+# gitlab_shell_update_redis_gem_to_3_3_3
   return 0
 }
 

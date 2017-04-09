@@ -22,7 +22,7 @@ gitlab_monitor_update_redis_gem_to_latest() {
 # Function that is executed before build process starts
 prebuild_gitlab_monitor() {
   gitlab_monitor_bundle_config
-  gitlab_monitor_update_redis_gem_to_latest
+# gitlab_monitor_update_redis_gem_to_latest
   return 0
 }
 
