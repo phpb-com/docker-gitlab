@@ -8,6 +8,10 @@ gitlab_ce_update_redis_gem_to_latest() {
   exec_as_git bundle lock
 }
 
+gitlab_ce_cleanup_yarn_cache() {
+  exec_as_git yarn cache clean
+}
+
 gitlab_ce_cleanup_dir_post() {
   echo "Cleaning unused assets ... "
   rm -rf ${GITLAB_INSTALL_DIR}/.gitlab
@@ -26,6 +30,7 @@ prebuild_gitlab_ce() {
 # Function that is executed after build process is done
 postbuild_gitlab_ce() {
   gitlab_ce_cleanup_dir_post
+  gitlab_ce_cleanup_yarn_cache
   return 0
 }
 
