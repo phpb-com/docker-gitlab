@@ -30,6 +30,7 @@ build:
   stage: build
   script:
     - docker build 
+        --compress
         --build-arg=http_proxy=${HTTP_PROXY}
         --build-arg=HTTP_PROXY=${HTTP_PROXY}
         --build-arg BUILD_DATE=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
