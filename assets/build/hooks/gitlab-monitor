@@ -2,14 +2,15 @@
 set -e
 
 # Patch gitlab-monitor to use redis gem >= 3.3.3 to be compatible with ruby 2.4
-gitlab_ce_update_redis_gem_to_latest() {
-  echo "Updating redis gem to the latest allowed"
-  exec_as_git bundle update redis
+gitlab_monitor_update_redis_gem_to_latest() {
+  echo "Updating redis gem to the latest version ... "
+  exec_as_git bundle update redis --jobs=$(nproc)
+  exec_as_git bundle lock
 }
 
 # Function that is executed before build process starts
 prebuild_gitlab_monitor() {
-  gitlab_ce_update_redis_gem_to_latest
+  gitlab_monitor_update_redis_gem_to_latest
   return 0
 }
 
