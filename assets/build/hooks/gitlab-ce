@@ -9,7 +9,7 @@ gitlab_ce_bundle_config() {
   exec_as_git bundle config --local clean true
   exec_as_git bundle config --local retry 3
   exec_as_git bundle config --local deployment true
-  exec_as_git bundle config --local without development test
+  exec_as_git bundle config --local without development:test
 }
 
 # Patch gitlab-ce to use redis gem >= 3.3.3 to be compatible with ruby 2.4
