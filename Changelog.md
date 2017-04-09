@@ -5,6 +5,11 @@ This file only reflects the changes that are made in this image. Please refer to
 
 **9.0.4-3**
 - gitlab: Gitlab CE 9.0.4
+- Ruby 2.3.3 (2.4 causes issues with Gitlab)
+- Remove update of Gems
+
+**9.0.4-3**
+- gitlab: Gitlab CE 9.0.4
 - Update Gitaly to 0.6.0
 - MySQL sypport add back
 - Reduction of image size
