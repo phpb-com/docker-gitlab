@@ -33,7 +33,6 @@ gitlab_ce_cleanup_dir_post() {
   rm -rf ${GITLAB_INSTALL_DIR}/.github
   rm -rf ${GITLAB_INSTALL_DIR}/docker
   rm -rf ${GITLAB_INSTALL_DIR}/docker-compose.yml
-  rm -rf ${GITLAB_INSTALL_DIR}/vendor/bundle/ruby/2.4.0/cache
 }
 
 # Function that is executed before build process starts
