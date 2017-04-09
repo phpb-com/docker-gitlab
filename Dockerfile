@@ -47,8 +47,8 @@ ENV GITLAB_INSTALL_DIR="${GITLAB_HOME}/gitlab" \
     GITLAB_RUNTIME_DIR="${GITLAB_CACHE_DIR}/runtime"
 
 # Make image a little slimmer 
-RUN mkdir -p /etc/dpkg/dpkg.cfg.d/
-COPY assets/build/01_nodoc /etc/dpkg/dpkg.cfg.d/01_nodoc
+# RUN mkdir -p /etc/dpkg/dpkg.cfg.d/
+# COPY assets/build/01_nodoc /etc/dpkg/dpkg.cfg.d/01_nodoc
 
 RUN echo 'APT::Install-Recommends 0;' >> /etc/apt/apt.conf.d/01norecommends \
  && echo 'APT::Install-Suggests 0;' >> /etc/apt/apt.conf.d/01norecommends \
