@@ -91,7 +91,7 @@ services:
 
   gitlab:
     restart: always
-    image: gotfix/gitlab:9.0.4-2
+    image: gotfix/gitlab:9.0.4-3
     build: .
     depends_on:
     - redis
@@ -217,7 +217,7 @@ services:
 Execute the rake task with a removeable container.
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    gotfix/gitlab:9.0.4-2 app:rake gitlab:backup:create
+    gotfix/gitlab:9.0.4-3 app:rake gitlab:backup:create
 ```
 ## Restoring Backups
 
@@ -225,7 +225,7 @@ Execute the rake task to restore a backup. Make sure you run the container in in
 
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    gotfix/gitlab:9.0.4-2 app:rake gitlab:backup:restore
+    gotfix/gitlab:9.0.4-3 app:rake gitlab:backup:restore
 ```
 
 The list of all available backups will be displayed in reverse chronological order. Select the backup you want to restore and continue.
@@ -234,5 +234,5 @@ To avoid user interaction in the restore operation, specify the timestamp of the
 
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    gotfix/gitlab:9.0.4-2 app:rake gitlab:backup:restore BACKUP=1417624827
+    gotfix/gitlab:9.0.4-3 app:rake gitlab:backup:restore BACKUP=1417624827
 ```
