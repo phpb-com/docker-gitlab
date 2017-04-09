@@ -238,11 +238,8 @@ if [[ -d ${GEM_CACHE_DIR} ]]; then
   mv ${GEM_CACHE_DIR} ${GITLAB_INSTALL_DIR}/vendor/cache
   chown -R ${GITLAB_USER}: ${GITLAB_INSTALL_DIR}/vendor/cache
 fi
-#XXX workaround for transient error see: https://gotfix.com/docker/gitlab/issues/16 (docker/gitlab#16)
-unset http_proxy https_proxy HTTP_PROXY HTTPS_PROXY
-#/XXX workaround for transient error see: https://gotfix.com/docker/gitlab/issues/16
 
-exec_as_git bundle install -j$(nproc) --deployment --without mysql development test
+exec_as_git bundle install -j$(nproc) --retry=3 --deployment --without development test
 
 # make sure everything in ${GITLAB_HOME} is owned by ${GITLAB_USER} user
 chown -R ${GITLAB_USER}: ${GITLAB_HOME}
