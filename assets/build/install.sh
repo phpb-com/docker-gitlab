@@ -238,11 +238,8 @@ if [[ -d ${GEM_CACHE_DIR} ]]; then
   mv ${GEM_CACHE_DIR} ${GITLAB_INSTALL_DIR}/vendor/cache
   chown -R ${GITLAB_USER}: ${GITLAB_INSTALL_DIR}/vendor/cache
 fi
-#XXX workaround for transient error see: https://gotfix.com/docker/gitlab/issues/16 (docker/gitlab#16)
-unset http_proxy https_proxy HTTP_PROXY HTTPS_PROXY
-#/XXX workaround for transient error see: https://gotfix.com/docker/gitlab/issues/16
 
-exec_as_git bundle install -j$(nproc) --deployment --without mysql development test
+exec_as_git bundle install -j$(nproc) --retry=3 --deployment --without development test
 
 # make sure everything in ${GITLAB_HOME} is owned by ${GITLAB_USER} user
 chown -R ${GITLAB_USER}: ${GITLAB_HOME}
@@ -508,4 +505,18 @@ EOF
 echo "Cleaning-up ..."
 # purge build dependencies and cleanup apt
 apt-get purge -y --auto-remove ${BUILD_DEPENDENCIES}
+apt-get autoremove -y
+apt-get autoclean
+apt-get clean
 rm -rf /var/lib/apt/lists/*
+rm -rdf /tmp/*
+rm -rdf /var/tmp/*
+rm -rf /var/lib/apt/lists/*
+
+# purge not needed files in /usr/share
+echo "Removing documentation..." >&2
+find /usr/share/doc -depth -type f ! -name copyright|xargs rm || true
+find /usr/share/doc -empty|xargs rmdir || true
+rm -rf /usr/share/man /usr/share/groff /usr/share/info /usr/share/lintian /usr/share/linda /var/cache/man
+rm -rf ${GITLAB_HOME}/.cache
+rm -rf ${GITLAB_HOME}/.bundle

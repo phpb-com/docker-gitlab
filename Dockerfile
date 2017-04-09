@@ -27,7 +27,7 @@ ENV GITLAB_VERSION=9.0.4 \
     GITLAB_WORKHORSE_VERSION=1.4.3 \
     GITLAB_PAGES_VERSION=0.4.0 \
     GITLAB_MONITOR_VERSION=1.3.1 \
-    GITLAB_GITALY_VERSION=0.5.0 \
+    GITLAB_GITALY_VERSION=0.6.0 \
     GITLAB_USER="git" \
     GITLAB_HOME="/home/git" \
     GITLAB_LOG_DIR="/var/log/gitlab" \
@@ -103,7 +103,7 @@ RUN apt-get install -y \
     supervisor \
     yarn \
     zlib1g \
- && rm -rf /var/lib/apt/lists/*
+ && find /usr/share/locale -mindepth 1 -maxdepth 1 ! -name 'en' | xargs rm -r 
 
 RUN update-locale LANG=C.UTF-8 LC_MESSAGES=POSIX \
  && locale-gen en_US.UTF-8 \
