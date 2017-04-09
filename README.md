@@ -22,10 +22,6 @@ The canonical source of the repository is [hosted on gotfix.com](https://gotfix.
 
 Long story short, since the original project tends to be conservative and their goal is stability, it is not what I would like to run for myself. I prefer to follow Gitlab development cycle closer (when time allows) and play with new features. If you rely on Gitlab for your business and require stability, backwards compatibility, and do not want to update often, I would suggest using the original project. You are welcome to use this fork if you do not mind doing testing yourself.
 
-### Why MySQL support is not available, it is in the original project?
-
-Since I do not have any means to test well with MySQL, I decided to let it go. This might change depending on the future and contributions. It would be very trivial to plug it back in, just revert one commit.
-
 ### Why NGINX is being removed from the image?
 
 Best practice dictates that one docker image should serve one purpose, having NGINX in it is not a good idea. At this time it is still in the image but that will change very soon. If you do not know how to setup NGINX outside of this image, take a look at [nginx-proxy](https://github.com/jwilder/nginx-proxy), I am planning to support that instead.
@@ -65,6 +61,9 @@ There is a wonderful project that has a very good set of helm charts to get you 
       - [External PostgreSQL Server](#external-postgresql-server)
       - [Linking to PostgreSQL Container](#linking-to-postgresql-container)
     + [MySQL](#mysql)
+      - [Internal MySQL Server](#internal-mysql-server)
+      - [External MySQL Server](#external-mysql-server)
+      - [Linking to MySQL Container](#linking-to-mysql-container)
   * [Redis](#redis)
     + [Internal Redis Server](#internal-redis-server)
     + [External Redis Server](#external-redis-server)
@@ -284,9 +283,9 @@ docker run --name gitlab -d \
 
 ## Database
 
-GitLab uses a database backend to store its data. You can configure this image to use PostgreSQL only.
+GitLab uses a database backend to store its data. You can configure this image to use either MySQL or PostgreSQL.
 
-*Note: GitLab HQ recommends using PostgreSQL*
+*Note: GitLab HQ recommends using PostgreSQL over MySQL*
 
 ### PostgreSQL
 
@@ -366,7 +365,98 @@ Here the image will also automatically fetch the `DB_NAME`, `DB_USER` and `DB_PA
 
 ### MySQL
 
-*Please use [sameersbn/docker-gitlab](https://github.com/sameersbn/docker-gitlab) for mysql support*
+#### Internal MySQL Server
+
+The internal mysql server has been removed from the image. Please use a [linked mysql](#linking-to-mysql-container) container or specify a connection to a [external mysql](#external-mysql-server) server.
+
+If you have been using the internal mysql server follow these instructions to migrate to a linked mysql container:
+
+Assuming that your mysql data is available at `/srv/docker/gitlab/mysql`
+
+```bash
+docker run --name gitlab-mysql -d \
+    --volume /srv/docker/gitlab/mysql:/var/lib/mysql \
+    sameersbn/mysql:latest
+```
+
+This will start a mysql container with your existing mysql data. Now login to the mysql container and create a user for the existing `gitlabhq_production` database.
+
+All you need to do now is link this mysql container to the gitlab ci container using the `--link gitlab-mysql:mysql` option and provide the `DB_NAME`, `DB_USER` and `DB_PASS` parameters.
+
+Refer to [Linking to MySQL Container](#linking-to-mysql-container) for more information.
+
+#### External MySQL Server
+
+The image can be configured to use an external MySQL database. The database configuration should be specified using environment variables while starting the GitLab image.
+
+Before you start the GitLab image create user and database for gitlab.
+
+```sql
+CREATE USER 'gitlab'@'%.%.%.%' IDENTIFIED BY 'password';
+CREATE DATABASE IF NOT EXISTS `gitlabhq_production` DEFAULT CHARACTER SET `utf8` COLLATE `utf8_unicode_ci`;
+GRANT ALL PRIVILEGES ON `gitlabhq_production`.* TO 'gitlab'@'%.%.%.%';
+```
+
+We are now ready to start the GitLab application.
+
+*Assuming that the mysql server host is 192.168.1.100*
+
+```bash
+docker run --name gitlab -d \
+    --env 'DB_ADAPTER=mysql2' --env 'DB_HOST=192.168.1.100' \
+    --env 'DB_NAME=gitlabhq_production' \
+    --env 'DB_USER=gitlab' --env 'DB_PASS=password' \
+    --volume /srv/docker/gitlab/gitlab:/home/git/data \
+    gotfix/gitlab:9.0.4-2
+```
+
+#### Linking to MySQL Container
+
+You can link this image with a mysql container for the database requirements. The alias of the mysql server container should be set to **mysql** while linking with the gitlab image.
+
+If a mysql container is linked, only the `DB_ADAPTER`, `DB_HOST` and `DB_PORT` settings are automatically retrieved using the linkage. You may still need to set other database connection parameters such as the `DB_NAME`, `DB_USER`, `DB_PASS` and so on.
+
+To illustrate linking with a mysql container, we will use the [sameersbn/mysql](https://github.com/sameersbn/docker-mysql) image. When using docker-mysql in production you should mount a volume for the mysql data store. Please refer the [README](https://github.com/sameersbn/docker-mysql/blob/master/README.md) of docker-mysql for details.
+
+First, lets pull the mysql image from the docker index.
+
+```bash
+docker pull sameersbn/mysql:latest
+```
+
+For data persistence lets create a store for the mysql and start the container.
+
+SELinux users are also required to change the security context of the mount point so that it plays nicely with selinux.
+
+```bash
+mkdir -p /srv/docker/gitlab/mysql
+sudo chcon -Rt svirt_sandbox_file_t /srv/docker/gitlab/mysql
+```
+
+The run command looks like this.
+
+```bash
+docker run --name gitlab-mysql -d \
+    --env 'DB_NAME=gitlabhq_production' \
+    --env 'DB_USER=gitlab' --env 'DB_PASS=password' \
+    --volume /srv/docker/gitlab/mysql:/var/lib/mysql \
+    sameersbn/mysql:latest
+```
+
+The above command will create a database named `gitlabhq_production` and also create a user named `gitlab` with the password `password` with full/remote access to the `gitlabhq_production` database.
+
+We are now ready to start the GitLab application.
+
+```bash
+docker run --name gitlab -d --link gitlab-mysql:mysql \
+    --volume /srv/docker/gitlab/gitlab:/home/git/data \
+    gotfix/gitlab:9.0.4-2
+```
+
+Here the image will also automatically fetch the `DB_NAME`, `DB_USER` and `DB_PASS` variables from the mysql container as they are specified in the `docker run` command for the mysql container. This is made possible using the magic of docker links and works with the following images:
+
+ - [mysql](https://hub.docker.com/_/mysql/)
+ - [sameersbn/mysql](https://quay.io/repository/sameersbn/mysql/)
 
 ## Redis
 
@@ -884,10 +974,10 @@ Below is the complete list of available configuration options segregated by cate
 | `SIDEKIQ_CONCURRENCY` | The number of concurrent sidekiq jobs to run. Defaults to `25` |
 | `SIDEKIQ_SHUTDOWN_TIMEOUT` | Timeout for sidekiq shutdown. Defaults to `4` |
 | `SIDEKIQ_MEMORY_KILLER_MAX_RSS` | Non-zero value enables the SidekiqMemoryKiller. Defaults to `1000000`. For additional options refer [Configuring the MemoryKiller](http://doc.gitlab.com/ce/operations/sidekiq_memory_killer.html) |
-| `DB_ADAPTER` | The database type. Possible values: `postgresql`. Defaults to `postgresql`. |
-| `DB_ENCODING` | The database encoding. For `DB_ADAPTER` values `postresql`, this parameter defaults to `unicode` and `utf8` respectively. |
+| `DB_ADAPTER` | The database type. Possible values: `mysql2`, `postgresql`. Defaults to `postgresql`. |
+| `DB_ENCODING` | The database encoding. For `DB_ADAPTER` values `postresql` and `mysql2`, this parameter defaults to `unicode` and `utf8` respectively. |
 | `DB_HOST` | The database server hostname. Defaults to `localhost`. |
-| `DB_PORT` | The database server port. Defaults to `5432` for postgresql. |
+| `DB_PORT` | The database server port. Defaults to `3306` for mysql and `5432` for postgresql. |
 | `DB_NAME` | The database database name. Defaults to `gitlabhq_production` |
 | `DB_USER` | The database database user. Defaults to `root` |
 | `DB_PASS` | The database database password. Defaults to no password |
