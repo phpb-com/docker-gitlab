@@ -19,8 +19,12 @@ gitlab_ce_update_redis_gem_to_latest() {
   exec_as_git bundle lock
 }
 
+gitlab_ce_cleanup_tmp_cache() {
+  exec_as_git bundle exec rake tmp:cache:clear  RAILS_ENV=production
+}
+
 gitlab_ce_cleanup_yarn_cache() {
-  exec_as_git yarn cache clean
+  exec_as_git yarn cache clean NODE_ENV=production
 }
 
 gitlab_ce_cleanup_dir_post() {
@@ -43,6 +47,7 @@ prebuild_gitlab_ce() {
 postbuild_gitlab_ce() {
   gitlab_ce_cleanup_dir_post
   gitlab_ce_cleanup_yarn_cache
+  gitlab_ce_cleanup_tmp_cache
   return 0
 }
 
