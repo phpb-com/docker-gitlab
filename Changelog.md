@@ -3,7 +3,11 @@
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list of changes in GitLab.
 
 
-**9.0.4-3**
+**9.0.5**
+- gitlab: Gitlab CE 9.0.5
+- Minor clean-ups to redue image size further
+
+**9.0.4-4**
 - gitlab: Gitlab CE 9.0.4
 - Ruby 2.3.3 (2.4 causes issues with Gitlab)
 - Remove update of Gems
