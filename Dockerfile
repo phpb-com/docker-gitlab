@@ -53,6 +53,7 @@ RUN echo 'APT::Install-Recommends 0;' >> /etc/apt/apt.conf.d/01norecommends \
     ca-certificates \
     net-tools \
     sudo \
+    tzdata \
     unzip \
     vim.tiny \
     wget
