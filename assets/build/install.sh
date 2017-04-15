@@ -18,15 +18,6 @@ BUILD_DEPENDENCIES="gcc g++ make patch pkg-config cmake paxctl \
   libgdbm-dev libreadline-dev libncurses5-dev libffi-dev \
   libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev"
 
-## Execute a command as GITLAB_USER
-exec_as_git() {
-  if [[ $(whoami) == ${GITLAB_USER} ]]; then
-    $@
-  else
-    sudo -HEu ${GITLAB_USER} "$@"
-  fi
-}
-
 # install build dependencies for gem installation
 apt-get update
 DEBIAN_FRONTEND=noninteractive apt-get install -y ${BUILD_DEPENDENCIES}
