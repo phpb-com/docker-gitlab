@@ -125,6 +125,8 @@ image-test-mysql:
     - export RC=0
     - if [[ $(docker logs gitlab-test 2>&1 | grep -i "error\|fail\|fatal" | grep -c -i -v "error_page\|error_log\|fail_timeout\|#") != 0 ]]; then
         export RC=1; docker logs gitlab-test 2>&1 | grep -i "error\|fail\|fatal" | grep -i -v "error_page\|error_log\|fail_timeout\|#"; fi
+    - docker exec gitlab-test sudo -HEu git bundle exec rake gitlab:env:info RAILS_ENV=production
+    - docker exec gitlab-test sudo -HEu git bundle exec rake gitlab:check RAILS_ENV=production
     - echo "Stopping and removing containers ..."
     - docker stop gitlab-test gitlab-redis gitlab-mysql
     - docker rm -f gitlab-test gitlab-redis gitlab-mysql
@@ -215,6 +217,8 @@ image-test-pgsql:
     - export RC=0
     - if [[ $(docker logs gitlab-test 2>&1 | grep -i "error\|fail\|fatal" | grep -c -i -v "error_page\|error_log\|fail_timeout\|#") != 0 ]]; then
         export RC=1; docker logs gitlab-test 2>&1 | grep -i "error\|fail\|fatal" | grep -i -v "error_page\|error_log\|fail_timeout\|#"; fi
+    - docker exec gitlab-test sudo -HEu git bundle exec rake gitlab:env:info RAILS_ENV=production
+    - docker exec gitlab-test sudo -HEu git bundle exec rake gitlab:check RAILS_ENV=production
     - echo "Stopping and removing containers ..."
     - docker stop gitlab-test gitlab-redis gitlab-postgresql
     - docker rm -f gitlab-test gitlab-redis gitlab-postgresql
