@@ -59,13 +59,31 @@ exec_as_git git config --global repack.writeBitmaps true
 # Download necessary sources
 #
 
-# download gitlab-shell
-echo "Cloning gitlab-shell v${GITLAB_SHELL_VERSION}..."
-exec_as_git git clone -q -b v${GITLAB_SHELL_VERSION} --depth 1 ${GITLAB_SHELL_CLONE_URL} ${GITLAB_SHELL_INSTALL_DIR}
+# shallow clone gitlab-ce
+echo "Cloning gitlab-ce v${GITLAB_VERSION}..."
+exec_as_git git clone -q -b v${GITLAB_VERSION} --depth 1 ${GITLAB_CLONE_URL} ${GITLAB_INSTALL_DIR}
+
+# Identify and export versions of dependencies
+export GITLAB_SHELL_VERSION=$(cat ${GITLAB_INSTALL_DIR}/GITLAB_SHELL_VERSION)
+export GITLAB_GITALY_VERSION=$(cat ${GITLAB_INSTALL_DIR}/GITALY_SERVER_VERSION)
+export GITLAB_PAGES_VERSION=$(cat ${GITLAB_INSTALL_DIR}/GITLAB_PAGES_VERSION)
+export GITLAB_WORKHORSE_VERSION=$(cat ${GITLAB_INSTALL_DIR}/GITLAB_WORKHORSE_VERSION)
+
+# configure gitlab version in profile
+cat > /etc/profile.d/gitlab-vers.sh <<EOF
+export GITLAB_SHELL_VERSION=${GITLAB_SHELL_VERSION}
+export GITLAB_GITALY_VERSION=${GITLAB_GITALY_VERSION}
+export GITLAB_PAGES_VERSION=${GITLAB_PAGES_VERSION}
+export GITLAB_WORKHORSE_VERSION=${GITLAB_WORKHORSE_VERSION}
+EOF
 
 # download gitlab-monitor
 echo "Cloning gitlab-monitor v${GITLAB_MONITOR_VERSION}..."
 exec_as_git git clone -q -b v${GITLAB_MONITOR_VERSION} --depth 1 ${GITLAB_MONITOR_CLONE_URL} ${GITLAB_MONITOR_INSTALL_DIR}
+
+# download gitlab-shell
+echo "Cloning gitlab-shell v${GITLAB_SHELL_VERSION}..."
+exec_as_git git clone -q -b v${GITLAB_SHELL_VERSION} --depth 1 ${GITLAB_SHELL_CLONE_URL} ${GITLAB_SHELL_INSTALL_DIR}
 
 # download gitaly
 echo "Cloning gitlab-pages v${GITLAB_GITALY_VERSION}..."
@@ -185,12 +203,8 @@ exec_as_git rm -rf ${GITLAB_HOME}/repositories
 rm -rf ${GITLAB_BUILD_DIR}/go${GOLANG_VERSION}.linux-amd64.tar.gz /tmp/go
 
 #
-# Download and Install Gitlab CE from source
+# Install Gitlab CE from source
 #
-
-# shallow clone gitlab-ce
-echo "Cloning gitlab-ce v${GITLAB_VERSION}..."
-exec_as_git git clone -q -b v${GITLAB_VERSION} --depth 1 ${GITLAB_CLONE_URL} ${GITLAB_INSTALL_DIR}
 
 # remove HSTS config from the default headers, we configure it in nginx
 exec_as_git sed -i "/headers\['Strict-Transport-Security'\]/d" ${GITLAB_INSTALL_DIR}/app/controllers/application_controller.rb
@@ -206,32 +220,6 @@ source ${GITLAB_BUILD_DIR}/hooks/gitlab-ce
 # Execute pre-build hook
 echo "Executing pre-build hook for gitlab-ce"
 prebuild_gitlab_ce
-
-# check versions in the source, exit 1 if less then required
-CACHE_GITALY_SERVER_VERSION=$(cat GITALY_SERVER_VERSION)
-CACHE_GITLAB_PAGES_VERSION=$(cat GITLAB_PAGES_VERSION)
-CACHE_GITLAB_SHELL_VERSION=$(cat GITLAB_SHELL_VERSION)
-CACHE_GITLAB_WORKHORSE_VERSION=$(cat GITLAB_WORKHORSE_VERSION)
-
-if [[ -n ${CACHE_GITLAB_SHELL_VERSION} && $(vercmp ${GITLAB_SHELL_VERSION} ${CACHE_GITLAB_SHELL_VERSION}) -lt 0 ]]; then
-    echo "Gitlab Shell server version is less than required, installed ${GITLAB_SHELL_VERSION} ; required ${CACHE_GITLAB_SHELL_VERSION}"
-    exit 1
-fi
-
-if [[ -n ${CACHE_GITLAB_WORKHORSE_VERSION} && $(vercmp ${GITLAB_WORKHORSE_VERSION} ${CACHE_GITLAB_WORKHORSE_VERSION}) -lt 0 ]]; then
-    echo "Gitlab Workhorse server version is less than required, installed ${GITLAB_WORKHORSE_VERSION} ; required ${CACHE_GITLAB_WORKHORSE_VERSION}"
-    exit 1
-fi
-
-if [[ -n ${CACHE_GITLAB_PAGES_VERSION} && $(vercmp ${GITLAB_PAGES_VERSION} ${CACHE_GITLAB_PAGES_VERSION}) -lt 0 ]]; then
-    echo "Gitlab Pages server version is less than required, installed ${GITLAB_PAGES_VERSION} ; required ${CACHE_GITLAB_PAGES_VERSION}"
-    exit 1
-fi
-
-if [[ -n ${CACHE_GITALY_SERVER_VERSION} && $(vercmp ${GITLAB_GITALY_VERSION} ${CACHE_GITALY_SERVER_VERSION}) -lt 0 ]]; then
-    echo "Gitaly server version is less than required, installed ${GITLAB_GITALY_VERSION} ; required ${CACHE_GITALY_SERVER_VERSION}"
-    exit 1
-fi
 
 # install gems, use local cache if available
 if [[ -d ${GEM_CACHE_DIR} ]]; then
@@ -311,10 +299,10 @@ sed -i \
   -e "s|error_log /var/log/nginx/error.log;|error_log ${GITLAB_LOG_DIR}/nginx/error.log;|" \
   /etc/nginx/nginx.conf
 
-echo "Configuring log rotations"
+echo "configuring log rotations"
 # configure supervisord log rotation
-cat > /etc/logrotate.d/supervisord <<EOF
-${GITLAB_LOG_DIR}/supervisor/*.log {
+cat > /etc/logrotate.d/supervisord <<eof
+${gitlab_log_dir}/supervisor/*.log {
   weekly
   missingok
   rotate 52
@@ -323,7 +311,7 @@ ${GITLAB_LOG_DIR}/supervisor/*.log {
   notifempty
   copytruncate
 }
-EOF
+eof
 
 # configure gitlab log rotation
 cat > /etc/logrotate.d/gitlab <<EOF
