@@ -901,8 +901,6 @@ Below is the complete list of available configuration options segregated by cate
 | `GITLAB_EMAIL_ENABLED` | Enable or disable gitlab mailer. Defaults to the `SMTP_ENABLED` configuration. |
 | `GITLAB_INCOMING_EMAIL_ADDRESS` | The incoming email address for reply by email. Defaults to the value of `IMAP_USER`, else defaults to `reply@example.com`. Please read the [reply by email](http://doc.gitlab.com/ce/incoming_email/README.html) documentation to currently set this parameter. |
 | `GITLAB_INCOMING_EMAIL_ENABLED` | Enable or disable gitlab reply by email feature. Defaults to the value of `IMAP_ENABLED`. |
-| `GITLAB_SIGNUP_ENABLED` | Enable or disable user signups (first run only). Default is `true`. |
-| `GITLAB_PROJECTS_LIMIT` | Set default projects limit. Defaults to `100`. |
 | `GITLAB_USERNAME_CHANGE` | Enable or disable ability for users to change their username. Defaults to `true`. |
 | `GITLAB_CREATE_GROUP` | Enable or disable ability for users to create groups. Defaults to `true`. |
 | `GITLAB_PROJECTS_ISSUES` | Set if *issues* feature should be enabled by default for new projects. Defaults to `true`. |
@@ -1078,7 +1076,6 @@ Below is the complete list of available configuration options segregated by cate
 | `OAUTH_AZURE_API_KEY` | Azure Client ID. No defaults. |
 | `OAUTH_AZURE_API_SECRET` | Azure Client secret. No defaults. |
 | `OAUTH_AZURE_TENANT_ID` | Azure Tenant ID. No defaults. |
-| `GITLAB_GRAVATAR_ENABLED` | Enables gravatar integration. Defaults to `true`. |
 | `GITLAB_GRAVATAR_HTTP_URL` | Sets a custom gravatar url. Defaults to `http://www.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon`. This can be used for [Libravatar integration](http://doc.gitlab.com/ce/customization/libravatar.html). |
 | `GITLAB_GRAVATAR_HTTPS_URL` | Same as above, but for https. Defaults to `https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon`. |
 | `USERMAP_UID` | Sets the uid for user `git` to the specified uid. Defaults to `1000`. |
@@ -1109,7 +1106,7 @@ Below is the complete list of available configuration options segregated by cate
 | Parameter | Description |
 |-----------|-------------|
 | `GITALY_ENABLED`                | **Experimental** Enable Gitaly. Default `false`. |
-| `GITALY_SOCKET_PATH`            | **Experimental** Set Gitaly socker path. Default `/home/git/gitlab/tmp/sockets/private/gitaly.socket`. |
+| `GITALY_ADDRESS`                | **Experimental** Set Gitaly server address. `unix:/path/to/socket.file` or `tcp://host:port`. Default `unix:/home/git/gitlab/tmp/sockets/private/gitaly.socket`. |
 | `GITALY_PROMETHEUS_LISTEN_ADDR` | **Experimental** Specify port for Gitaly to emit metrics. Default `localhost:9236`. |
 
 # Maintenance

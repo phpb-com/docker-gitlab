@@ -149,6 +149,9 @@ source ${GITLAB_BUILD_DIR}/hooks/gitlab-gitaly
 echo "Executing pre-build hook for gitlab-gitaly"
 prebuild_gitlab_gitaly
 
+# copy default config for gitaly
+exec_as_git cp ${GITLAB_GITALY_INSTALL_DIR}/config.toml.example ${GITLAB_GITALY_INSTALL_DIR}/config.toml
+
 PATH=/tmp/go/bin:$PATH GOROOT=/tmp/go make install
 
 # Execute post-build hook
@@ -358,9 +361,9 @@ echo "Configuring supervisord scripts"
 cat > /etc/supervisor/conf.d/gitaly.conf <<EOF
 [program:gitaly]
 priority=5
-directory=${GITLAB_INSTALL_DIR}
-environment=HOME=${GITLAB_HOME},GITALY_PROMETHEUS_LISTEN_ADDR="{{GITALY_PROMETHEUS_LISTEN_ADDR}}",GITALY_SOCKET_PATH="{{GITALY_SOCKET_PATH}}"
-command=/usr/local/bin/gitaly
+directory=${GITLAB_GITALY_INSTALL_DIR}
+environment=HOME=${GITLAB_GITALY_INSTALL_DIR}
+command=/usr/local/bin/gitaly ${GITLAB_GITALY_INSTALL_DIR}/config.toml
 user=git
 autostart={{GITALY_ENABLED}}
 autorestart=true

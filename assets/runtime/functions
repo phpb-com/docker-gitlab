@@ -20,6 +20,7 @@ GITLAB_NGINX_CONFIG="/etc/nginx/sites-enabled/gitlab"
 GITLAB_CI_NGINX_CONFIG="/etc/nginx/sites-enabled/gitlab_ci"
 GITLAB_REGISTRY_NGINX_CONFIG="/etc/nginx/sites-enabled/gitlab-registry"
 GITLAB_PAGES_NGINX_CONFIG="/etc/nginx/sites-enabled/gitlab-pages"
+GITLAB_GITALY_CONFIG=${GITLAB_GITALY_INSTALL_DIR}/config.toml
 
 # Compares two version strings `a` and `b`
 # Returns
@@ -275,18 +276,14 @@ gitlab_configure_gitaly() {
   echo "Configuring gitlab::gitaly..."
   update_template /etc/supervisor/conf.d/gitaly.conf \
     GITALY_ENABLED \
+
+  update_template ${GITLAB_GITALY_CONFIG} \
+    GITALY_SOCKET_PATH \
     GITALY_PROMETHEUS_LISTEN_ADDR \
-    GITALY_SOCKET_PATH
+    GITLAB_REPOS_DIR
 
   if [[ ${GITALY_ENABLED} != true ]]; then
-    exec_as_git sed -i "/{{GITALY_SOCKET_PATH}}/d" ${GITLAB_CONFIG}
-  else
-    export GITALY_SOCKET_PATH
-    export GITALY_PROMETHEUS_LISTEN_ADDR
-    echo "GITALY_SOCKET_PATH=${GITALY_SOCKET_PATH}" \
-      | exec_as_git tee -a /home/git/gitaly/env
-    echo "GITALY_PROMETHEUS_LISTEN_ADDR=${GITALY_PROMETHEUS_LISTEN_ADDR}" \
-      | exec_as_git tee -a /home/git/gitaly/env
+    exec_as_git sed -i "/{{GITALY_ADDRESS}}/d" ${GITLAB_CONFIG}
   fi
 }
 
@@ -856,7 +853,6 @@ gitlab_configure_backups() {
 }
 
 gitlab_configure_gravatar() {
-  update_template ${GITLAB_CONFIG} GITLAB_GRAVATAR_ENABLED
 
   if [[ -n ${GITLAB_GRAVATAR_HTTP_URL} ]]; then
     echo "Configuring gitlab::gravatar::http..."
@@ -1381,6 +1377,7 @@ install_configuration_templates() {
   install_template ${GITLAB_USER}: gitlabhq/secrets.yml ${GITLAB_SECRETS_CONFIG} 0600
   install_template ${GITLAB_USER}: gitlab-shell/config.yml ${GITLAB_SHELL_CONFIG} 0640
   install_template ${GITLAB_USER}: gitlab-monitor/gitlab-monitor.yml ${GITLAB_MONITOR_CONFIG} 0640
+  install_template ${GITLAB_USER}: gitaly/config.toml ${GITLAB_GITALY_CONFIG} 0640
 
   if [[ -n ${GITLAB_RELATIVE_URL_ROOT} ]]; then
     install_template ${GITLAB_USER}: gitlabhq/relative_url.rb ${GITLAB_RELATIVE_URL_CONFIG} 0644
@@ -1453,12 +1450,11 @@ configure_gitlab() {
     GITLAB_MAX_OBJECT_SIZE \
     GITLAB_SSH_HOST \
     GITLAB_SSH_PORT \
-    GITLAB_SIGNUP_ENABLED \
-    GITLAB_PROJECTS_LIMIT \
     GITLAB_USERNAME_CHANGE \
     GITLAB_CREATE_GROUP \
     GITLAB_TIMEOUT \
-    GITALY_SOCKET_PATH
+    GITALY_ENABLED \
+    GITALY_ADDRESS
 
   gitlab_configure_database
   gitlab_configure_redis
