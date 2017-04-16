@@ -3,6 +3,20 @@
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list of changes in GitLab.
 
 
+**9.1.0-rc2**
+- gitlab: Gitlab CE 9.1.0-rc2
+- Enhance support for MySQL, correcting collation and encoding
+- download dependencies based on gitlab source tree version files
+- Add `GITLAB_TRACK_DEPLOYMENTS` to enable deployment tracking
+- Remove `GITLAB_SIGNUP_ENABLED`, `GITLAB_PROJECTS_LIMIT`, `GITLAB_GRAVATAR_ENABLED` that are no longer in default gitlab.yml
+- Remove `GITALY_SOCKET_PATH` and added `GITALY_ADDRESS` **Experimental**
+- Optimize config for gitlab-shell build
+- Removed redundant declaration of `exec_as_git`
+- Add `trigger_schedule_worker` to `cron_jobs` section of `gitlab.yml`
+- Remove unused test config from `gitlab.yml`
+- Replace `vercmp` with more robust implementation, works with all versions of Gitlab CE
+- Add Redis cache clearing task on start-up
+
 **9.0.5**
 - gitlab: Gitlab CE 9.0.5
 - Minor clean-ups to redue image size further
