@@ -1,6 +1,6 @@
 #!/bin/bash
 set -e
-source ${GITLAB_RUNTIME_DIR}/functions
+source "${GITLAB_RUNTIME_DIR}/functions"
 
 [[ $DEBUG == true ]] && set -x
 
@@ -28,7 +28,7 @@ case ${1} in
         ;;
       app:rake)
         shift 1
-        execute_raketask $@
+        execute_raketask "$@"
         ;;
     esac
     ;;
