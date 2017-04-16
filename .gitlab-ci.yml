@@ -33,8 +33,9 @@ lint:
   script:
     - docker pull koalaman/shellcheck
     - docker run --rm -v $(pwd):/mnt koalaman/shellcheck entrypoint.sh
-    - docker run --rm -v $(pwd):/mnt koalaman/shellcheck assets/runtime/functions
     - docker run --rm -v $(pwd):/mnt koalaman/shellcheck assets/build/install.sh
+    - docker run --rm -v $(pwd):/mnt koalaman/shellcheck assets/runtime/functions
+  allow_failure: true
 
 build:
   stage: build
