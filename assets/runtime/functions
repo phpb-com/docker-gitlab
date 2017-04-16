@@ -1374,13 +1374,19 @@ initialize_system() {
 install_configuration_templates() {
   echo "Installing configuration templates..."
   install_template ${GITLAB_USER}: gitlabhq/gitlab.yml ${GITLAB_CONFIG} 0640
-  install_template ${GITLAB_USER}: gitlabhq/database.yml ${GITLAB_DATABASE_CONFIG} 0640
   install_template ${GITLAB_USER}: gitlabhq/unicorn.rb ${GITLAB_UNICORN_CONFIG} 0644
   install_template ${GITLAB_USER}: gitlabhq/rack_attack.rb ${GITLAB_RACK_ATTACK_CONFIG} 0644
   install_template ${GITLAB_USER}: gitlabhq/resque.yml ${GITLAB_RESQUE_CONFIG} 0640
   install_template ${GITLAB_USER}: gitlabhq/secrets.yml ${GITLAB_SECRETS_CONFIG} 0600
   install_template ${GITLAB_USER}: gitlab-shell/config.yml ${GITLAB_SHELL_CONFIG} 0640
   install_template ${GITLAB_USER}: gitlab-monitor/gitlab-monitor.yml ${GITLAB_MONITOR_CONFIG} 0640
+
+  # Install correct database.yml based on DB type
+  if [[ "${DB_ADAPTER}" == "mysql2" ]]; then
+    install_template ${GITLAB_USER}: gitlabhq/database.yml.mysql ${GITLAB_DATABASE_CONFIG} 0640
+  else
+    install_template ${GITLAB_USER}: gitlabhq/database.yml ${GITLAB_DATABASE_CONFIG} 0640
+  fi
 
   if [[ -n ${GITLAB_RELATIVE_URL_ROOT} ]]; then
     install_template ${GITLAB_USER}: gitlabhq/relative_url.rb ${GITLAB_RELATIVE_URL_CONFIG} 0644

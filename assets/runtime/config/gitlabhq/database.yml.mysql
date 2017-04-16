@@ -4,7 +4,7 @@
 production:
   adapter: {{DB_ADAPTER}}
   encoding: {{DB_ENCODING}}
-  collation: utf8_general_ci
+  collation: utf8mb4_general_ci
   reconnect: true
   database: {{DB_NAME}}
   host: {{DB_HOST}}
