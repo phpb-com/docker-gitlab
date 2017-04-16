@@ -35,19 +35,26 @@ NGINX_HSTS_MAXAGE=${NGINX_HSTS_MAXAGE:-31536000}
 
 ## DATABASE
 DB_ADAPTER=${DB_ADAPTER:-}
-DB_ENCODING=${DB_ENCODING:-}
 DB_HOST=${DB_HOST:-}
 DB_PORT=${DB_PORT:-}
 DB_NAME=${DB_NAME:-}
 DB_USER=${DB_USER:-}
 DB_PASS=${DB_PASS:-}
-DB_POOL=${DB_POOL:-10}
+DB_POOL=${DB_POOL:-25}
 
 # backward compatibility
 case ${DB_TYPE} in
   mysql) DB_ADAPTER=${DB_ADAPTER:-mysql2} ;;
   postgres) DB_ADAPTER=${DB_ADAPTER:-postgresql} ;;
 esac
+
+if [[ "${DB_ADAPTER}" == "mysql2" ]]; then
+  DB_ENCODING=${DB_ENCODING:-utf8mb4}
+elif [[ "${DB_ADAPTER}" == "postgresql" ]]; then
+  DB_ENCODING=${DB_ENCODING:-unicode}
+else
+  DB_ENCODING=${DB_ENCODING:-}
+fi
 
 ## REDIS
 REDIS_HOST=${REDIS_HOST:-}
