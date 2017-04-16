@@ -13,6 +13,7 @@ services:
   - docker:dind
 
 stages:
+ - lint
  - build
  - test
  - release
@@ -26,6 +27,14 @@ before_script:
   - export REGISTRY_IMAGE_BASE=${DOCKER_HUB_BASE}
   - export REGISTRY_IMAGE="${REGISTRY_IMAGE_BASE}:${IMAGE_TAG_SHA}"
   - docker login -u "${DOCKER_USER}" -p "${DOCKER_PASS}"
+
+lint:
+  stage: lint
+  script:
+    - docker pull koalaman/shellcheck
+    - docker run --rm -v $(pwd):/mnt koalaman/shellcheck entrypoint.sh
+    - docker run --rm -v $(pwd):/mnt koalaman/shellcheck assets/runtime/functions
+    - docker run --rm -v $(pwd):/mnt koalaman/shellcheck assets/build/install.sh
 
 build:
   stage: build
