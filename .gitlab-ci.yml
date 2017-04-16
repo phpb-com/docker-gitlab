@@ -110,7 +110,7 @@ image-test-mysql:
         --env="GOOGLE_ANALYTICS_ID=UA-123-ab"
         --env="GITALY_ENABLED=true"
         --env="DB_ADAPTER=mysql2"
-        --env="VERBOSE=true"
+        --env="VERBOSE=false"
         --volume "$(pwd)/logs:/var/log/gitlab"
         ${REGISTRY_IMAGE}
     - echo "Waiting for containers to start and settle, 90 seconds ..."
@@ -202,7 +202,7 @@ image-test-pgsql:
         --env="OAUTH_AZURE_TENANT_ID=${CI_COMMIT_SHA}"
         --env="GOOGLE_ANALYTICS_ID=UA-123-ab"
         --env="GITALY_ENABLED=true"
-        --env="VERBOSE=true"
+        --env="VERBOSE=false"
         --volume "$(pwd)/logs:/var/log/gitlab"
         ${REGISTRY_IMAGE}
     - echo "Waiting for containers to start and settle, 90 seconds ..."
