@@ -1,6 +1,7 @@
 #!/bin/bash
 set -e
 source ${GITLAB_RUNTIME_DIR}/env-defaults
+source ${GITLAB_RUNTIME_DIR}/glver/src/glver
 
 SYSCONF_TEMPLATES_DIR="${GITLAB_RUNTIME_DIR}/config"
 USERCONF_TEMPLATES_DIR="${GITLAB_DATA_DIR}/config"
@@ -21,19 +22,6 @@ GITLAB_CI_NGINX_CONFIG="/etc/nginx/sites-enabled/gitlab_ci"
 GITLAB_REGISTRY_NGINX_CONFIG="/etc/nginx/sites-enabled/gitlab-registry"
 GITLAB_PAGES_NGINX_CONFIG="/etc/nginx/sites-enabled/gitlab-pages"
 GITLAB_GITALY_CONFIG=${GITLAB_GITALY_INSTALL_DIR}/config.toml
-
-# Compares two version strings `a` and `b`
-# Returns
-#   - negative integer, if `a` is less than `b`
-#   - 0, if `a` and `b` are equal
-#   - non-negative integer, if `a` is greater than `b`
-vercmp() {
-  #XXX This does not play well with RC version, should be fixed
-  expr '(' "$1" : '\([^.]*\)' ')' '-' '(' "$2" : '\([^.]*\)' ')' '|' \
-       '(' "$1.0" : '[^.]*[.]\([^.]*\)' ')' '-' '(' "$2.0" : '[^.]*[.]\([^.]*\)' ')' '|' \
-       '(' "$1.0.0" : '[^.]*[.][^.]*[.]\([^.]*\)' ')' '-' '(' "$2.0.0" : '[^.]*[.][^.]*[.]\([^.]*\)' ')' '|' \
-       '(' "$1.0.0.0" : '[^.]*[.][^.]*[.][^.]*[.]\([^.]*\)' ')' '-' '(' "$2.0.0.0" : '[^.]*[.][^.]*[.][^.]*[.]\([^.]*\)' ')'
-}
 
 ## Execute a command as GITLAB_USER
 exec_as_git() {
@@ -1628,7 +1616,7 @@ migrate_database() {
   [[ -f ${GITLAB_TEMP_DIR}/VERSION ]] && CACHE_VERSION=$(cat ${GITLAB_TEMP_DIR}/VERSION)
   if [[ ${GITLAB_VERSION} != ${CACHE_VERSION} ]]; then
     ## version check, only upgrades are allowed
-    if [[ -n ${CACHE_VERSION} && $(vercmp ${GITLAB_VERSION} ${CACHE_VERSION}) -lt 0 ]]; then
+    if [[ -n ${CACHE_VERSION} && $(gl_vercmp ${GITLAB_VERSION} ${CACHE_VERSION}) -lt 0 ]]; then
       echo
       echo "ERROR: "
       echo "  Cannot downgrade from GitLab version ${CACHE_VERSION} to ${GITLAB_VERSION}."
@@ -1638,8 +1626,8 @@ migrate_database() {
       return 1
     fi
 
-    if [[ $(vercmp ${GITLAB_VERSION} 8.0.0) -gt 0 ]]; then
-      if [[ -n ${CACHE_VERSION} && $(vercmp ${CACHE_VERSION} 8.0.0) -lt 0 ]]; then
+    if [[ $(gl_vercmp ${GITLAB_VERSION} 8.0.0) -gt 0 ]]; then
+      if [[ -n ${CACHE_VERSION} && $(gl_vercmp ${CACHE_VERSION} 8.0.0) -lt 0 ]]; then
         echo
         echo "ABORT: "
         echo "  Upgrading to GitLab ${GITLAB_VERSION} from ${CACHE_VERSION} is not recommended."

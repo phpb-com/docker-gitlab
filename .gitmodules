@@ -1,0 +1,3 @@
+[submodule "assets/runtime/glver"]
+	path = assets/runtime/glver
+	url = https://gotfix.com/utils/glver.git
