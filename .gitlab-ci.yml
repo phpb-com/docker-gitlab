@@ -32,7 +32,6 @@ lint:
   stage: lint
   script:
     - docker pull koalaman/shellcheck
-    - export GITLAB_RUNTIME_DIR=$(pwd)/assets/runtime
     - docker run --rm -v $(pwd):/mnt koalaman/shellcheck entrypoint.sh
     - docker run --rm -v $(pwd):/mnt koalaman/shellcheck assets/runtime/functions
     - docker run --rm -v $(pwd):/mnt koalaman/shellcheck assets/build/install.sh

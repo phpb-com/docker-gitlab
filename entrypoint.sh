@@ -1,5 +1,6 @@
 #!/bin/bash
 set -e
+# shellcheck source=assets/runtime/functions
 source "${GITLAB_RUNTIME_DIR}/functions"
 
 [[ $DEBUG == true ]] && set -x
