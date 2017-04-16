@@ -262,8 +262,7 @@ gitlab_configure_redis() {
 
 gitlab_configure_gitaly() {
   echo "Configuring gitlab::gitaly..."
-  update_template /etc/supervisor/conf.d/gitaly.conf \
-    GITALY_ENABLED \
+  update_template /etc/supervisor/conf.d/gitaly.conf GITALY_ENABLED 
 
   update_template ${GITLAB_GITALY_CONFIG} \
     GITALY_SOCKET_PATH \
