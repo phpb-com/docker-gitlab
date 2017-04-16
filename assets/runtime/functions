@@ -1644,8 +1644,10 @@ migrate_database() {
     echo "Clearing cache..."
     exec_as_git bundle exec rake cache:clear RAILS_ENV=${RAILS_ENV} >/dev/null 2>&1
 
-    echo "Tracking Deployments..."
-    exec_as_git bundle exec rake gitlab:track_deployment RAILS_ENV=${RAILS_ENV} >/dev/null 2>&1
+    if [[ ${GITLAB_TRACK_DEPLOYMENTS} == true ]]; then
+      echo "Tracking Deployments..."
+      exec_as_git bundle exec rake gitlab:track_deployment RAILS_ENV=${RAILS_ENV} >/dev/null 2>&1
+    fi
 
     if [[ ${DB_ADAPTER} == mysql2 ]]; then
       exec_as_git bundle exec rake add_limits_mysql RAILS_ENV=${RAILS_ENV} >/dev/null

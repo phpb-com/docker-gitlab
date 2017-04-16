@@ -1100,6 +1100,7 @@ Below is the complete list of available configuration options segregated by cate
 | `RACK_ATTACK_MAXRETRY` | Number of failed auth attempts before which an IP should be banned. Defaults to `10` |
 | `RACK_ATTACK_FINDTIME` | Number of seconds before resetting the per IP auth attempt counter. Defaults to `60`. |
 | `RACK_ATTACK_BANTIME` | Number of seconds an IP should be banned after too many auth attempts. Defaults to `3600`. |
+| `GITLAB_TRACK_DEPLOYMENTS` | Enable tracking of deployments. See [rake tasks](https://docs.gitlab.com/ce/administration/raketasks/maintenance.html#tracking-deployments). Defaults to `false`. |
 
 #### Gitaly Experimental
 
