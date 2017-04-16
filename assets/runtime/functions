@@ -1639,10 +1639,16 @@ migrate_database() {
     fi
 
     echo "Migrating database..."
-    exec_as_git bundle exec rake db:migrate >/dev/null
+    exec_as_git bundle exec rake db:migrate RAILS_ENV=${RAILS_ENV} >/dev/null
+
+    echo "Clearing cache..."
+    exec_as_git bundle exec rake cache:clear RAILS_ENV=${RAILS_ENV} >/dev/null 2>&1
+
+    echo "Tracking Deployments..."
+    exec_as_git bundle exec rake gitlab:track_deployment RAILS_ENV=${RAILS_ENV} >/dev/null 2>&1
 
     if [[ ${DB_ADAPTER} == mysql2 ]]; then
-      exec_as_git bundle exec rake add_limits_mysql >/dev/null
+      exec_as_git bundle exec rake add_limits_mysql RAILS_ENV=${RAILS_ENV} >/dev/null
     fi
 
     echo "${GITLAB_VERSION}" > ${GITLAB_TEMP_DIR}/VERSION
@@ -1660,7 +1666,7 @@ migrate_database() {
     fi
 
     echo "Clearing cache..."
-    exec_as_git bundle exec rake cache:clear >/dev/null 2>&1
+    exec_as_git bundle exec rake cache:clear RAILS_ENV=${RAILS_ENV} >/dev/null 2>&1
     echo "${GITLAB_RELATIVE_URL_ROOT}" > ${GITLAB_TEMP_DIR}/GITLAB_RELATIVE_URL_ROOT
   fi
 }
