@@ -296,7 +296,7 @@ sed -i \
 echo "configuring log rotations"
 # configure supervisord log rotation
 cat > /etc/logrotate.d/supervisord <<eof
-${gitlab_log_dir}/supervisor/*.log {
+${GITLAB_LOG_DIR}/supervisor/*.log {
   weekly
   missingok
   rotate 52
