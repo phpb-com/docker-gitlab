@@ -293,9 +293,9 @@ sed -i \
   -e "s|error_log /var/log/nginx/error.log;|error_log ${GITLAB_LOG_DIR}/nginx/error.log;|" \
   /etc/nginx/nginx.conf
 
-echo "configuring log rotations"
+echo "Configuring log rotations"
 # configure supervisord log rotation
-cat > /etc/logrotate.d/supervisord <<eof
+cat > /etc/logrotate.d/supervisord <<EOF
 ${GITLAB_LOG_DIR}/supervisor/*.log {
   weekly
   missingok
@@ -305,7 +305,7 @@ ${GITLAB_LOG_DIR}/supervisor/*.log {
   notifempty
   copytruncate
 }
-eof
+EOF
 
 # configure gitlab log rotation
 cat > /etc/logrotate.d/gitlab <<EOF
