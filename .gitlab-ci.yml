@@ -121,14 +121,14 @@ image-test-mysql:
     - docker logs gitlab-test > logs/docker-logs-gitlab.log 2>&1
     - docker logs gitlab-mysql > logs/docker-logs-mysql.log 2>&1
     - docker logs gitlab-redis > logs/docker-logs-redis.log 2>&1
-    - mkdir -p $(PWD)/logs/gitlab-test-files/gl-config
-    - mkdir -p $(PWD)/logs/gitlab-test-files/gls-config
-    - mkdir -p $(PWD)/logs/gitlab-test-files/glm-config
-    - mkdir -p $(PWD)/logs/gitlab-test-files/supervisor
-    - docker cp -L gitlab-test:/home/git/gitlab/config $(PWD)/logs/gitlab-test-files/gl-config
-    - docker cp -L gitlab-test:/home/git/gitlab-shell/config.yml $(PWD)/logs/gitlab-test-files/gls-config
-    - docker cp -L gitlab-test:/home/git/gitlab-monitor/config $(PWD)/logs/gitlab-test-files/glm-config
-    - docker cp -L gitlab-test:/etc/supervisor $(PWD)/logs/gitlab-test-files/supervisor
+    - mkdir -p $(pwd)/logs/gitlab-test-files/gl-config
+    - mkdir -p $(pwd)/logs/gitlab-test-files/gls-config
+    - mkdir -p $(pwd)/logs/gitlab-test-files/glm-config
+    - mkdir -p $(pwd)/logs/gitlab-test-files/supervisor
+    - docker cp -L gitlab-test:/home/git/gitlab/config $(pwd)/logs/gitlab-test-files/gl-config
+    - docker cp -L gitlab-test:/home/git/gitlab-shell/config.yml $(pwd)/logs/gitlab-test-files/gls-config
+    - docker cp -L gitlab-test:/home/git/gitlab-monitor/config $(pwd)/logs/gitlab-test-files/glm-config
+    - docker cp -L gitlab-test:/etc/supervisor $(pwd)/logs/gitlab-test-files/supervisor
     - env > logs/env-variables.log
     - docker logs gitlab-test
     - export RC=0
@@ -221,14 +221,14 @@ image-test-pgsql:
     - docker logs gitlab-test > logs/docker-logs-gitlab.log 2>&1
     - docker logs gitlab-postgresql > logs/docker-logs-postgresql.log 2>&1
     - docker logs gitlab-redis > logs/docker-logs-redis.log 2>&1
-    - mkdir -p $(PWD)/logs/gitlab-test-files/gl-config
-    - mkdir -p $(PWD)/logs/gitlab-test-files/gls-config
-    - mkdir -p $(PWD)/logs/gitlab-test-files/glm-config
-    - mkdir -p $(PWD)/logs/gitlab-test-files/supervisor
-    - docker cp -L gitlab-test:/home/git/gitlab/config $(PWD)/logs/gitlab-test-files/gl-config
-    - docker cp -L gitlab-test:/home/git/gitlab-shell/config.yml $(PWD)/logs/gitlab-test-files/gls-config
-    - docker cp -L gitlab-test:/home/git/gitlab-monitor/config $(PWD)/logs/gitlab-test-files/glm-config
-    - docker cp -L gitlab-test:/etc/supervisor $(PWD)/logs/gitlab-test-files/supervisor
+    - mkdir -p $(pwd)/logs/gitlab-test-files/gl-config
+    - mkdir -p $(pwd)/logs/gitlab-test-files/gls-config
+    - mkdir -p $(pwd)/logs/gitlab-test-files/glm-config
+    - mkdir -p $(pwd)/logs/gitlab-test-files/supervisor
+    - docker cp -L gitlab-test:/home/git/gitlab/config $(pwd)/logs/gitlab-test-files/gl-config
+    - docker cp -L gitlab-test:/home/git/gitlab-shell/config.yml $(pwd)/logs/gitlab-test-files/gls-config
+    - docker cp -L gitlab-test:/home/git/gitlab-monitor/config $(pwd)/logs/gitlab-test-files/glm-config
+    - docker cp -L gitlab-test:/etc/supervisor $(pwd)/logs/gitlab-test-files/supervisor
     - env > logs/env-variables.log
     - docker logs gitlab-test
     - export RC=0
