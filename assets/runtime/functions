@@ -21,7 +21,7 @@ GITLAB_NGINX_CONFIG="/etc/nginx/sites-enabled/gitlab"
 GITLAB_CI_NGINX_CONFIG="/etc/nginx/sites-enabled/gitlab_ci"
 GITLAB_REGISTRY_NGINX_CONFIG="/etc/nginx/sites-enabled/gitlab-registry"
 GITLAB_PAGES_NGINX_CONFIG="/etc/nginx/sites-enabled/gitlab-pages"
-GITLAB_GITALY_CONFIG=${GITLAB_GITALY_INSTALL_DIR}/config.toml
+GITLAB_GITALY_CONFIG="${GITLAB_GITALY_INSTALL_DIR}/config.toml"
 
 ## Execute a command as GITLAB_USER
 exec_as_git() {
