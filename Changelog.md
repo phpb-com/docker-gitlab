@@ -3,6 +3,10 @@
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list of changes in GitLab.
 
 
+**9.1.0-rc4**
+- gitlab: Gitlab CE 9.1.0-rc4
+- Removed cache clean-up after installation
+
 **9.1.0-rc3**
 - gitlab: Gitlab CE 9.1.0-rc3
 - Minor cleanup fixup of functions file
