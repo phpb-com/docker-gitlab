@@ -45,8 +45,8 @@ prebuild_gitlab_ce() {
 # Function that is executed after build process is done
 postbuild_gitlab_ce() {
   gitlab_ce_cleanup_dir_post
-  gitlab_ce_cleanup_yarn_cache
-  gitlab_ce_cleanup_tmp_cache
+# gitlab_ce_cleanup_yarn_cache
+# gitlab_ce_cleanup_tmp_cache
   return 0
 }
 
