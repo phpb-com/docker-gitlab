@@ -22,7 +22,7 @@ services:
 
   gitlab:
     restart: always
-    image: gotfix/gitlab:9.1.0-rc4
+    image: gotfix/gitlab:9.1.0-rc5
     depends_on:
     - redis
     - postgresql
