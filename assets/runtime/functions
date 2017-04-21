@@ -1647,9 +1647,6 @@ migrate_database() {
     echo "Migrating database..."
     exec_as_git bundle exec rake db:migrate RAILS_ENV=${RAILS_ENV} >/dev/null
 
-    echo "Clearing cache..."
-    exec_as_git bundle exec rake cache:clear RAILS_ENV=${RAILS_ENV} >/dev/null 2>&1
-
     if [[ ${GITLAB_TRACK_DEPLOYMENTS} == true ]]; then
       echo "Tracking Deployments..."
       exec_as_git bundle exec rake gitlab:track_deployment RAILS_ENV=${RAILS_ENV} >/dev/null 2>&1
