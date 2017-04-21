@@ -2,7 +2,6 @@
 
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list of changes in GitLab.
 
-
 **9.1.0-rc5**
 - gitlab: Gitlab CE 9.1.0-rc5
 - Re-add cache clean-up after installation
@@ -28,6 +27,10 @@ This file only reflects the changes that are made in this image. Please refer to
 - Remove unused test config from `gitlab.yml`
 - Replace `vercmp` with more robust implementation, works with all versions of Gitlab CE
 - Add Redis cache clearing task on start-up
+
+**9.0.6**
+- gitlab: Gitlab CE 9.0.6
+- Improved MySQL support, utf8mb4 encoding and collation
 
 **9.0.5**
 - gitlab: Gitlab CE 9.0.5
