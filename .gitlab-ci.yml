@@ -4,7 +4,6 @@ image: docker:latest
 
 variables:
   NO_PROXY: "127.0.0.1, localhost, docker, registry, *.gotfix.com"
-  DOCKER_DRIVER: overlay
   DOCKER_HUB_BASE: gotfix/gitlab
   GITHUB_REPO_URL: https://phpb-com:${GITHUB_TOKEN}@github.com/gotfix/gitlab.git
   GIT_SUBMODULE_STRATEGY: recursive
