@@ -32,7 +32,8 @@ if [[ "${DB}" == "mysql" ]]; then
            --collation-server=utf8mb4_unicode_ci \
            --innodb-file-format=barracuda \
            --innodb-file-per-table \
-           --innodb-large-prefix
+           --innodb-large-prefix \
+           --default-storage-engine=InnoDB
 
 elif [[ "${DB}" == "pgsql" ]]; then
 

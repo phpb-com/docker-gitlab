@@ -384,7 +384,8 @@ docker run --name gitlab-mysql -d \
     --collation-server=utf8mb4_unicode_ci \
     --innodb-file-format=barracuda \
     --innodb-file-per-table \
-    --innodb-large-prefix
+    --innodb-large-prefix \
+    --default-storage-engine=InnoDB
 ```
 
 > The generated root password will be printed to stdout `(GENERATED ROOT PASSWORD: .....)`
@@ -459,7 +460,8 @@ docker run --name gitlab-mysql \
     --collation-server=utf8mb4_unicode_ci \
     --innodb-file-format=barracuda \
     --innodb-file-per-table \
-    --innodb-large-prefix
+    --innodb-large-prefix \
+    --default-storage-engine=InnoDB
 ```
 
 The above command will create a database named `gitlabhq_production` and also create a user named `gitlab` with the password `password` with full/remote access to the `gitlabhq_production` database.
