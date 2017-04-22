@@ -1,6 +1,17 @@
 #!/bin/bash
 set -e
 
+gitlab_shell_bundle_config() {
+  # Set bundler defaults
+  exec_as_git bundle config --local ignore_messages true
+  exec_as_git bundle config --local only_update_to_newer_versions true
+  exec_as_git bundle config --local jobs $(nproc)
+  exec_as_git bundle config --local clean true
+  exec_as_git bundle config --local retry 3
+  exec_as_git bundle config --local deployment true
+  exec_as_git bundle config --local without development:test
+}
+
 # Patch gitlab-shell to use redis gem 3.3.3 to be compatible with ruby 2.4
 gitlab_shell_update_redis_gem_to_3_3_3() {
   exec_as_git sed -ri "s/^REDIS_RB_VERSION=v3\.3\.0$/REDIS_RB_VERSION=v3.3.3/g" Makefile
@@ -11,6 +22,7 @@ gitlab_shell_update_redis_gem_to_3_3_3() {
 # Function that is executed before build process starts
 prebuild_gitlab_shell() {
 # gitlab_shell_update_redis_gem_to_3_3_3
+  gitlab_shell_bundle_config
   return 0
 }
 

@@ -4,9 +4,9 @@
 [![](https://images.microbadger.com/badges/version/gotfix/gitlab.svg)](https://microbadger.com/images/gotfix/gitlab "Get your own version badge on microbadger.com")
 [![Docker Pulls](https://img.shields.io/docker/pulls/gotfix/gitlab.svg)](https://hub.docker.com/r/gotfix/gitlab/)
 
-# gotfix/gitlab:9.0.6
+# gotfix/gitlab:9.1.0
 
-> Alternatively image is available from quay.io `quay.io/gotfix/gitlab:9.0.6`
+> Alternatively image is available from quay.io `quay.io/gotfix/gitlab:9.1.0`
 
 **NOTE:** This project was forked from [sameersbn/docker-gitlab](https://github.com/sameersbn/docker-gitlab) to maintain slightly more modern and less conservative (i.e., things will  break) version of GitLab docker image.
 
@@ -60,10 +60,10 @@ There is a wonderful project that has a very good set of helm charts to get you 
     + [PostgreSQL](#postgresql)
       - [External PostgreSQL Server](#external-postgresql-server)
       - [Linking to PostgreSQL Container](#linking-to-postgresql-container)
-    + [MySQL](#mysql)
-      - [Internal MySQL Server](#internal-mysql-server)
-      - [External MySQL Server](#external-mysql-server)
-      - [Linking to MySQL Container](#linking-to-mysql-container)
+    + [MySQL/MariaDB](#mysql)
+      - [Internal MySQL/MariaDB Server](#internal-mysql-server)
+      - [External MySQL/MariaDB Server](#external-mysql-server)
+      - [Linking to MySQL/MariaDB Container](#linking-to-mysql-container)
   * [Redis](#redis)
     + [Internal Redis Server](#internal-redis-server)
     + [External Redis Server](#external-redis-server)
@@ -174,7 +174,7 @@ Your docker host needs to have 1GB or more of available RAM to run GitLab. Pleas
 Automated builds of the image are available from [Dockerhub](https://hub.docker.com/r/gotfix/gitlab) and is the recommended method of installation.
 
 ```bash
-docker pull gotfix/gitlab:9.0.6
+docker pull gotfix/gitlab:9.1.0
 ```
 
 You can also pull the `latest` tag which is built from the repository *HEAD*
@@ -243,7 +243,7 @@ docker run --name gitlab -d \
     --env 'GITLAB_SECRETS_SECRET_KEY_BASE=long-and-random-alpha-numeric-string' \
     --env 'GITLAB_SECRETS_OTP_KEY_BASE=long-and-random-alpha-numeric-string' \
     --volume /srv/docker/gitlab/gitlab:/home/git/data \
-    gotfix/gitlab:9.0.6
+    gotfix/gitlab:9.1.0
 ```
 
 *Please refer to [Available Configuration Parameters](#available-configuration-parameters) to understand `GITLAB_PORT` and other configuration options*
@@ -278,7 +278,7 @@ Volumes can be mounted in docker by specifying the `-v` option in the docker run
 ```bash
 docker run --name gitlab -d \
     --volume /srv/docker/gitlab/gitlab:/home/git/data \
-    gotfix/gitlab:9.0.6
+    gotfix/gitlab:9.1.0
 ```
 
 ## Database
@@ -311,7 +311,7 @@ docker run --name gitlab -d \
     --env 'DB_NAME=gitlabhq_production' \
     --env 'DB_USER=gitlab' --env 'DB_PASS=password' \
     --volume /srv/docker/gitlab/gitlab:/home/git/data \
-    gotfix/gitlab:9.0.6
+    gotfix/gitlab:9.1.0
 ```
 
 #### Linking to PostgreSQL Container
@@ -355,7 +355,7 @@ We are now ready to start the GitLab application.
 ```bash
 docker run --name gitlab -d --link gitlab-postgresql:postgresql \
     --volume /srv/docker/gitlab/gitlab:/home/git/data \
-    gotfix/gitlab:9.0.6
+    gotfix/gitlab:9.1.0
 ```
 
 Here the image will also automatically fetch the `DB_NAME`, `DB_USER` and `DB_PASS` variables from the postgresql container as they are specified in the `docker run` command for the postgresql container. This is made possible using the magic of docker links and works with the following images:
@@ -378,8 +378,21 @@ Assuming that your mysql data is available at `/srv/docker/gitlab/mysql`
 ```bash
 docker run --name gitlab-mysql -d \
     --volume /srv/docker/gitlab/mysql:/var/lib/mysql \
-    sameersbn/mysql:latest
+    --env='MYSQL_RANDOM_ROOT_PASSWORD=yes' \
+    -d mariadb:latest \
+    --character-set-server=utf8 \
+    --collation-server=utf8_unicode_ci \
+    --innodb-file-format=barracuda \
+    --innodb-file-per-table=1 \
+    --innodb-large-prefix=1 \
+    --default-storage-engine=InnoDB
 ```
+
+> The generated root password will be printed to stdout `(GENERATED ROOT PASSWORD: .....)`
+
+> See `docker run -it --rm mariadb:tag --verbose --help` for the list of all available options to start MariaDB
+
+> **Read [this](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/install/database_mysql.md) to understand how to set MySQL up.**
 
 This will start a mysql container with your existing mysql data. Now login to the mysql container and create a user for the existing `gitlabhq_production` database.
 
@@ -409,7 +422,7 @@ docker run --name gitlab -d \
     --env 'DB_NAME=gitlabhq_production' \
     --env 'DB_USER=gitlab' --env 'DB_PASS=password' \
     --volume /srv/docker/gitlab/gitlab:/home/git/data \
-    gotfix/gitlab:9.0.6
+    gotfix/gitlab:9.1.0
 ```
 
 #### Linking to MySQL Container
@@ -418,12 +431,12 @@ You can link this image with a mysql container for the database requirements. Th
 
 If a mysql container is linked, only the `DB_ADAPTER`, `DB_HOST` and `DB_PORT` settings are automatically retrieved using the linkage. You may still need to set other database connection parameters such as the `DB_NAME`, `DB_USER`, `DB_PASS` and so on.
 
-To illustrate linking with a mysql container, we will use the [sameersbn/mysql](https://github.com/sameersbn/docker-mysql) image. When using docker-mysql in production you should mount a volume for the mysql data store. Please refer the [README](https://github.com/sameersbn/docker-mysql/blob/master/README.md) of docker-mysql for details.
+To illustrate linking with a mysql container, we will use the [MariaDB](https://hub.docker.com/_/mariadb/) image. When using docker-mysql in production you should mount a volume for the mysql data store.
 
 First, lets pull the mysql image from the docker index.
 
 ```bash
-docker pull sameersbn/mysql:latest
+docker pull mariadb:latest
 ```
 
 For data persistence lets create a store for the mysql and start the container.
@@ -438,11 +451,19 @@ sudo chcon -Rt svirt_sandbox_file_t /srv/docker/gitlab/mysql
 The run command looks like this.
 
 ```bash
-docker run --name gitlab-mysql -d \
-    --env 'DB_NAME=gitlabhq_production' \
-    --env 'DB_USER=gitlab' --env 'DB_PASS=password' \
+docker run --name gitlab-mysql \
     --volume /srv/docker/gitlab/mysql:/var/lib/mysql \
-    sameersbn/mysql:latest
+    --env='MYSQL_DATABASE=gitlabhq_production' \
+    --env='MYSQL_USER=gitlab' \
+    --env='MYSQL_PASSWORD=password' \
+    --env='MYSQL_RANDOM_ROOT_PASSWORD=yes' \
+    -d mariadb:latest \
+    --character-set-server=utf8 \
+    --collation-server=utf8_unicode_ci \
+    --innodb-file-format=barracuda \
+    --innodb-file-per-table=1 \
+    --innodb-large-prefix=1 \
+    --default-storage-engine=InnoDB
 ```
 
 The above command will create a database named `gitlabhq_production` and also create a user named `gitlab` with the password `password` with full/remote access to the `gitlabhq_production` database.
@@ -452,13 +473,8 @@ We are now ready to start the GitLab application.
 ```bash
 docker run --name gitlab -d --link gitlab-mysql:mysql \
     --volume /srv/docker/gitlab/gitlab:/home/git/data \
-    gotfix/gitlab:9.0.6
+    gotfix/gitlab:9.1.0
 ```
-
-Here the image will also automatically fetch the `DB_NAME`, `DB_USER` and `DB_PASS` variables from the mysql container as they are specified in the `docker run` command for the mysql container. This is made possible using the magic of docker links and works with the following images:
-
- - [mysql](https://hub.docker.com/_/mysql/)
- - [sameersbn/mysql](https://quay.io/repository/sameersbn/mysql/)
 
 ## Redis
 
@@ -477,7 +493,7 @@ The image can be configured to use an external redis server. The configuration s
 ```bash
 docker run --name gitlab -it --rm \
     --env 'REDIS_HOST=192.168.1.100' --env 'REDIS_PORT=6379' \
-    gotfix/gitlab:9.0.6
+    gotfix/gitlab:9.1.0
 ```
 
 ### Linking to Redis Container
@@ -504,7 +520,7 @@ We are now ready to start the GitLab application.
 
 ```bash
 docker run --name gitlab -d --link gitlab-redis:redisio \
-    gotfix/gitlab:9.0.6
+    gotfix/gitlab:9.1.0
 ```
 
 ### Mail
@@ -517,7 +533,7 @@ If you are using Gmail then all you need to do is:
 docker run --name gitlab -d \
     --env 'SMTP_USER=USER@gmail.com' --env 'SMTP_PASS=PASSWORD' \
     --volume /srv/docker/gitlab/gitlab:/home/git/data \
-    gotfix/gitlab:9.0.6
+    gotfix/gitlab:9.1.0
 ```
 
 Please refer the [Available Configuration Parameters](#available-configuration-parameters) section for the list of SMTP parameters that can be specified.
@@ -537,7 +553,7 @@ docker run --name gitlab -d \
     --env 'IMAP_USER=USER@gmail.com' --env 'IMAP_PASS=PASSWORD' \
     --env 'GITLAB_INCOMING_EMAIL_ADDRESS=USER+%{key}@gmail.com' \
     --volume /srv/docker/gitlab/gitlab:/home/git/data \
-    gotfix/gitlab:9.0.6
+    gotfix/gitlab:9.1.0
 ```
 
 Please refer the [Available Configuration Parameters](#available-configuration-parameters) section for the list of IMAP parameters that can be specified.
@@ -614,7 +630,7 @@ docker run --name gitlab -d \
     --env 'GITLAB_SSH_PORT=10022' --env 'GITLAB_PORT=10443' \
     --env 'GITLAB_HTTPS=true' --env 'SSL_SELF_SIGNED=true' \
     --volume /srv/docker/gitlab/gitlab:/home/git/data \
-    gotfix/gitlab:9.0.6
+    gotfix/gitlab:9.1.0
 ```
 
 In this configuration, any requests made over the plain http protocol will automatically be redirected to use the https protocol. However, this is not optimal when using a load balancer.
@@ -630,7 +646,7 @@ docker run --name gitlab -d \
  --env 'GITLAB_HTTPS=true' --env 'SSL_SELF_SIGNED=true' \
  --env 'NGINX_HSTS_MAXAGE=2592000' \
  --volume /srv/docker/gitlab/gitlab:/home/git/data \
- gotfix/gitlab:9.0.6
+ gotfix/gitlab:9.1.0
 ```
 
 If you want to completely disable HSTS set `NGINX_HSTS_ENABLED` to `false`.
@@ -653,7 +669,7 @@ docker run --name gitlab -d \
     --env 'GITLAB_SSH_PORT=10022' --env 'GITLAB_PORT=443' \
     --env 'GITLAB_HTTPS=true' --env 'SSL_SELF_SIGNED=true' \
     --volume /srv/docker/gitlab/gitlab:/home/git/data \
-    gotfix/gitlab:9.0.6
+    gotfix/gitlab:9.1.0
 ```
 
 Again, drop the `--env 'SSL_SELF_SIGNED=true'` option if you are using CA certified SSL certificates.
@@ -701,7 +717,7 @@ Let's assume we want to deploy our application to '/git'. GitLab needs to know t
 docker run --name gitlab -it --rm \
     --env 'GITLAB_RELATIVE_URL_ROOT=/git' \
     --volume /srv/docker/gitlab/gitlab:/home/git/data \
-    gotfix/gitlab:9.0.6
+    gotfix/gitlab:9.1.0
 ```
 
 GitLab will now be accessible at the `/git` path, e.g., `http://www.example.com/git`.
@@ -821,14 +837,14 @@ Also the container processes seem to be executed as the host's user/group `1000`
 ```bash
 docker run --name gitlab -it --rm [options] \
     --env "USERMAP_UID=$(id -u git)" --env "USERMAP_GID=$(id -g git)" \
-    gotfix/gitlab:9.0.6
+    gotfix/gitlab:9.1.0
 ```
 
 When changing this mapping, all files and directories in the mounted data volume `/home/git/data` have to be re-owned by the new ids. This can be achieved automatically using the following command:
 
 ```bash
 docker run --name gitlab -d [OPTIONS] \
-    gotfix/gitlab:9.0.6 app:sanitize
+    gotfix/gitlab:9.1.0 app:sanitize
 ```
 
 ### Piwik
@@ -903,8 +919,6 @@ Below is the complete list of available configuration options segregated by cate
 | `GITLAB_EMAIL_ENABLED` | Enable or disable gitlab mailer. Defaults to the `SMTP_ENABLED` configuration. |
 | `GITLAB_INCOMING_EMAIL_ADDRESS` | The incoming email address for reply by email. Defaults to the value of `IMAP_USER`, else defaults to `reply@example.com`. Please read the [reply by email](http://doc.gitlab.com/ce/incoming_email/README.html) documentation to currently set this parameter. |
 | `GITLAB_INCOMING_EMAIL_ENABLED` | Enable or disable gitlab reply by email feature. Defaults to the value of `IMAP_ENABLED`. |
-| `GITLAB_SIGNUP_ENABLED` | Enable or disable user signups (first run only). Default is `true`. |
-| `GITLAB_PROJECTS_LIMIT` | Set default projects limit. Defaults to `100`. |
 | `GITLAB_USERNAME_CHANGE` | Enable or disable ability for users to change their username. Defaults to `true`. |
 | `GITLAB_CREATE_GROUP` | Enable or disable ability for users to create groups. Defaults to `true`. |
 | `GITLAB_PROJECTS_ISSUES` | Set if *issues* feature should be enabled by default for new projects. Defaults to `true`. |
@@ -1080,7 +1094,6 @@ Below is the complete list of available configuration options segregated by cate
 | `OAUTH_AZURE_API_KEY` | Azure Client ID. No defaults. |
 | `OAUTH_AZURE_API_SECRET` | Azure Client secret. No defaults. |
 | `OAUTH_AZURE_TENANT_ID` | Azure Tenant ID. No defaults. |
-| `GITLAB_GRAVATAR_ENABLED` | Enables gravatar integration. Defaults to `true`. |
 | `GITLAB_GRAVATAR_HTTP_URL` | Sets a custom gravatar url. Defaults to `http://www.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon`. This can be used for [Libravatar integration](http://doc.gitlab.com/ce/customization/libravatar.html). |
 | `GITLAB_GRAVATAR_HTTPS_URL` | Same as above, but for https. Defaults to `https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon`. |
 | `USERMAP_UID` | Sets the uid for user `git` to the specified uid. Defaults to `1000`. |
@@ -1105,13 +1118,14 @@ Below is the complete list of available configuration options segregated by cate
 | `RACK_ATTACK_MAXRETRY` | Number of failed auth attempts before which an IP should be banned. Defaults to `10` |
 | `RACK_ATTACK_FINDTIME` | Number of seconds before resetting the per IP auth attempt counter. Defaults to `60`. |
 | `RACK_ATTACK_BANTIME` | Number of seconds an IP should be banned after too many auth attempts. Defaults to `3600`. |
+| `GITLAB_TRACK_DEPLOYMENTS` | Enable tracking of deployments. See [rake tasks](https://docs.gitlab.com/ce/administration/raketasks/maintenance.html#tracking-deployments). Defaults to `false`. |
 
 #### Gitaly Experimental
 
 | Parameter | Description |
 |-----------|-------------|
 | `GITALY_ENABLED`                | **Experimental** Enable Gitaly. Default `false`. |
-| `GITALY_SOCKET_PATH`            | **Experimental** Set Gitaly socker path. Default `/home/git/gitlab/tmp/sockets/private/gitaly.socket`. |
+| `GITALY_ADDRESS`                | **Experimental** Set Gitaly server address. `unix:/path/to/socket.file` or `tcp://host:port`. Default `unix:/home/git/gitlab/tmp/sockets/private/gitaly.socket`. |
 | `GITALY_PROMETHEUS_LISTEN_ADDR` | **Experimental** Specify port for Gitaly to emit metrics. Default `localhost:9236`. |
 
 # Maintenance
@@ -1130,7 +1144,7 @@ Execute the rake task to create a backup.
 
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    gotfix/gitlab:9.0.6 app:rake gitlab:backup:create
+    gotfix/gitlab:9.1.0 app:rake gitlab:backup:create
 ```
 
 A backup will be created in the backups folder of the [Data Store](#data-store). You can change the location of the backups using the `GITLAB_BACKUP_DIR` configuration parameter.
@@ -1164,7 +1178,7 @@ Execute the rake task to restore a backup. Make sure you run the container in in
 
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    gotfix/gitlab:9.0.6 app:rake gitlab:backup:restore
+    gotfix/gitlab:9.1.0 app:rake gitlab:backup:restore
 ```
 
 The list of all available backups will be displayed in reverse chronological order. Select the backup you want to restore and continue.
@@ -1173,7 +1187,7 @@ To avoid user interaction in the restore operation, specify the timestamp of the
 
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    gotfix/gitlab:9.0.6 app:rake gitlab:backup:restore BACKUP=1417624827
+    gotfix/gitlab:9.1.0 app:rake gitlab:backup:restore BACKUP=1417624827
 ```
 
 When using `docker-compose` you may use the following command to execute the restore.
@@ -1222,7 +1236,7 @@ The `app:rake` command allows you to run gitlab rake tasks. To run a rake task s
 
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    gotfix/gitlab:9.0.6 app:rake gitlab:env:info
+    gotfix/gitlab:9.1.0 app:rake gitlab:env:info
 ```
 
 You can also use `docker exec` to run raketasks on running gitlab instance. For example,
@@ -1235,7 +1249,7 @@ Similarly, to import bare repositories into GitLab project instance
 
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    gotfix/gitlab:9.0.6 app:rake gitlab:import:repos
+    gotfix/gitlab:9.1.0 app:rake gitlab:import:repos
 ```
 
 Or
@@ -1266,7 +1280,7 @@ Copy all the **bare** git repositories to the `repositories/` directory of the [
 
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    gotfix/gitlab:9.0.6 app:rake gitlab:import:repos
+    gotfix/gitlab:9.1.0 app:rake gitlab:import:repos
 ```
 
 Watch the logs and your repositories should be available into your new gitlab container.
@@ -1288,17 +1302,17 @@ To upgrade to newer gitlab releases, simply follow this 4 step upgrade procedure
 
 For docker:
 ```bash
-docker pull gotfix/gitlab:9.0.6
+docker pull gotfix/gitlab:9.1.0
 ```
 
 For docker-compose:
 
-Update `docker-compose.yml` and change `image:` variable to `gotfix/gitlab:9.0.6`, to have it look like snippet below:
+Update `docker-compose.yml` and change `image:` variable to `gotfix/gitlab:9.1.0`, to have it look like snippet below:
 ```yaml
 ...
   gitlab:
     restart: always
-    image: gotfix/gitlab:9.0.6
+    image: gotfix/gitlab:9.1.0
 ...
 ```
 
@@ -1345,7 +1359,7 @@ Replace `x.x.x` with the version you are upgrading from. For example, if you are
 
 For docker:
 ```bash
-docker run --name gitlab -d [OPTIONS] gotfix/gitlab:9.0.6
+docker run --name gitlab -d [OPTIONS] gotfix/gitlab:9.1.0
 ```
 
 For docker-compose:

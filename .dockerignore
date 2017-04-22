@@ -10,3 +10,4 @@ docker-compose.yml
 docs
 hooks
 prometheus
+tests

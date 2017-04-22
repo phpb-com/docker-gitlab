@@ -71,20 +71,8 @@ production: &base
 
     # Email server smtp settings are in config/initializers/smtp_settings.rb.sample
 
-    default_projects_limit: {{GITLAB_PROJECTS_LIMIT}}
     default_can_create_group: {{GITLAB_CREATE_GROUP}}  # default: true
     username_changing_enabled: {{GITLAB_USERNAME_CHANGE}} # default: true - User can change her username/namespace
-    ## Default theme ID
-    ##   1 - Graphite
-    ##   2 - Charcoal
-    ##   3 - Green
-    ##   4 - Gray
-    ##   5 - Violet
-    ##   6 - Blue
-    # default_theme: 2 # default: 2
-
-    # Enable or disable user signups (first run only)
-    signup_enabled: {{GITLAB_SIGNUP_ENABLED}}
 
     ## Automatic issue closing
     # If a commit message matches this regular expression, all issues referenced from the matched text will be closed.
@@ -179,7 +167,6 @@ production: &base
   ## Gravatar
   ## For Libravatar see: http://doc.gitlab.com/ce/customization/libravatar.html
   gravatar:
-    enabled: {{GITLAB_GRAVATAR_ENABLED}}                 # Use user avatar image from Gravatar.com (default: true)
     # gravatar urls: possible placeholders: %{hash} %{size} %{email}
     plain_url: "{{GITLAB_GRAVATAR_HTTP_URL}}"     # default: http://www.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon
     ssl_url:   "{{GITLAB_GRAVATAR_HTTPS_URL}}"    # default: https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon
@@ -191,6 +178,9 @@ production: &base
     # Flag stuck CI jobs as failed
     stuck_ci_jobs_worker:
       cron: "0 * * * *"
+    # Execute scheduled triggers
+    trigger_schedule_worker:
+      cron: "0 */12 * * *"
     # Remove expired build artifacts
     expire_build_artifacts_worker:
       cron: "50 * * * *"
@@ -460,28 +450,17 @@ production: &base
   shared:
     path: {{GITLAB_SHARED_DIR}}
 
+
   # Gitaly settings
   gitaly:
-    # The socket_path setting is optional and obsolete. When this is set
-    # GitLab assumes it can reach a Gitaly services via a Unix socket at
-    # this path. When this is commented out GitLab will not use Gitaly.
-    # 
-    # This setting is obsolete because we expect it to be moved under
-    # repositories/storages in GitLab 9.1.
-    #
-    socket_path: {{GITALY_SOCKET_PATH}}
+    # This setting controls whether GitLab uses Gitaly (new component
+    # introduced in 9.0). Eventually Gitaly use will become mandatory and
+    # this option will disappear.
+    enabled: {{GITALY_ENABLED}}
 
   #
   # 4. Advanced settings
   # ==========================
-
-  # GitLab Satellites
-  #
-  # Note for maintainers: keep the satellites.path setting until GitLab 9.0 at
-  # least. This setting is fed to 'rm -rf' in
-  # db/migrate/20151023144219_remove_satellites.rb
-  satellites:
-    path: {{GITLAB_DATA_DIR}}/gitlab-satellites/
 
   ## Repositories settings
   repositories:
@@ -492,6 +471,7 @@ production: &base
     storages: # You must have at least a `default` storage path.
       default: 
         path: {{GITLAB_REPOS_DIR}}/
+        gitaly_address: {{GITALY_ADDRESS}}
 
   ## Backup settings
   backup:
@@ -597,54 +577,6 @@ production: &base
 
 development:
   <<: *base
-
-test:
-  <<: *base
-  gravatar:
-    enabled: true
-  lfs:
-    enabled: false
-  gitlab:
-    host: localhost
-    port: 80
-
-    # When you run tests we clone and setup gitlab-shell
-    # In order to setup it correctly you need to specify
-    # your system username you use to run GitLab
-    # user: YOUR_USERNAME
-  satellites:
-    path: tmp/tests/gitlab-satellites/
-  repositories:
-    storages:
-      default: tmp/tests/repositories/
-  backup:
-    path: tmp/tests/backups
-  gitlab_shell:
-    path: tmp/tests/gitlab-shell/
-    hooks_path: tmp/tests/gitlab-shell/hooks/
-  issues_tracker:
-    redmine:
-      title: "Redmine"
-      project_url: "http://redmine/projects/:issues_tracker_id"
-      issues_url: "http://redmine/:project_id/:issues_tracker_id/:id"
-      new_issue_url: "http://redmine/projects/:issues_tracker_id/issues/new"
-    jira:
-      title: "JIRA"
-      url: https://sample_company.atlasian.net
-      project_key: PROJECT
-  ldap:
-    enabled: false
-    servers:
-      main:
-        label: ldap
-        host: 127.0.0.1
-        port: 3890
-        uid: 'uid'
-        method: 'plain' # "tls" or "ssl" or "plain"
-        base: 'dc=example,dc=com'
-        user_filter: ''
-        group_base: 'ou=groups,dc=example,dc=com'
-        admin_group: ''
 
 staging:
   <<: *base

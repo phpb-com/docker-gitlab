@@ -18,11 +18,11 @@ Those are the steps that should be taken to upgrade GitLab, GitLab Shell, GitLab
  - If it is a major update (i.e., 8.X -> 9.X, 8.1 -> 8.2), check [update documents](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/update).
  - Resolve all of the new requirements and changes
  - Update relevant files with new version number
-   - check https://gitlab.com/gitlab-org/gitlab-shell/tags
-   - check https://gitlab.com/gitlab-org/gitaly/tags
+   - (Updated automatically, **DO NOT UPDATE**) check https://gitlab.com/gitlab-org/gitlab-shell/tags
+   - (Updated automatically, **DO NOT UPDATE**) check https://gitlab.com/gitlab-org/gitaly/tags
+   - (Updated automatically, **DO NOT UPDATE**) check https://gitlab.com/gitlab-org/gitlab-pages/tags
+   - (Updated automatically, **DO NOT UPDATE**) check https://gitlab.com/gitlab-org/gitlab-workhorse/tags
    - check https://gitlab.com/gitlab-org/gitlab-monitor/tags
-   - check https://gitlab.com/gitlab-org/gitlab-pages/tags
-   - check https://gitlab.com/gitlab-org/gitlab-workhorse/tags
    - check https://gitlab.com/gitlab-org/gitlab-ce/tags
    - Update each version in a separate commit in Dockerfile
  - Handy oneliner to update version `sed -i -- 's/X\.X\.X/Y.Y.Y/g' README.md VERSION docker-compose.yml docs/* Dockerfile`

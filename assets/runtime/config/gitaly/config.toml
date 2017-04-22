@@ -1,0 +1,15 @@
+# Example Gitaly configuration file
+
+socket_path = "{{GITALY_SOCKET_PATH}}"
+
+# # Optional: listen on a TCP socket. This is insecure (no authentication)
+# listen_addr = "localhost:9999"
+#
+
+# # Optional: export metrics via Prometheus
+prometheus_listen_addr = "{{GITALY_PROMETHEUS_LISTEN_ADDR}}"
+
+
+[[storage]]
+name = "default"
+path = "{{GITLAB_REPOS_DIR}}"
