@@ -2,6 +2,13 @@
 
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list of changes in GitLab.
 
+**9.1.0-rc7**
+- gitlab: Gitlab CE 9.1.0-rc7
+- Use MariaDB official image for the MySQL container, update documentation
+- Use utf8mb4 encoding and collation when starting MariaDB server
+- Enhance CI testing, move it out to external script
+- Switch CI test for MySQL to use MariaDB latest image
+
 **9.1.0-rc6**
 - gitlab: Gitlab CE 9.1.0-rc6
 - Remove redundant cache cleaning during start-up
