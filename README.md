@@ -381,7 +381,10 @@ docker run --name gitlab-mysql -d \
     --env='MYSQL_RANDOM_ROOT_PASSWORD=yes' \
     -d mariadb:latest \
     --character-set-server=utf8mb4 \
-    --collation-server=utf8mb4_unicode_ci
+    --collation-server=utf8mb4_unicode_ci \
+    --innodb-file-format=barracuda \
+    --innodb-file-per-table \
+    --innodb-large-prefix
 ```
 
 > The generated root password will be printed to stdout `(GENERATED ROOT PASSWORD: .....)`
@@ -451,7 +454,10 @@ docker run --name gitlab-mysql \
     --env='MYSQL_RANDOM_ROOT_PASSWORD=yes' \
     -d mariadb:latest \
     --character-set-server=utf8mb4 \
-    --collation-server=utf8mb4_unicode_ci
+    --collation-server=utf8mb4_unicode_ci \
+    --innodb-file-format=barracuda \
+    --innodb-file-per-table \
+    --innodb-large-prefix
 ```
 
 The above command will create a database named `gitlabhq_production` and also create a user named `gitlab` with the password `password` with full/remote access to the `gitlabhq_production` database.

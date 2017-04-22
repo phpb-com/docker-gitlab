@@ -29,7 +29,10 @@ if [[ "${DB}" == "mysql" ]]; then
            --env='MYSQL_RANDOM_ROOT_PASSWORD=yes' \
            -d mariadb:latest \
            --character-set-server=utf8mb4 \
-           --collation-server=utf8mb4_unicode_ci
+           --collation-server=utf8mb4_unicode_ci \
+           --innodb-file-format=barracuda \
+           --innodb-file-per-table \
+           --innodb-large-prefix
 
 elif [[ "${DB}" == "pgsql" ]]; then
 
