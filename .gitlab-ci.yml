@@ -61,7 +61,8 @@ image-test-mysql:
     paths:
       - logs/
   script:
-    - ./tests/run-start-stop.sh "${REGISTRY_IMAGE}" "$(pwd)" "mysql"
+    - apk update && apk add --no-cache bash
+    - tests/run-start-stop.sh "${REGISTRY_IMAGE}" "$(pwd)" "mysql"
   except:
     - latest
 
@@ -74,7 +75,8 @@ image-test-pgsql:
     paths:
       - logs/
   script:
-    - ./tests/run-start-stop.sh "${REGISTRY_IMAGE}" "$(pwd)" "pgsql"
+    - apk update && apk add --no-cache bash
+    - tests/run-start-stop.sh "${REGISTRY_IMAGE}" "$(pwd)" "pgsql"
   except:
     - latest
 
