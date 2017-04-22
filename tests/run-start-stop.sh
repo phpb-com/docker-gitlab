@@ -25,11 +25,13 @@ if [[ "${DB}" == "mysql" ]]; then
 
     echo "Pulling and starting mysql containers ..."
     docker pull sameersbn/mysql:latest
-    docker run --name="${DB_CONT}" -d \
+    docker run --name="${DB_CONT}" \
            --env='MYSQL_DATABASE=gitlabhq_production' \
            --env='MYSQL_USER=gitlab' \
            --env='MYSQL_PASSWORD=password' \
-           mariadb:latest
+           -d mariadb:latest \
+           --character-set-server=utf8mb4 \
+           --collation-server=utf8mb4_unicode_ci
 
 elif [[ "${DB}" == "pgsql" ]]; then
 
@@ -39,12 +41,12 @@ elif [[ "${DB}" == "pgsql" ]]; then
 
     echo "Pulling and starting postgresql containers ..."
     docker pull gotfix/postgresql:latest
-    docker run --name="${DB_CONT}" -d \
+    docker run --name="${DB_CONT}" \
            --env='DB_NAME=gitlabhq_production' \
            --env='DB_EXTENSION=pg_trgm' \
            --env='DB_USER=gitlab' \
            --env='DB_PASS=password' \
-           gotfix/postgresql:latest
+           -d gotfix/postgresql:latest
 
 fi
 
