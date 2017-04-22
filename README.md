@@ -406,7 +406,7 @@ Before you start the GitLab image create user and database for gitlab.
 
 ```sql
 CREATE USER 'gitlab'@'%.%.%.%' IDENTIFIED BY 'password';
-CREATE DATABASE IF NOT EXISTS `gitlabhq_production` DEFAULT CHARACTER SET `utf8mb4` COLLATE `utf8mb4_unicode_ci`;
+CREATE DATABASE IF NOT EXISTS `gitlabhq_production` DEFAULT CHARACTER SET `utf8` COLLATE `utf8_unicode_ci`;
 GRANT ALL PRIVILEGES ON `gitlabhq_production`.* TO 'gitlab'@'%.%.%.%';
 ```
 
