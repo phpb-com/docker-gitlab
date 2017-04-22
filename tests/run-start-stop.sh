@@ -105,10 +105,34 @@ docker run --name=gitlab-test -d \
        --volume "${TEST_BASE_DIR}/logs:/var/log/gitlab" \
        ${REGISTRY_IMAGE}
 
-echo "Waiting for containers to start and settle, 90 seconds ..."
-sleep 90
-echo "Wait for gitlab to recompile assets ..."
-while [[ $(docker logs gitlab-test 2>&1 | tail -n 1 | grep -c "Recompiling assets") != 0 ]]; do echo "Still waiting ..."; sleep 30; done
+RC=0
+
+echo "Waiting for containers to start and settle, up to 10 minutes ..."
+c=0
+while [[ $(docker logs gitlab-test 2>&1 | grep -c "Recompiling assets") == 0 ]]; do
+    echo "Still waiting ..."
+    ((c++)) && ((c==20)) && echo "Timeout, exiting ..." && export RC=1 && break
+    sleep 30
+done
+
+echo "Wait for gitlab to recompile assets, up to 10 minutes ..."
+c=0
+while [[ $(docker logs gitlab-test 2>&1 | tail -n 1 | grep -c "Recompiling assets") != 0 ]]; do
+    echo "Still waiting ..."
+    ((c++)) && ((c==20)) && echo "Timeout, exiting ..." && export RC=1 && break
+    sleep 30
+done
+
+echo "Waiting for gitlab apps to start, up to 5 minutes ..."
+c=0
+while [[ $(docker logs gitlab-test 2>&1 | grep -c "INFO supervisord started with pid 1") == 0 ]]; do
+    echo "Still waiting ..."
+    ((c++)) && ((c==20)) && echo "Timeout, exiting ..." && export RC=1 && break
+    sleep 30
+done
+
+echo "Allowing 60 seconds for supervisor to start other processes ..."
+sleep 60
 
 docker logs gitlab-test > "${TEST_BASE_DIR}/logs/docker-logs-gitlab.log" 2>&1
 docker logs gitlab-redis > "${TEST_BASE_DIR}/logs/docker-logs-redis.log" 2>&1
@@ -126,15 +150,12 @@ docker cp -L gitlab-test:/etc/supervisor "${TEST_BASE_DIR}/logs/gitlab-test-file
 
 docker logs gitlab-test
 
-RC=0
-
 if [[ $(docker logs gitlab-test 2>&1 | grep -i "error\|fail\|fatal" | grep -c -i -v "error_page\|error_log\|fail_timeout\|#") != 0 ]]; then
     export RC=1
     docker logs gitlab-test 2>&1 | grep -i "error\|fail\|fatal" | grep -i -v "error_page\|error_log\|fail_timeout\|#"
 fi
 
 docker exec gitlab-test sudo -HEu git bundle exec rake gitlab:env:info RAILS_ENV=production
-
 docker exec gitlab-test sudo -HEu git bundle exec rake gitlab:check RAILS_ENV=production
 
 echo "Stopping and removing containers ..."
