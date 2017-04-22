@@ -2,6 +2,12 @@
 
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list of changes in GitLab.
 
+**9.1.0**
+- gitlab: Gitlab CE 9.1.0
+- Identify and download dependencies automatically
+- Improved MySQL support, replacing MySQL with MariaDB as default recomended (PostgreSQL is still recommended default)
+- Improved CI/CD pipeline for the image
+
 **9.1.0-rc7**
 - gitlab: Gitlab CE 9.1.0-rc7
 - Use MariaDB official image for the MySQL container, update documentation
