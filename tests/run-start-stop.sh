@@ -25,7 +25,7 @@ if [[ "${DB}" == "mysql" ]]; then
     DB_CONT="gitlab-mysql"
 
     echo "Pulling and starting mysql containers ..."
-    docker pull sameersbn/mysql:latest
+    docker pull mariadb:latest
     docker run --name="${DB_CONT}" \
            --env='MYSQL_DATABASE=gitlabhq_production' \
            --env='MYSQL_USER=gitlab' \
