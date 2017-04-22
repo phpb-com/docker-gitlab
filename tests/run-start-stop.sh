@@ -7,10 +7,6 @@ DB="$3"
 
 TEST_RANDOM_STRING="fc92Ng2of8yJRguajyWCj6Yhzz7Byow7ibWGyWvy71EbERf0eGxIhWduDWghg7Ln"
 
-DB_LINK=""
-DB_ADAPTER=""
-DB_CONT=""
-
 echo "Preparing artifacts directory"
 mkdir -p "${TEST_BASE_DIR}"/logs
 chmod 777 "${TEST_BASE_DIR}"/logs
@@ -20,9 +16,9 @@ docker pull ${REGISTRY_IMAGE}
 
 if [[ "${DB}" == "mysql" ]]; then
 
-    DB_LINK="gitlab-mysql:mysql"
-    DB_ADAPTER="mysql2"
-    DB_CONT="gitlab-mysql"
+    export DB_ADAPTER="mysql2"
+    export DB_CONT="gitlab-mysql"
+    export DB_LINK="${DB_CONT}:mysql"
 
     echo "Pulling and starting mysql containers ..."
     docker pull mariadb:latest
@@ -30,15 +26,16 @@ if [[ "${DB}" == "mysql" ]]; then
            --env='MYSQL_DATABASE=gitlabhq_production' \
            --env='MYSQL_USER=gitlab' \
            --env='MYSQL_PASSWORD=password' \
+           --env='MYSQL_RANDOM_ROOT_PASSWORD=yes' \
            -d mariadb:latest \
            --character-set-server=utf8mb4 \
            --collation-server=utf8mb4_unicode_ci
 
 elif [[ "${DB}" == "pgsql" ]]; then
 
-    DB_LINK="gitlab-postgresql:postgresql"
-    DB_ADAPTER="postgresql"
-    DB_CONT="gitlab-postgresql"
+    export DB_ADAPTER="postgresql"
+    export DB_CONT="gitlab-postgresql"
+    export DB_LINK="${DB_CONT}:postgresql"
 
     echo "Pulling and starting postgresql containers ..."
     docker pull gotfix/postgresql:latest
@@ -55,7 +52,7 @@ echo "Pulling and starting redis containers ..."
 docker pull gotfix/redis:latest
 docker run --name=gitlab-redis -d gotfix/redis:latest
 
-echo "Starting ${REGISTRY_IMAGE} container..."
+echo "Starting ${REGISTRY_IMAGE} container, and linking to ${DB_LINK}..."
 docker run --name=gitlab-test -d \
        --link="${DB_LINK}" --link=gitlab-redis:redisio \
        --publish=40022:22 --publish=40080:80 \
