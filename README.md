@@ -380,11 +380,11 @@ docker run --name gitlab-mysql -d \
     --volume /srv/docker/gitlab/mysql:/var/lib/mysql \
     --env='MYSQL_RANDOM_ROOT_PASSWORD=yes' \
     -d mariadb:latest \
-    --character-set-server=utf8mb4 \
-    --collation-server=utf8mb4_unicode_ci \
+    --character-set-server=utf8 \
+    --collation-server=utf8_unicode_ci \
     --innodb-file-format=barracuda \
-    --innodb-file-per-table \
-    --innodb-large-prefix \
+    --innodb-file-per-table=1 \
+    --innodb-large-prefix=1 \
     --default-storage-engine=InnoDB
 ```
 
@@ -456,11 +456,11 @@ docker run --name gitlab-mysql \
     --env='MYSQL_PASSWORD=password' \
     --env='MYSQL_RANDOM_ROOT_PASSWORD=yes' \
     -d mariadb:latest \
-    --character-set-server=utf8mb4 \
-    --collation-server=utf8mb4_unicode_ci \
+    --character-set-server=utf8 \
+    --collation-server=utf8_unicode_ci \
     --innodb-file-format=barracuda \
-    --innodb-file-per-table \
-    --innodb-large-prefix \
+    --innodb-file-per-table=1 \
+    --innodb-large-prefix=1 \
     --default-storage-engine=InnoDB
 ```
 
