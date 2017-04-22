@@ -1,4 +1,5 @@
 #!/bin/bash
+set -e
 
 REGISTRY_IMAGE="$1"
 TEST_BASE_DIR="$2"
