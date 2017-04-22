@@ -388,6 +388,8 @@ docker run --name gitlab-mysql -d \
 ```
 
 > The generated root password will be printed to stdout `(GENERATED ROOT PASSWORD: .....)`
+> See `docker run -it --rm mariadb:tag --verbose --help` for the list of all available options to start MariaDB
+> ***Read [this](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/install/database_mysql.md) to understand how to set MySQL up.***
 
 This will start a mysql container with your existing mysql data. Now login to the mysql container and create a user for the existing `gitlabhq_production` database.
 
