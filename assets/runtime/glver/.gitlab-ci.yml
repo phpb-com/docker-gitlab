@@ -1,0 +1,18 @@
+image: docker:latest
+
+services:
+  - docker:dind
+  
+stages:
+  - test
+
+test:
+  stage: test
+  script:
+    - echo "Need to run t.sh with bash"
+
+lint:
+  stage: test
+  script:
+    - docker pull koalaman/shellcheck
+    - docker run --rm -v $(pwd):/mnt koalaman/shellcheck src/glver
