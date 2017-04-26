@@ -6,7 +6,7 @@ gitlab_ce_bundle_config() {
   exec_as_git bundle config --local ignore_messages true
   exec_as_git bundle config --local only_update_to_newer_versions true
   exec_as_git bundle config --local jobs $(nproc)
-  exec_as_git bundle config --local clean true
+  exec_as_git bundle config --local clean false
   exec_as_git bundle config --local retry 3
   exec_as_git bundle config --local deployment true
   exec_as_git bundle config --local without development:test
@@ -16,6 +16,12 @@ gitlab_ce_bundle_config() {
 gitlab_ce_update_redis_gem_to_latest() {
   echo "Updating redis gem to the latest version ... "
   exec_as_git bundle update redis --jobs=$(nproc)
+  exec_as_git bundle lock
+}
+
+gitlab_ce_update_rufus_scheduler_gem_to_latest() {
+  echo "Updating rufus-scheduler gem to the latest version ... "
+  exec_as_git bundle update rufus-scheduler --jobs=$(nproc)
   exec_as_git bundle lock
 }
 
@@ -38,7 +44,7 @@ gitlab_ce_cleanup_dir_post() {
 # Function that is executed before build process starts
 prebuild_gitlab_ce() {
   gitlab_ce_bundle_config
-# gitlab_ce_update_redis_gem_to_latest
+  gitlab_ce_update_rufus_scheduler_gem_to_latest
   return 0
 }
 
