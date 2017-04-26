@@ -4,6 +4,11 @@ This file only reflects the changes that are made in this image. Please refer to
 
 **9.1.0**
 - gitlab: Gitlab CE 9.1.0
+- Fix duplication of the cront backup job when restarting container
+- Allow job trigger to execute jobs at 5 minute granularity
+
+**9.1.0**
+- gitlab: Gitlab CE 9.1.0
 - Identify and download dependencies automatically
 - Improved MySQL support, replacing MySQL with MariaDB as default recomended (PostgreSQL is still recommended default)
 - Improved CI/CD pipeline for the image
