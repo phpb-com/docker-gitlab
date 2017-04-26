@@ -180,7 +180,7 @@ production: &base
       cron: "0 * * * *"
     # Execute scheduled triggers
     trigger_schedule_worker:
-      cron: "*/1 * * * *"
+      cron: "*/5 * * * *"
     # Remove expired build artifacts
     expire_build_artifacts_worker:
       cron: "50 * * * *"
