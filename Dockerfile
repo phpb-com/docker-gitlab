@@ -102,9 +102,13 @@ RUN apt-get install -y \
     zlib1g \
  && find /usr/share/locale -mindepth 1 -maxdepth 1 ! -name 'en' | xargs rm -r 
 
+# Prepare OS for gitlab-ce
 RUN update-locale LANG=C.UTF-8 LC_MESSAGES=POSIX \
  && locale-gen en_US.UTF-8 \
- && dpkg-reconfigure locales
+ && dpkg-reconfigure locales \
+ && sed 's/session\s*required\s*pam_loginuid.so/session optional pam_loginuid.so/g' -i /etc/pam.d/sshd \
+ && rm -rf /etc/update-motd.d /etc/motd /etc/motd.dynamic \
+ && ln -fs /dev/null /run/motd.dynamic
 
 RUN gem install bundler --no-ri --no-rdoc
 
