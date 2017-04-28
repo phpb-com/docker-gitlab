@@ -401,7 +401,7 @@ cat > /etc/supervisor/conf.d/gitlab-workhorse.conf <<EOF
 [program:gitlab-workhorse]
 priority=20
 directory=${GITLAB_INSTALL_DIR}
-environment=HOME=${GITLAB_HOME}
+environment=HOME=${GITLAB_HOME},GITLAB_WORKHORSE_SENTRY_DSN="{{GITLAB_WORKHORSE_SENTRY_DSN}}"
 command=/usr/local/bin/gitlab-workhorse
   -listenUmask 0
   -listenNetwork tcp
