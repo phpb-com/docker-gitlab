@@ -1,0 +1,3 @@
+[redis]
+URL = "tcp://{{REDIS_HOST}}:{{REDIS_PORT}}"
+DB = {{REDIS_DB_NUMBER}}

@@ -17,6 +17,7 @@ GITLAB_SECRETS_CONFIG="${GITLAB_INSTALL_DIR}/config/secrets.yml"
 GITLAB_ROBOTS_CONFIG="${GITLAB_INSTALL_DIR}/public/robots.txt"
 GITLAB_SHELL_CONFIG="${GITLAB_SHELL_INSTALL_DIR}/config.yml"
 GITLAB_MONITOR_CONFIG="${GITLAB_MONITOR_INSTALL_DIR}/config/gitlab-monitor.yml"
+GITLAB_WORKHORSE_CONFIG="${GITLAB_INSTALL_DIR}/config/workhorse-config.toml"
 GITLAB_NGINX_CONFIG="/etc/nginx/sites-enabled/gitlab"
 GITLAB_CI_NGINX_CONFIG="/etc/nginx/sites-enabled/gitlab_ci"
 GITLAB_REGISTRY_NGINX_CONFIG="/etc/nginx/sites-enabled/gitlab-registry"
@@ -254,7 +255,14 @@ gitlab_configure_redis() {
   gitlab_finalize_redis_parameters
   gitlab_check_redis_connection
 
+  # Gitlab
   update_template ${GITLAB_RESQUE_CONFIG} \
+    REDIS_HOST \
+    REDIS_PORT \
+    REDIS_DB_NUMBER
+
+  #Gitlab Workhorse
+  update_template ${GITLAB_WORKHORSE_CONFIG} \
     REDIS_HOST \
     REDIS_PORT \
     REDIS_DB_NUMBER
@@ -1358,6 +1366,7 @@ install_configuration_templates() {
   install_template ${GITLAB_USER}: gitlabhq/secrets.yml ${GITLAB_SECRETS_CONFIG} 0600
   install_template ${GITLAB_USER}: gitlab-shell/config.yml ${GITLAB_SHELL_CONFIG} 0640
   install_template ${GITLAB_USER}: gitlab-monitor/gitlab-monitor.yml ${GITLAB_MONITOR_CONFIG} 0640
+  install_template ${GITLAB_USER}: gitlab-workhorse/workhorse-config.toml ${GITLAB_WORKHORSE_CONFIG} 0640
   install_template ${GITLAB_USER}: gitaly/config.toml ${GITLAB_GITALY_CONFIG} 0640
 
   # Install correct database.yml based on DB type

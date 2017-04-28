@@ -411,6 +411,7 @@ command=/usr/local/bin/gitlab-workhorse
   -documentRoot ${GITLAB_INSTALL_DIR}/public
   -proxyHeadersTimeout {{GITLAB_WORKHORSE_TIMEOUT}}
   -apiCiLongPollingDuration {{GITLAB_WORKHORSE_CI_LONGPOLLING_DURATION}}
+  -config ${GITLAB_INSTALL_DIR}/config/workhorse-config.toml
 user=git
 autostart=true
 autorestart=true
