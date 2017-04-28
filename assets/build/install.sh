@@ -410,6 +410,7 @@ command=/usr/local/bin/gitlab-workhorse
   -authSocket ${GITLAB_INSTALL_DIR}/tmp/sockets/gitlab.socket
   -documentRoot ${GITLAB_INSTALL_DIR}/public
   -proxyHeadersTimeout {{GITLAB_WORKHORSE_TIMEOUT}}
+  -apiCiLongPollingDuration {{GITLAB_WORKHORSE_CI_LONGPOLLING_DURATION}}
 user=git
 autostart=true
 autorestart=true
