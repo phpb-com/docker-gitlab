@@ -1060,11 +1060,6 @@ nginx_configure_gitlab() {
   nginx_configure_gitlab_retain_ip_header
   nginx_configure_pages
 
-  if [[ ${VERBOSE} == true ]]; then
-    echo "Conten of ${GITLAB_NGINX_CONFIG} ..."
-    cat ${GITLAB_NGINX_CONFIG}
-  fi
-
 }
 
 nginx_configure_gitlab_ci() {
@@ -1076,11 +1071,6 @@ nginx_configure_gitlab_ci() {
       GITLAB_HOST \
       GITLAB_CI_HOST \
       DNS_RESOLVERS
-
-    if [[ ${VERBOSE} == true ]]; then
-      echo "Conten of ${GITLAB_CI_NGINX_CONFIG} ..."
-      cat ${GITLAB_CI_NGINX_CONFIG}
-    fi
 
   fi
 }
@@ -1095,11 +1085,6 @@ nginx_configure_gitlab_registry() {
       GITLAB_REGISTRY_API_URL \
       SSL_REGISTRY_KEY_PATH \
       SSL_REGISTRY_CERT_PATH
-
-    if [[ ${VERBOSE} == true ]]; then
-      echo "Conten to ${GITLAB_REGISTRY_NGINX_CONFIG} ..."
-      cat ${GITLAB_REGISTRY_NGINX_CONFIG}
-    fi
 
   fi
 }
@@ -1125,10 +1110,6 @@ nginx_configure_pages(){
         GITLAB_PAGES_DOMAIN \
         GITLAB_LOG_DIR \
         GITLAB_PAGES_PORT
-    fi
-    if [[ ${VERBOSE} == true ]]; then
-      echo "Conten of ${GITLAB_PAGES_NGINX_CONFIG} ..."
-      cat ${GITLAB_PAGES_NGINX_CONFIG}
     fi
   fi
 }
@@ -1479,11 +1460,6 @@ configure_gitlab() {
   gitlab_configure_registry
   gitlab_configure_pages
 
-  if [[ ${VERBOSE} == true ]]; then
-    echo "Content of ${GITLAB_CONFIG} ... "
-    cat ${GITLAB_CONFIG}
-  fi
-
   # remove stale gitlab.socket
   rm -rf ${GITLAB_INSTALL_DIR}/tmp/sockets/gitlab.socket
 }
@@ -1499,11 +1475,6 @@ configure_gitlab_shell() {
     REDIS_HOST \
     REDIS_PORT \
     REDIS_DB_NUMBER
-
-  if [[ ${VERBOSE} == true ]]; then
-    echo "Content of ${GITLAB_SHELL_CONFIG} ... "
-    cat ${GITLAB_SHELL_CONFIG}
-  fi
 
 }
 
@@ -1548,11 +1519,6 @@ stdout_logfile=${GITLAB_INSTALL_DIR}/log/%(program_name)s.log
 stderr_logfile=${GITLAB_INSTALL_DIR}/log/%(program_name)s.log
 EOF
 
-  if [[ ${VERBOSE} == true ]]; then
-    echo "Content of /etc/supervisor/conf.d/gitlab-pages.conf ... "
-    cat /etc/supervisor/conf.d/gitlab-pages.conf
-  fi
-
 fi
 }
 
@@ -1569,11 +1535,6 @@ configure_gitlab_monitor() {
   REDIS_HOST \
   REDIS_PORT
 
-  if [[ ${VERBOSE} == true ]]; then
-    echo "Content of ${GITLAB_MONITOR_CONFIG} ... "
-    cat ${GITLAB_MONITOR_CONFIG}
-  fi
-
   # enable/disable startup of gitlab-monitor
   update_template /etc/supervisor/conf.d/gitlab-monitor.conf GITLAB_MONITOR_ENABLED
 }
@@ -1589,11 +1550,6 @@ configure_nginx() {
     nginx_configure_gitlab
     nginx_configure_gitlab_ci
     nginx_configure_gitlab_registry
-
-    if [[ ${VERBOSE} == true ]]; then
-      echo "Conten of nginx.conf ..."
-      cat /etc/nginx/nginx.conf
-    fi
 
   else
     rm -f /etc/supervisor/conf.d/nginx.conf
