@@ -101,7 +101,6 @@ docker run --name=gitlab-test -d \
        --env="GOOGLE_ANALYTICS_ID=UA-123-ab" \
        --env="GITALY_ENABLED=true" \
        --env="DB_ADAPTER=${DB_ADAPTER}" \
-       --env="VERBOSE=false" \
        --volume "${TEST_BASE_DIR}/logs:/var/log/gitlab" \
        ${REGISTRY_IMAGE}
 

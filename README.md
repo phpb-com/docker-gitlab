@@ -964,6 +964,8 @@ Below is the complete list of available configuration options segregated by cate
 | `GITLAB_HTTPS` | Set to `true` to enable https support, disabled by default. |
 | `GITLAB_WORKHORSE_TIMEOUT` | Timeout for gitlab workhorse http proxy. Defaults to `5m0s`. |
 | `GITLAB_WORKHORSE_PORT` | Port that workhorse will listen on for connection. Defaults to `8181`. |
+| `GITLAB_WORKHORSE_SENTRY_DSN` | URL for sentry DSN, ex.: `https://abab1212ab:abab1212@sentry.io/123456`. No defaults. |
+| `GITLAB_WORKHORSE_CI_LONGPOLLING_DURATION` | CI Long polling duration for job requesting for runners. Defaults to `0s`, disabled. |
 | `SSL_SELF_SIGNED` | Set to `true` when using self signed ssl certificates. `false` by default. |
 | `SSL_CERTIFICATE_PATH` | Location of the ssl certificate. Defaults to `/home/git/data/certs/gitlab.crt` |
 | `SSL_KEY_PATH` | Location of the ssl private key. Defaults to `/home/git/data/certs/gitlab.key` |

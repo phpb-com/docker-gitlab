@@ -401,7 +401,7 @@ cat > /etc/supervisor/conf.d/gitlab-workhorse.conf <<EOF
 [program:gitlab-workhorse]
 priority=20
 directory=${GITLAB_INSTALL_DIR}
-environment=HOME=${GITLAB_HOME}
+environment=HOME=${GITLAB_HOME},GITLAB_WORKHORSE_SENTRY_DSN="{{GITLAB_WORKHORSE_SENTRY_DSN}}"
 command=/usr/local/bin/gitlab-workhorse
   -listenUmask 0
   -listenNetwork tcp
@@ -410,6 +410,8 @@ command=/usr/local/bin/gitlab-workhorse
   -authSocket ${GITLAB_INSTALL_DIR}/tmp/sockets/gitlab.socket
   -documentRoot ${GITLAB_INSTALL_DIR}/public
   -proxyHeadersTimeout {{GITLAB_WORKHORSE_TIMEOUT}}
+  -apiCiLongPollingDuration {{GITLAB_WORKHORSE_CI_LONGPOLLING_DURATION}}
+  -config ${GITLAB_INSTALL_DIR}/config/workhorse-config.toml
 user=git
 autostart=true
 autorestart=true
