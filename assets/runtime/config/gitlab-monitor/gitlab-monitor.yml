@@ -80,4 +80,4 @@ probes:
       - probe_retries
       - probe_dead
     opts:
-      redis_url: "redis://{{REDIS_PASSWORD_GL}}{{REDIS_HOST}}:{{REDIS_PORT}}"
+      redis_url: "{{REDIS_URL}}"
