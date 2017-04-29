@@ -986,6 +986,7 @@ Below is the complete list of available configuration options segregated by cate
 | `NGINX_RETAIN_IP_HEADER` | set to `true` if docker container runs behind a reverse proxy (like CDN), nginx will retain HTTP header `X-Real-IP` and `X-Forwarded-For`. `false` by default. |
 | `REDIS_HOST` | The hostname of the redis server. Defaults to `localhost` |
 | `REDIS_PORT` | The connection port of the redis server. Defaults to `6379`. |
+| `REDIS_PASSWORD` | The connection password for the redis server. No password by default. **Password should not contain any URL unsafe characters.** Use `pwgen -Bsv1 16` to generate one.|
 | `REDIS_DB_NUMBER` | The redis database number. Defaults to '0'. |
 | `UNICORN_WORKERS` | The number of unicorn workers to start. Defaults to `3`. |
 | `UNICORN_TIMEOUT` | Sets the timeout of unicorn worker processes. Defaults to `60` seconds. |
