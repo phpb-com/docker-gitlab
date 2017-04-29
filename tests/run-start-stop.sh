@@ -111,27 +111,27 @@ docker run --name=gitlab-test -d \
 
 RC=0
 
-echo "Waiting for containers to start and settle, up to 10 minutes ..."
+echo "Waiting for containers to start and settle, up to 20 minutes ..."
 c=0
 while [[ $(docker logs gitlab-test 2>&1 | grep -c "Recompiling assets") == 0 ]]; do
     echo "Still waiting ..."
-    ((c++)) && ((c==20)) && echo "Timeout, exiting ..." && export RC=1 && break
+    ((c++)) && ((c==40)) && echo "Timeout, exiting ..." && export RC=1 && break
     sleep 30
 done
 
-echo "Wait for gitlab to recompile assets, up to 10 minutes ..."
+echo "Wait for gitlab to recompile assets, up to 20 minutes ..."
 c=0
 while [[ $(docker logs gitlab-test 2>&1 | tail -n 1 | grep -c "Recompiling assets") != 0 ]]; do
     echo "Still waiting ..."
-    ((c++)) && ((c==20)) && echo "Timeout, exiting ..." && export RC=1 && break
+    ((c++)) && ((c==40)) && echo "Timeout, exiting ..." && export RC=1 && break
     sleep 30
 done
 
-echo "Waiting for gitlab apps to start, up to 5 minutes ..."
+echo "Waiting for gitlab apps to start, up to 20 minutes ..."
 c=0
 while [[ $(docker logs gitlab-test 2>&1 | grep -c "INFO supervisord started with pid 1") == 0 ]]; do
     echo "Still waiting ..."
-    ((c++)) && ((c==20)) && echo "Timeout, exiting ..." && export RC=1 && break
+    ((c++)) && ((c==40)) && echo "Timeout, exiting ..." && export RC=1 && break
     sleep 30
 done
 
