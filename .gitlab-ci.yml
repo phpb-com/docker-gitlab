@@ -7,6 +7,8 @@ variables:
   DOCKER_HUB_BASE: gotfix/gitlab
   GITHUB_REPO_URL: https://phpb-com:${GITHUB_TOKEN}@github.com/gotfix/gitlab.git
   GIT_SUBMODULE_STRATEGY: recursive
+  GIT_DEPTH: "1"
+  GET_SOURCES_ATTEMPTS: "3"
 
 services:
   - docker:dind
@@ -35,6 +37,8 @@ lint:
     - docker run --rm -v $(pwd):/mnt koalaman/shellcheck assets/build/install.sh
     - docker run --rm -v $(pwd):/mnt koalaman/shellcheck assets/runtime/functions
   allow_failure: true
+  only:
+    - /^never$/
 
 build:
   stage: build
