@@ -1,3 +1,4 @@
 [redis]
 URL = "tcp://{{REDIS_HOST}}:{{REDIS_PORT}}"
 DB = {{REDIS_DB_NUMBER}}
+Password = "{{REDIS_PASSWORD}}"

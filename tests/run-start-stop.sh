@@ -4,6 +4,7 @@ set -e
 REGISTRY_IMAGE="$1"
 TEST_BASE_DIR="$2"
 DB="$3"
+REDIS_PASSWORD="$4"
 
 TEST_RANDOM_STRING="fc92Ng2of8yJRguajyWCj6Yhzz7Byow7ibWGyWvy71EbERf0eGxIhWduDWghg7Ln"
 
@@ -54,12 +55,13 @@ fi
 
 echo "Pulling and starting redis containers ..."
 docker pull gotfix/redis:latest
-docker run --name=gitlab-redis -d gotfix/redis:latest
+docker run --name=gitlab-redis --env="REDIS_PASSWORD=${REDIS_PASSWORD}" --volume "${TEST_BASE_DIR}/logs/redis:/var/log/redis" -d gotfix/redis:latest --loglevel debug
 
 echo "Starting ${REGISTRY_IMAGE} container, and linking to ${DB_LINK}..."
 docker run --name=gitlab-test -d \
        --link="${DB_LINK}" --link=gitlab-redis:redisio \
        --publish=40022:22 --publish=40080:80 \
+       --env="REDIS_PASSWORD=${REDIS_PASSWORD}" \
        --env="GITLAB_PORT=40080" --env="GITLAB_SSH_PORT=40022" \
        --env="GITLAB_SECRETS_DB_KEY_BASE=${TEST_RANDOM_STRING}" \
        --env="GITLAB_SECRETS_SECRET_KEY_BASE=${TEST_RANDOM_STRING}" \

@@ -235,7 +235,13 @@ gitlab_finalize_redis_parameters() {
 
 gitlab_check_redis_connection() {
   timeout=60
-  while ! redis-cli -h ${REDIS_HOST} -p ${REDIS_PORT} -n ${REDIS_DB_NUMBER} ping >/dev/null 2>&1
+  local REDIS_AUTH
+
+  if [[ -n ${REDIS_PASSWORD} ]]; then
+    REDIS_AUTH="-a ${REDIS_PASSWORD}"
+  fi
+
+  while ! redis-cli -h ${REDIS_HOST} ${REDIS_AUTH} -p ${REDIS_PORT} -n ${REDIS_DB_NUMBER} ping >/dev/null 2>&1
   do
     timeout=$(expr $timeout - 1)
     if [[ $timeout -eq 0 ]]; then
@@ -255,17 +261,33 @@ gitlab_configure_redis() {
   gitlab_finalize_redis_parameters
   gitlab_check_redis_connection
 
+  REDIS_PASSWORD_GL=""
+
+  # Prepare password for gitlab redis configuration, URL.
+  # Password should not contain any URL unsafe characters
+  if [[ -n ${REDIS_PASSWORD} ]]; then
+    REDIS_PASSWORD_GL=":${REDIS_PASSWORD}@"
+  fi
+
   # Gitlab
   update_template ${GITLAB_RESQUE_CONFIG} \
     REDIS_HOST \
     REDIS_PORT \
-    REDIS_DB_NUMBER
+    REDIS_DB_NUMBER \
+    REDIS_PASSWORD_GL
 
   #Gitlab Workhorse
+
+  if [[ -z ${REDIS_PASSWORD} ]]; then
+    exec_as_git sed -i "/{{REDIS_PASSWORD}}/d" ${GITLAB_WORKHORSE_CONFIG}
+  fi
+
   update_template ${GITLAB_WORKHORSE_CONFIG} \
     REDIS_HOST \
     REDIS_PORT \
-    REDIS_DB_NUMBER
+    REDIS_DB_NUMBER \
+    REDIS_PASSWORD
+
 }
 
 gitlab_configure_gitaly() {
@@ -1473,6 +1495,11 @@ configure_gitlab() {
 
 configure_gitlab_shell() {
   echo "Configuring gitlab-shell..."
+
+  if [[ -z ${REDIS_PASSWORD} ]]; then
+    exec_as_git sed -i "/{{REDIS_PASSWORD}}/d" ${GITLAB_SHELL_CONFIG}
+  fi
+
   update_template ${GITLAB_SHELL_CONFIG} \
     GITLAB_RELATIVE_URL_ROOT \
     GITLAB_HOME \
@@ -1481,7 +1508,8 @@ configure_gitlab_shell() {
     SSL_SELF_SIGNED \
     REDIS_HOST \
     REDIS_PORT \
-    REDIS_DB_NUMBER
+    REDIS_DB_NUMBER \
+    REDIS_PASSWORD
 
 }
 
@@ -1531,6 +1559,15 @@ fi
 
 configure_gitlab_monitor() {
   echo "Configuring gitlab-monitor..."
+
+  REDIS_PASSWORD_GL=""
+
+  # Prepare password for gitlab-monitor redis configuration, URL.
+  # Password should not contain any URL unsafe characters
+  if [[ -n ${REDIS_PASSWORD} ]]; then
+    REDIS_PASSWORD_GL=":${REDIS_PASSWORD}@"
+  fi
+
   update_template ${GITLAB_MONITOR_CONFIG} \
   DB_NAME \
   DB_USER \
@@ -1540,7 +1577,8 @@ configure_gitlab_monitor() {
   GITLAB_REPOS_DIR \
   GITLAB_MONITOR_PORT \
   REDIS_HOST \
-  REDIS_PORT
+  REDIS_PORT \
+  REDIS_PASSWORD_GL
 
   # enable/disable startup of gitlab-monitor
   update_template /etc/supervisor/conf.d/gitlab-monitor.conf GITLAB_MONITOR_ENABLED
