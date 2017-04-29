@@ -39,6 +39,8 @@ lint:
   allow_failure: true
   only:
     - /^never$/
+  tags:
+    - baremetal
 
 build:
   stage: build
@@ -56,7 +58,8 @@ build:
   except:
     - latest
   tags:
-    - baremetal
+    - cloud
+    - 4gb
 
 image-test-mysql:
   stage: test
