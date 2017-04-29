@@ -222,6 +222,14 @@ gitlab_finalize_redis_parameters() {
   # set default redis port if not specified
   REDIS_PORT=${REDIS_PORT:-6379}
 
+  if [[ -n ${REDIS_PASSWORD} ]]; then
+    # URL with password
+    REDIS_URL="redis://:${REDIS_PASSWORD}@${REDIS_HOST}:${REDIS_PORT}"
+  else
+    # URL without password
+    REDIS_URL="redis://${REDIS_HOST}:${REDIS_PORT}"
+  fi
+
   if [[ -z ${REDIS_HOST} ]]; then
     echo
     echo "ERROR: "
