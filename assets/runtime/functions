@@ -277,15 +277,17 @@ gitlab_configure_redis() {
     REDIS_PASSWORD_GL
 
   #Gitlab Workhorse
+
+  if [[ -z ${REDIS_PASSWORD} ]]; then
+    exec_as_git sed -i "/{{REDIS_PASSWORD}}/d" ${GITLAB_WORKHORSE_CONFIG}
+  fi
+
   update_template ${GITLAB_WORKHORSE_CONFIG} \
     REDIS_HOST \
     REDIS_PORT \
     REDIS_DB_NUMBER \
     REDIS_PASSWORD
 
-  if [[ -z ${REDIS_PASSWORD} ]]; then
-    exec_as_git sed -i "/{{REDIS_PASSWORD}}/d" ${GITLAB_WORKHORSE_CONFIG}
-  fi
 }
 
 gitlab_configure_gitaly() {
@@ -1493,6 +1495,11 @@ configure_gitlab() {
 
 configure_gitlab_shell() {
   echo "Configuring gitlab-shell..."
+
+  if [[ -z ${REDIS_PASSWORD} ]]; then
+    exec_as_git sed -i "/{{REDIS_PASSWORD}}/d" ${GITLAB_SHELL_CONFIG}
+  fi
+
   update_template ${GITLAB_SHELL_CONFIG} \
     GITLAB_RELATIVE_URL_ROOT \
     GITLAB_HOME \
@@ -1504,9 +1511,6 @@ configure_gitlab_shell() {
     REDIS_DB_NUMBER \
     REDIS_PASSWORD
 
-  if [[ -z ${REDIS_PASSWORD} ]]; then
-    exec_as_git sed -i "/{{REDIS_PASSWORD}}/d" ${GITLAB_SHELL_CONFIG}
-  fi
 }
 
 configure_gitlab_pages() {
