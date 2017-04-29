@@ -55,7 +55,7 @@ fi
 
 echo "Pulling and starting redis containers ..."
 docker pull gotfix/redis:latest
-docker run --name=gitlab-redis --env="REDIS_PASSWORD=${REDIS_PASSWORD}" -d gotfix/redis:latest
+docker run --name=gitlab-redis --env="REDIS_PASSWORD=${REDIS_PASSWORD}" --volume "${TEST_BASE_DIR}/logs/redis:/var/log/redis" -d gotfix/redis:latest --loglevel debug
 
 echo "Starting ${REGISTRY_IMAGE} container, and linking to ${DB_LINK}..."
 docker run --name=gitlab-test -d \
