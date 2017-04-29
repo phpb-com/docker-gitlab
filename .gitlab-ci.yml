@@ -121,6 +121,8 @@ tag-latest:
 
 release:
   stage: release
+  variables:
+    GIT_STRATEGY: none
   script:
     - echo "Automatic build configured, no need to push our build"
     - docker pull "${REGISTRY_IMAGE}"
@@ -140,6 +142,8 @@ release:
 github_mirror:
   type: mirror
   image: docker:git
+  variables:
+    GIT_STRATEGY: none
   script:
     - mkdir -p "${WORK_DIR}/mirror" && cd "${WORK_DIR}/mirror"
     - git clone -q --mirror "${CI_REPOSITORY_URL}"
