@@ -80,6 +80,20 @@ image-test-pgsql:
   except:
     - latest
 
+image-test-pgsql-redis-pass:
+  stage: test
+  artifacts:
+    name: "${CI_JOB_STAGE}_${CI_COMMIT_REF_NAME}"
+    when: always
+    expire_in: 1 week
+    paths:
+      - logs/
+  script:
+    - apk update && apk add --no-cache bash
+    - tests/run-start-stop.sh "${REGISTRY_IMAGE}" "$(pwd)" "pgsql" "JC8MjTkbTMWgkdRz"
+  except:
+    - latest
+
 tag-latest:
   image: docker:git
   stage: release
