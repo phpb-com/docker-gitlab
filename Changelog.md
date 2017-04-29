@@ -2,6 +2,15 @@
 
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list of changes in GitLab.
 
+**9.1.1-1**
+- gitlab: Gitlab CE 9.1.1
+- gitlab-monitor 1.5.0
+- Add REDIS_PASSWORD parameter - allows to connect to redis instance with password
+- Add GITLAB_WORKHORSE_SENTRY_DSN parameter - allows to log errors with sentry.io service for workhorse
+- Add GITLAB_WORKHORSE_CI_LONGPOLLING_DURATION parameter - allows to have runners use long polling instead of frequent polling
+- Add redis configuration for gitlab-workhorse - to support long polling
+- Other minor improvements for the image, CI pipeline and build
+
 **9.1.1**
 - gitlab: Gitlab CE 9.1.1
 - Fix duplication of the cront backup job when restarting container
