@@ -65,7 +65,8 @@ RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv E1DD270288B4E60
  && curl -sL https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
  && echo 'deb https://dl.yarnpkg.com/debian/ stable main' > /etc/apt/sources.list.d/yarn.list \
  && apt-get update \
- && apt-get -yy upgrade
+ && apt-get -yy upgrade \
+ && apt-get -yy dist-upgrade
 
 RUN apt-get install -y \
     gettext-base \
