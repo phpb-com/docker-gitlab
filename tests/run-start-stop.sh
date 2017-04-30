@@ -60,7 +60,7 @@ docker run --name=gitlab-redis --env="REDIS_PASSWORD=${REDIS_PASSWORD}" --volume
 echo "Starting ${REGISTRY_IMAGE} container, and linking to ${DB_LINK}..."
 docker run --name=gitlab-test -d \
        --link="${DB_LINK}" --link=gitlab-redis:redisio \
-       --publish=40022:22 --publish=40080:80 \
+       --publish=40022:22 --publish=40080:8181 \
        --env="REDIS_PASSWORD=${REDIS_PASSWORD}" \
        --env="GITLAB_ROOT_PASSWORD=${REDIS_PASSWORD}" \
        --env="GITLAB_PORT=40080" --env="GITLAB_SSH_PORT=40022" \
