@@ -118,7 +118,7 @@ RUN bash ${GITLAB_BUILD_DIR}/install.sh
 COPY entrypoint.sh /sbin/entrypoint.sh
 RUN chmod 755 /sbin/entrypoint.sh
 
-EXPOSE 22/tcp 80/tcp
+EXPOSE 22/tcp 8181/tcp 8090/tcp
 
 VOLUME ["${GITLAB_DATA_DIR}", "${GITLAB_LOG_DIR}"]
 WORKDIR ${GITLAB_INSTALL_DIR}
