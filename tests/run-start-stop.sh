@@ -140,7 +140,7 @@ done
 
 echo "Allowing 120 seconds for supervisor to start other processes ..."
 sleep 120
-curl --request POST "http://localhost:40080/api/v4/session?login=administrator&password=${REDIS_PASSWORD}" || true
+curl --request POST "http://127.0.0.1:40080/api/v4/session?login=administrator&password=${REDIS_PASSWORD}" || true
 
 docker logs gitlab-test > "${TEST_BASE_DIR}/logs/docker-logs-gitlab.log" 2>&1
 docker logs gitlab-redis > "${TEST_BASE_DIR}/logs/docker-logs-redis.log" 2>&1
