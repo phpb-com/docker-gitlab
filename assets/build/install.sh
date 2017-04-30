@@ -144,6 +144,7 @@ prebuild_gitlab_gitaly
 exec_as_git cp ${GITLAB_GITALY_INSTALL_DIR}/config.toml.example ${GITLAB_GITALY_INSTALL_DIR}/config.toml
 
 PATH=/tmp/go/bin:$PATH GOROOT=/tmp/go make install
+PATH=/tmp/go/bin:$PATH GOROOT=/tmp/go make clean
 
 # Execute post-build hook
 echo "Executing post-build hook for gitlab-gitaly"
@@ -160,6 +161,7 @@ echo "Executing pre-build hook for gitlab-workhorse"
 prebuild_gitlab_workhorse
 
 PATH=/tmp/go/bin:$PATH GOROOT=/tmp/go make install
+PATH=/tmp/go/bin:$PATH GOROOT=/tmp/go make clean
 
 # Execute post-build hook
 echo "Executing post-build hook for gitlab-workhorse"
