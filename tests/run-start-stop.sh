@@ -134,8 +134,8 @@ while [[ $(docker logs gitlab-test 2>&1 | grep -c "INFO supervisord started with
     sleep 30
 done
 
-echo "Allowing 60 seconds for supervisor to start other processes ..."
-sleep 60
+echo "Allowing 120 seconds for supervisor to start other processes ..."
+sleep 120
 
 docker logs gitlab-test > "${TEST_BASE_DIR}/logs/docker-logs-gitlab.log" 2>&1
 docker logs gitlab-redis > "${TEST_BASE_DIR}/logs/docker-logs-redis.log" 2>&1
