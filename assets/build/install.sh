@@ -392,7 +392,7 @@ command=/usr/local/bin/gitlab-workhorse
   -proxyHeadersTimeout {{GITLAB_WORKHORSE_TIMEOUT}}
   -apiCiLongPollingDuration {{GITLAB_WORKHORSE_CI_LONGPOLLING_DURATION}}
   -config ${GITLAB_INSTALL_DIR}/config/workhorse-config.toml
-user=root
+user=git
 autostart=true
 autorestart=true
 stdout_logfile=${GITLAB_INSTALL_DIR}/log/%(program_name)s.log

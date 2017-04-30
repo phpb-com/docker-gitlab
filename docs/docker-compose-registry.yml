@@ -31,7 +31,7 @@ services:
     - redis
     - postgresql
     ports:
-    - "80:80"
+    - "80:8181"
     - "10022:22"
     external_links:
     - "registry:registry.example.com"
