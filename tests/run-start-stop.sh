@@ -8,6 +8,9 @@ REDIS_PASSWORD="$4"
 
 TEST_RANDOM_STRING="fc92Ng2of8yJRguajyWCj6Yhzz7Byow7ibWGyWvy71EbERf0eGxIhWduDWghg7Ln"
 
+echo "Install curl"
+apk update && apk add --no-cache curl
+
 echo "Preparing artifacts directory"
 mkdir -p "${TEST_BASE_DIR}"/logs
 chmod 777 "${TEST_BASE_DIR}"/logs
@@ -62,6 +65,7 @@ docker run --name=gitlab-test -d \
        --link="${DB_LINK}" --link=gitlab-redis:redisio \
        --publish=40022:22 --publish=40080:80 \
        --env="REDIS_PASSWORD=${REDIS_PASSWORD}" \
+       --env="GITLAB_ROOT_PASSWORD=${REDIS_PASSWORD}" \
        --env="GITLAB_PORT=40080" --env="GITLAB_SSH_PORT=40022" \
        --env="GITLAB_SECRETS_DB_KEY_BASE=${TEST_RANDOM_STRING}" \
        --env="GITLAB_SECRETS_SECRET_KEY_BASE=${TEST_RANDOM_STRING}" \
@@ -136,6 +140,7 @@ done
 
 echo "Allowing 120 seconds for supervisor to start other processes ..."
 sleep 120
+curl --request POST "http://localhost:40080/api/v4/session?login=administrator&password=${REDIS_PASSWORD}" || true
 
 docker logs gitlab-test > "${TEST_BASE_DIR}/logs/docker-logs-gitlab.log" 2>&1
 docker logs gitlab-redis > "${TEST_BASE_DIR}/logs/docker-logs-redis.log" 2>&1
