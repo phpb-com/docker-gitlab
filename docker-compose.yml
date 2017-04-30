@@ -22,7 +22,7 @@ services:
 
   gitlab:
     restart: always
-    image: gotfix/gitlab:9.1.1-2
+    image: gotfix/gitlab:9.1.1-3
     depends_on:
     - redis
     - postgresql
@@ -54,7 +54,6 @@ services:
 
 # Gitlab SSL parameters
     - GITLAB_HTTPS=false
-    - SSL_SELF_SIGNED=false
 
 # Gitlab required parameters
     - GITLAB_HOST=localhost

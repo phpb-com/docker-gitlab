@@ -79,7 +79,6 @@ docker run --name=gitlab-test -d \
        --env="GITLAB_BACKUP_SCHEDULE=daily" \
        --env="GITLAB_BACKUP_TIME=01:00" \
        --env="GITLAB_BACKUP_SKIP=registry" \
-       --env="NGINX_RETAIN_IP_HEADER=true" \
        --env="SMTP_ENABLED=true" \
        --env="IMAP_ENABLED=false" \
        --env="OAUTH_ENABLED=true" \
@@ -135,8 +134,8 @@ while [[ $(docker logs gitlab-test 2>&1 | grep -c "INFO supervisord started with
     sleep 30
 done
 
-echo "Allowing 60 seconds for supervisor to start other processes ..."
-sleep 60
+echo "Allowing 120 seconds for supervisor to start other processes ..."
+sleep 120
 
 docker logs gitlab-test > "${TEST_BASE_DIR}/logs/docker-logs-gitlab.log" 2>&1
 docker logs gitlab-redis > "${TEST_BASE_DIR}/logs/docker-logs-redis.log" 2>&1

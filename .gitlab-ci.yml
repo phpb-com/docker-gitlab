@@ -75,7 +75,6 @@ image-test-mysql:
     - latest
   tags:
     - cloud
-    - 4gb
 
 image-test-pgsql:
   stage: test
@@ -92,7 +91,6 @@ image-test-pgsql:
     - latest
   tags:
     - cloud
-    - 4gb
 
 image-test-pgsql-redis-pass:
   stage: test
@@ -109,7 +107,6 @@ image-test-pgsql-redis-pass:
     - latest
   tags:
     - cloud
-    - 4gb
 
 tag-latest:
   image: docker:git

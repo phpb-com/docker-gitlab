@@ -23,7 +23,7 @@ apt-get update
 DEBIAN_FRONTEND=noninteractive apt-get install -y ${BUILD_DEPENDENCIES}
 
 # https://en.wikibooks.org/wiki/Grsecurity/Application-specific_Settings#Node.js
-paxctl -Cm `which nodejs`
+paxctl -Cm $(which nodejs)
 
 # remove the host keys generated during openssh-server installation
 rm -rf /etc/ssh/ssh_host_*_key /etc/ssh/ssh_host_*_key.pub
@@ -90,7 +90,7 @@ exec_as_git git clone -q -b v${GITLAB_PAGES_VERSION} --depth 1 ${GITLAB_PAGES_CL
 
 # download golang
 echo "Downloading Go ${GOLANG_VERSION}..."
-wget -cnv https://storage.googleapis.com/golang/go${GOLANG_VERSION}.linux-amd64.tar.gz -P ${GITLAB_BUILD_DIR}/
+curl -sL -o ${GITLAB_BUILD_DIR}/go${GOLANG_VERSION}.linux-amd64.tar.gz https://storage.googleapis.com/golang/go${GOLANG_VERSION}.linux-amd64.tar.gz
 tar -xf ${GITLAB_BUILD_DIR}/go${GOLANG_VERSION}.linux-amd64.tar.gz -C /tmp/
 
 #
@@ -200,7 +200,7 @@ rm -rf ${GITLAB_BUILD_DIR}/go${GOLANG_VERSION}.linux-amd64.tar.gz /tmp/go
 # Install Gitlab CE from source
 #
 
-# remove HSTS config from the default headers, we configure it in nginx
+# remove HSTS config from the default headers
 exec_as_git sed -i "/headers\['Strict-Transport-Security'\]/d" ${GITLAB_INSTALL_DIR}/app/controllers/application_controller.rb
 
 # revert `rake gitlab:setup` changes from gitlabhq/gitlabhq@a54af831bae023770bf9b2633cc45ec0d5f5a66a
@@ -271,13 +271,12 @@ echo "install gitlab bootscript, to silence gitlab:check warnings"
 cp ${GITLAB_INSTALL_DIR}/lib/support/init.d/gitlab /etc/init.d/gitlab
 chmod +x /etc/init.d/gitlab
 
-# disable default nginx configuration and enable gitlab's nginx configuration
-rm -rf /etc/nginx/sites-enabled/default
-
 echo "Configuring SSHD"
 # configure sshd
 sed -i \
   -e "s|^[#]*UsePAM yes|UsePAM no|" \
+  -e "s|^[#]*PrintLastLog yes|PrintLastLog no|" \
+  -e "s|^[#]*PubkeyAuthentication no|PubkeyAuthentication yes|" \
   -e "s|^[#]*UsePrivilegeSeparation yes|UsePrivilegeSeparation no|" \
   -e "s|^[#]*PasswordAuthentication yes|PasswordAuthentication no|" \
   -e "s|^[#]*LogLevel INFO|LogLevel VERBOSE|" \
@@ -286,12 +285,6 @@ echo "UseDNS no" >> /etc/ssh/sshd_config
 
 echo "move supervisord.log file to ${GITLAB_LOG_DIR}/supervisor/"
 sed -i "s|^[#]*logfile=.*|logfile=${GITLAB_LOG_DIR}/supervisor/supervisord.log ;|" /etc/supervisor/supervisord.conf
-
-echo "move nginx logs to ${GITLAB_LOG_DIR}/nginx"
-sed -i \
-  -e "s|access_log /var/log/nginx/access.log;|access_log ${GITLAB_LOG_DIR}/nginx/access.log;|" \
-  -e "s|error_log /var/log/nginx/error.log;|error_log ${GITLAB_LOG_DIR}/nginx/error.log;|" \
-  /etc/nginx/nginx.conf
 
 echo "Configuring log rotations"
 # configure supervisord log rotation
@@ -323,19 +316,6 @@ EOF
 # configure gitlab-shell log rotation
 cat > /etc/logrotate.d/gitlab-shell <<EOF
 ${GITLAB_LOG_DIR}/gitlab-shell/*.log {
-  weekly
-  missingok
-  rotate 52
-  compress
-  delaycompress
-  notifempty
-  copytruncate
-}
-EOF
-
-# configure gitlab vhost log rotation
-cat > /etc/logrotate.d/gitlab-nginx <<EOF
-${GITLAB_LOG_DIR}/nginx/*.log {
   weekly
   missingok
   rotate 52
@@ -412,7 +392,7 @@ command=/usr/local/bin/gitlab-workhorse
   -proxyHeadersTimeout {{GITLAB_WORKHORSE_TIMEOUT}}
   -apiCiLongPollingDuration {{GITLAB_WORKHORSE_CI_LONGPOLLING_DURATION}}
   -config ${GITLAB_INSTALL_DIR}/config/workhorse-config.toml
-user=git
+user=root
 autostart=true
 autorestart=true
 stdout_logfile=${GITLAB_INSTALL_DIR}/log/%(program_name)s.log
@@ -453,19 +433,6 @@ cat > /etc/supervisor/conf.d/sshd.conf <<EOF
 [program:sshd]
 directory=/
 command=/usr/sbin/sshd -D -E ${GITLAB_LOG_DIR}/supervisor/%(program_name)s.log
-user=root
-autostart=true
-autorestart=true
-stdout_logfile=${GITLAB_LOG_DIR}/supervisor/%(program_name)s.log
-stderr_logfile=${GITLAB_LOG_DIR}/supervisor/%(program_name)s.log
-EOF
-
-# configure supervisord to start nginx
-cat > /etc/supervisor/conf.d/nginx.conf <<EOF
-[program:nginx]
-priority=20
-directory=/tmp
-command=/usr/sbin/nginx -g "daemon off;"
 user=root
 autostart=true
 autorestart=true
