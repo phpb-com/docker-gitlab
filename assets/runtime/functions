@@ -1030,9 +1030,10 @@ map_uidgid() {
 }
 
 update_ca_certificates() {
-  if [[ -f ${SSL_CA_CERTIFICATES_PATH} ]]; then
+  if [[ -f ${SSL_CA_CERTIFICATES_PATH} || -f ${GITLAB_REGISTRY_CERT_PATH} ]]; then
     echo "Updating CA certificates..."
     [[ -f ${SSL_CA_CERTIFICATES_PATH} ]] && cp "${SSL_CA_CERTIFICATES_PATH}" /usr/local/share/ca-certificates/ca.crt
+    [[ -f ${GITLAB_REGISTRY_CERT_PATH} ]] && cp "${GITLAB_REGISTRY_CERT_PATH}" /usr/local/share/ca-certificates/registry-ca.crt
     update-ca-certificates --fresh >/dev/null
   fi
 }

@@ -853,6 +853,7 @@ Below is the complete list of available configuration options segregated by cate
 | `GITLAB_REGISTRY_PORT` | Sets the GitLab Registry Port. Defaults to `443`. |
 | `GITLAB_REGISTRY_API_URL` | Sets the GitLab Registry API URL. Defaults to `http://localhost:5000` |
 | `GITLAB_REGISTRY_KEY_PATH` | Sets the GitLab Registry Key Path. Defaults to `config/registry.key` |
+| `GITLAB_REGISTRY_CERT_PATH` | Sets the GitLab Registry Certificate Path. Defaults to `config/registry.crt` |
 | `GITLAB_REGISTRY_DIR` | Directory to store the container images will be shared with registry. Defaults to `$GITLAB_SHARED_DIR/registry` |
 | `GITLAB_REGISTRY_ISSUER` | Sets the GitLab Registry Issuer. Defaults to `gitlab-issuer`. |
 | `GITLAB_HTTPS` | Set to `true` to enable https support, disabled by default. |
