@@ -275,6 +275,8 @@ echo "Configuring SSHD"
 # configure sshd
 sed -i \
   -e "s|^[#]*UsePAM yes|UsePAM no|" \
+  -e "s|^[#]*PrintLastLog yes|PrintLastLog no|" \
+  -e "s|^[#]*PubkeyAuthentication no|PubkeyAuthentication yes|" \
   -e "s|^[#]*UsePrivilegeSeparation yes|UsePrivilegeSeparation no|" \
   -e "s|^[#]*PasswordAuthentication yes|PasswordAuthentication no|" \
   -e "s|^[#]*LogLevel INFO|LogLevel VERBOSE|" \
