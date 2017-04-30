@@ -1,6 +1,6 @@
 GitLab Container Registry
 =========================
-Since `8.8.0` GitLab introduces container registry. GitLab is helping to authenticate the user against the registry and proxy it via NGINX. If we are talking about [Registry](https://docs.docker.com/registry) we are meaning the registry from docker and Container Registry is the feature of GitLab.
+Since `8.8.0` GitLab introduces container registry. GitLab is helping to authenticate the user against the registry. If we are talking about [Registry](https://docs.docker.com/registry) we are meaning the registry from docker and Container Registry is the feature of GitLab.
 
 - [Prerequisites](#prerequisites)
 - [Available Parameters](#available-parameters)
@@ -30,8 +30,6 @@ gitlab:
     - GITLAB_REGISTRY_API_URL=http://registry:5000
     - GITLAB_REGISTRY_KEY_PATH=/certs/registry-auth.key
     - GITLAB_REGISTRY_ISSUER=gitlab-issuer
-    - SSL_REGISTRY_KEY_PATH=/certs/registry.key
-    - SSL_REGISTRY_CERT_PATH=/certs/registry.crt
 ```
 
 where:
@@ -45,8 +43,6 @@ where:
 | `GITLAB_REGISTRY_KEY_PATH `| The private key location that is a pair of Registry's `rootcertbundle`. Read the [token auth configuration documentation][token-config]. |
 | `GITLAB_REGISTRY_PATH `    | This should be the same directory like specified in Registry's `rootdirectory`. Read the [storage configuration documentation][storage-config]. This path needs to be readable by the GitLab user, the web-server user and the Registry user *if you use filesystem as storage configuration*. Read more in [#container-registry-storage-path](#container-registry-storage-path). |
 | `GITLAB_REGISTRY_ISSUER`  | This should be the same value as configured in Registry's `issuer`. Otherwise the authentication will not work. For more info read the [token auth configuration documentation][token-config]. |
-| `SSL_REGISTRY_KEY_PATH `    | The private key of the `SSL_REGISTRY_CERT_PATH`. This will be later used in nginx to proxy your registry via https. |
-| `SSL_REGISTRY_CERT_PATH `    | The certificate for the private key of `SSL_REGISTRY_KEY_PATH`. This will be later used in nginx to proxy your registry via https. |
 
 For more info look at [Available Configuration Parameters](https://gotfix.com/docker/gitlab#available-configuration-parameters).
 
@@ -129,8 +125,6 @@ services:
     - GITLAB_REGISTRY_API_URL=http://registry:5000
     - GITLAB_REGISTRY_CERT_PATH=/certs/registry-auth.crt
     - GITLAB_REGISTRY_KEY_PATH=/certs/registry-auth.key
-    - SSL_REGISTRY_KEY_PATH=/certs/registry.key
-    - SSL_REGISTRY_CERT_PATH=/certs/registry.crt
 
   registry:
     restart: always
@@ -362,8 +356,6 @@ registry:2.4.1
 ```bash
 docker run --name gitlab -d [PREVIOUS_OPTIONS] \
 -v /srv/gitlab/certs:/certs \
---env 'SSL_REGISTRY_CERT_PATH=/certs/registry.crt' \
---env 'SSL_REGISTRY_KEY_PATH=/certs/registry.key' \
 --env 'GITLAB_REGISTRY_ENABLED=true' \
 --env 'GITLAB_REGISTRY_HOST=registry.gitlab.example.com' \
 --env 'GITLAB_REGISTRY_API_URL=http://registry:5000/' \

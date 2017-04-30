@@ -22,9 +22,9 @@ The canonical source of the repository is [hosted on gotfix.com](https://gotfix.
 
 Long story short, since the original project tends to be conservative and their goal is stability, it is not what I would like to run for myself. I prefer to follow Gitlab development cycle closer (when time allows) and play with new features. If you rely on Gitlab for your business and require stability, backwards compatibility, and do not want to update often, I would suggest using the original project. You are welcome to use this fork if you do not mind doing testing yourself.
 
-### Why NGINX is being removed from the image?
+### Why NGINX is removed from the image?
 
-Best practice dictates that one docker image should serve one purpose, having NGINX in it is not a good idea. At this time it is still in the image but that will change very soon. If you do not know how to setup NGINX outside of this image, take a look at [nginx-proxy](https://github.com/jwilder/nginx-proxy), I am planning to support that instead.
+Best practice dictates that one docker image should serve one purpose, having NGINX in it is not a good idea. At this time it is still in the image but that will change very soon. If you do not know how to setup NGINX outside of this image, take a look at [nginx-proxy](https://github.com/jwilder/nginx-proxy), I am planning to support that instead. I will also prepare set of instructions to use [Caddy](https://gotfix.com/docker/caddy) with this image.
 
 ### Why are you not hosting this project on GitHub and only maintaining mirror there?
 
@@ -70,15 +70,8 @@ There is a wonderful project that has a very good set of helm charts to get you 
     + [Linking to Redis Container](#linking-to-redis-container)
     + [Mail](#mail)
       - [Reply by email](#reply-by-email)
-    + [SSL](#ssl)
-      - [Generation of a Self Signed Certificate](#generation-of-a-self-signed-certificate)
-      - [Strengthening the server security](#strengthening-the-server-security)
-      - [Installation of the SSL Certificates](#installation-of-the-ssl-certificates)
-      - [Enabling HTTPS support](#enabling-https-support)
-      - [Configuring HSTS](#configuring-hsts)
+    + [Enabling HTTPS support](#enabling-https-support)
       - [Using HTTPS with a load balancer](#using-https-with-a-load-balancer)
-      - [Establishing trust with your server](#establishing-trust-with-your-server)
-      - [Installing Trusted SSL Server Certificates](#installing-trusted-ssl-server-certificates)
     + [Deploy to a subdirectory (relative url root)](#deploy-to-a-subdirectory-relative-url-root)
     + [OmniAuth Integration](#omniauth-integration)
       - [CAS3](#cas3)
@@ -558,104 +551,26 @@ docker run --name gitlab -d \
 
 Please refer the [Available Configuration Parameters](#available-configuration-parameters) section for the list of IMAP parameters that can be specified.
 
-### SSL
+### Enabling HTTPS support
 
-Access to the gitlab application can be secured using SSL so as to prevent unauthorized access to the data in your repositories. While a CA certified SSL certificate allows for verification of trust via the CA, a self signed certificate can also provide an equal level of trust verification as long as each client takes some additional steps to verify the identity of your website. I will provide instructions on achieving this towards the end of this section.
-
-Jump to the [Using HTTPS with a load balancer](#using-https-with-a-load-balancer) section if you are using a load balancer such as hipache, haproxy or nginx.
-
-To secure your application via SSL you basically need two things:
-- **Private key (.key)**
-- **SSL certificate (.crt)**
-
-When using CA certified certificates, these files are provided to you by the CA. When using self-signed certificates you need to generate these files yourself. Skip to [Strengthening the server security](#strengthening-the-server-security) section if you are armed with CA certified SSL certificates.
-
-#### Generation of a Self Signed Certificate
-
-Generation of a self-signed SSL certificate involves a simple 3-step procedure:
-
-**STEP 1**: Create the server private key
-
-```bash
-openssl genrsa -out gitlab.key 2048
-```
-
-**STEP 2**: Create the certificate signing request (CSR)
-
-```bash
-openssl req -new -key gitlab.key -out gitlab.csr
-```
-
-**STEP 3**: Sign the certificate using the private key and CSR
-
-```bash
-openssl x509 -req -days 3650 -in gitlab.csr -signkey gitlab.key -out gitlab.crt
-```
-
-Congratulations! You now have a self-signed SSL certificate valid for 10 years.
-
-#### Strengthening the server security
-
-This section provides you with instructions to [strengthen your server security](https://raymii.org/s/tutorials/Strong_SSL_Security_On_nginx.html). To achieve this we need to generate stronger DHE parameters.
-
-```bash
-openssl dhparam -out dhparam.pem 2048
-```
-
-#### Installation of the SSL Certificates
-
-Out of the four files generated above, we need to install the `gitlab.key`, `gitlab.crt` and `dhparam.pem` files at the gitlab server. The CSR file is not needed, but do make sure you safely backup the file (in case you ever need it again).
-
-The default path that the gitlab application is configured to look for the SSL certificates is at `/home/git/data/certs`, this can however be changed using the `SSL_KEY_PATH`, `SSL_CERTIFICATE_PATH` and `SSL_DHPARAM_PATH` configuration options.
-
-If you remember from above, the `/home/git/data` path is the path of the [data store](#data-store), which means that we have to create a folder named `certs/` inside `/srv/docker/gitlab/gitlab/` and copy the files into it and as a measure of security we'll update the permission on the `gitlab.key` file to only be readable by the owner.
-
-```bash
-mkdir -p /srv/docker/gitlab/gitlab/certs
-cp gitlab.key /srv/docker/gitlab/gitlab/certs/
-cp gitlab.crt /srv/docker/gitlab/gitlab/certs/
-cp dhparam.pem /srv/docker/gitlab/gitlab/certs/
-chmod 400 /srv/docker/gitlab/gitlab/certs/gitlab.key
-```
-
-Great! We are now just one step away from having our application secured.
-
-#### Enabling HTTPS support
-
-HTTPS support can be enabled by setting the `GITLAB_HTTPS` option to `true`. Additionally, when using self-signed SSL certificates you need to the set `SSL_SELF_SIGNED` option to `true` as well. Assuming we are using self-signed certificates
+HTTPS support can be enabled by setting the `GITLAB_HTTPS` option to `true`.
 
 ```bash
 docker run --name gitlab -d \
-    --publish 10022:22 --publish 10080:80 --publish 10443:443 \
-    --env 'GITLAB_SSH_PORT=10022' --env 'GITLAB_PORT=10443' \
-    --env 'GITLAB_HTTPS=true' --env 'SSL_SELF_SIGNED=true' \
+    --publish 10022:22 --publish 10080:80 \
+    --env 'GITLAB_SSH_PORT=10022' --env 'GITLAB_PORT=443' \
+    --env 'GITLAB_HTTPS=true' \
     --volume /srv/docker/gitlab/gitlab:/home/git/data \
     gotfix/gitlab:9.1.1-2
 ```
 
-In this configuration, any requests made over the plain http protocol will automatically be redirected to use the https protocol. However, this is not optimal when using a load balancer.
-
-#### Configuring HSTS
-
-HSTS if supported by the browsers makes sure that your users will only reach your sever via HTTPS. When the user comes for the first time it sees a header from the server which states for how long from now this site should only be reachable via HTTPS - that's the HSTS max-age value.
-
-With `NGINX_HSTS_MAXAGE` you can configure that value. The default value is `31536000` seconds. If you want to disable an already sent HSTS MAXAGE value, set it to `0`.
-
-```bash
-docker run --name gitlab -d \
- --env 'GITLAB_HTTPS=true' --env 'SSL_SELF_SIGNED=true' \
- --env 'NGINX_HSTS_MAXAGE=2592000' \
- --volume /srv/docker/gitlab/gitlab:/home/git/data \
- gotfix/gitlab:9.1.1-2
-```
-
-If you want to completely disable HSTS set `NGINX_HSTS_ENABLED` to `false`.
+In this configuration, any requests made over the plain http protocol will automatically be redirected to use the https protocol.
 
 #### Using HTTPS with a load balancer
 
 Load balancers like nginx/haproxy/hipache talk to backend applications over plain http and as such the installation of ssl keys and certificates are not required and should **NOT** be installed in the container. The SSL configuration has to instead be done at the load balancer.
 
-However, when using a load balancer you **MUST** set `GITLAB_HTTPS` to `true`. Additionally you will need to set the `SSL_SELF_SIGNED` option to `true` if self signed SSL certificates are in use.
+However, when using a load balancer you **MUST** set `GITLAB_HTTPS` to `true`.
 
 With this in place, you should configure the load balancer to support handling of https requests. But that is out of the scope of this document. Please refer to [Using SSL/HTTPS with HAProxy](http://seanmcgary.com/posts/using-sslhttps-with-haproxy) for information on the subject.
 
@@ -667,39 +582,18 @@ In summation, when using a load balancer, the docker command would look for the 
 docker run --name gitlab -d \
     --publish 10022:22 --publish 10080:80 \
     --env 'GITLAB_SSH_PORT=10022' --env 'GITLAB_PORT=443' \
-    --env 'GITLAB_HTTPS=true' --env 'SSL_SELF_SIGNED=true' \
+    --env 'GITLAB_HTTPS=true' \
     --volume /srv/docker/gitlab/gitlab:/home/git/data \
     gotfix/gitlab:9.1.1-2
 ```
-
-Again, drop the `--env 'SSL_SELF_SIGNED=true'` option if you are using CA certified SSL certificates.
 
 In case GitLab responds to any kind of POST request (login, OAUTH, changing settings etc.) with a 422 HTTP Error, consider adding this to your reverse proxy configuration:
 
 `proxy_set_header X-Forwarded-Ssl on;` (nginx format)
 
-#### Establishing trust with your server
-
-This section deals will self-signed ssl certificates. If you are using CA certified certificates, your done.
-
-This section is more of a client side configuration so as to add a level of confidence at the client to be 100 percent sure they are communicating with whom they think they.
-
-This is simply done by adding the servers certificate into their list of trusted certificates. On ubuntu, this is done by copying the `gitlab.crt` file to `/usr/local/share/ca-certificates/` and executing `update-ca-certificates`.
-
-Again, this is a client side configuration which means that everyone who is going to communicate with the server should perform this configuration on their machine. In short, distribute the `gitlab.crt` file among your developers and ask them to add it to their list of trusted ssl certificates. Failure to do so will result in errors that look like this:
-
-```bash
-git clone https://git.local.host/gitlab-ce.git
-fatal: unable to access 'https://git.local.host/gitlab-ce.git': server certificate verification failed. CAfile: /etc/ssl/certs/ca-certificates.crt CRLfile: none
-```
-
-You can do the same at the web browser. Instructions for installing the root certificate for firefox can be found [here](http://portal.threatpulse.com/docs/sol/Content/03Solutions/ManagePolicy/SSL/ssl_firefox_cert_ta.htm). You will find similar options chrome, just make sure you install the certificate under the authorities tab of the certificate manager dialog.
-
-There you have it, that's all there is to it.
-
 #### Installing Trusted SSL Server Certificates
 
-If your GitLab CI server is using self-signed SSL certificates then you should make sure the GitLab CI server certificate is trusted on the GitLab server for them to be able to talk to each other.
+If any of the services that your GitLab server is accessing are using self-signed SSL certificates then you should make sure their server certificate are trusted on the GitLab server for them to be able to talk to each other.
 
 The default path image is configured to look for the trusted SSL certificates is at `/home/git/data/certs/ca.crt`, this can however be changed using the `SSL_CA_CERTIFICATES_PATH` configuration option.
 
@@ -905,7 +799,7 @@ Below is the complete list of available configuration options segregated by cate
 | `VERBOSE` | Set this to `true` to enable more verbose logging. |
 | `GITLAB_HOST` | The hostname of the GitLab server. Defaults to `localhost` |
 | `GITLAB_CI_HOST` | If you are migrating from GitLab CI use this parameter to configure the redirection to the GitLab service so that your existing runners continue to work without any changes. No defaults. |
-| `GITLAB_PORT` | The port of the GitLab server. This value indicates the public port on which the GitLab application will be accessible on the network and appropriately configures GitLab to generate the correct urls. It does not affect the port on which the internal nginx server will be listening on. Defaults to `443` if `GITLAB_HTTPS=true`, else defaults to `80`. |
+| `GITLAB_PORT` | The port of the GitLab server. This value indicates the public port on which the GitLab application will be accessible on the network and appropriately configures GitLab to generate the correct urls. Defaults to `443` if `GITLAB_HTTPS=true`, else defaults to `80`. |
 | `GITLAB_SECRETS_DB_KEY_BASE` | Encryption key for GitLab CI secret variables, as well as import credentials, in the database. Ensure that your key is at least 32 characters long and that you don't lose it. You can generate one using `pwgen -Bsv1 64`. If you are migrating from GitLab CI, you need to set this value to the value of `GITLAB_CI_SECRETS_DB_KEY_BASE`. No defaults. |
 | `GITLAB_SECRETS_SECRET_KEY_BASE` | Encryption key for session secrets. Ensure that your key is at least 64 characters long and that you don't lose it. This secret can be rotated with minimal impact - the main effect is that previously sent password reset emails will no longer work. You can generate one using `pwgen -Bsv1 64`. No defaults. |
 | `GITLAB_SECRETS_OTP_KEY_BASE` |  Encryption key for OTP related stuff with  GitLab. Ensure that your key is at least 64 characters long and that you don't lose it. **If you lose or change this secret, 2FA will stop working for all users.** You can generate one using `pwgen -Bsv1 64`. No defaults. |
@@ -967,23 +861,8 @@ Below is the complete list of available configuration options segregated by cate
 | `GITLAB_WORKHORSE_SENTRY_DSN` | URL for sentry DSN, ex.: `https://abab1212ab:abab1212@sentry.io/123456`. No defaults. |
 | `GITLAB_WORKHORSE_CI_LONGPOLLING_DURATION` | CI Long polling duration for job requesting for runners. Defaults to `0s`, disabled. |
 | `SSL_SELF_SIGNED` | Set to `true` when using self signed ssl certificates. `false` by default. |
-| `SSL_CERTIFICATE_PATH` | Location of the ssl certificate. Defaults to `/home/git/data/certs/gitlab.crt` |
-| `SSL_KEY_PATH` | Location of the ssl private key. Defaults to `/home/git/data/certs/gitlab.key` |
-| `SSL_DHPARAM_PATH` | Location of the dhparam file. Defaults to `/home/git/data/certs/dhparam.pem` |
-| `SSL_VERIFY_CLIENT` | Enable verification of client certificates using the `SSL_CA_CERTIFICATES_PATH` file. Defaults to `false` |
 | `SSL_CA_CERTIFICATES_PATH` | List of SSL certificates to trust. Defaults to `/home/git/data/certs/ca.crt`. |
-| `SSL_REGISTRY_KEY_PATH` | Location of the ssl private key for gitlab container registry. Defaults to `/home/git/data/certs/registry.key` |
-| `SSL_REGISTRY_CERT_PATH` | Location of the ssl certificate for the gitlab container registry. Defaults to `/home/git/data/certs/registry.crt` |
-| `SSL_CIPHERS` | List of supported SSL ciphers: Defaults to `ECDHE-RSA-AES256-GCM-SHA384:ECDHE-RSA-AES128-GCM-SHA256:ECDHE-RSA-AES256-SHA384:ECDHE-RSA-AES128-SHA256:ECDHE-RSA-AES256-SHA:ECDHE-RSA-AES128-SHA:ECDHE-RSA-DES-CBC3-SHA:AES256-GCM-SHA384:AES128-GCM-SHA256:AES256-SHA256:AES128-SHA256:AES256-SHA:AES128-SHA:DES-CBC3-SHA:!aNULL:!eNULL:!EXPORT:!DES:!MD5:!PSK:!RC4` |
-| `NGINX_ENABLED` | Enables NGINX. Defaults to `true`. |
-| `NGINX_WORKERS` | The number of nginx workers to start. Defaults to `1`. |
-| `NGINX_SERVER_NAMES_HASH_BUCKET_SIZE` | Sets the bucket size for the server names hash tables. This is needed when you have long server_names or your an error message from nginx like *nginx: [emerg] could not build server_names_hash, you should increase server_names_hash_bucket_size:..*. It should be only increment by a power of 2. Defaults to `32`. |
-| `NGINX_HSTS_ENABLED` | Advanced configuration option for turning off the HSTS configuration. Applicable only when SSL is in use. Defaults to `true`. See [#138](https://github.com/sameersbn/docker-gitlab/issues/138) for use case scenario. |
-| `NGINX_HSTS_MAXAGE` | Advanced configuration option for setting the HSTS max-age in the gitlab nginx vHost configuration. Applicable only when SSL is in use. Defaults to `31536000`. |
-| `NGINX_PROXY_BUFFERING` | Enable `proxy_buffering`. Defaults to `off`. |
-| `NGINX_ACCEL_BUFFERING` | Enable `X-Accel-Buffering` header. Default to `no` |
-| `NGINX_X_FORWARDED_PROTO` | Advanced configuration option for the `proxy_set_header X-Forwarded-Proto` setting in the gitlab nginx vHost configuration. Defaults to `https` when `GITLAB_HTTPS` is `true`, else defaults to `$scheme`. |
-| `NGINX_RETAIN_IP_HEADER` | set to `true` if docker container runs behind a reverse proxy (like CDN), nginx will retain HTTP header `X-Real-IP` and `X-Forwarded-For`. `false` by default. |
+| `SSL_VERIFY_CLIENT` | Enable verification of client certificates using the `SSL_CA_CERTIFICATES_PATH` file. Defaults to `false` |
 | `REDIS_HOST` | The hostname of the redis server. Defaults to `localhost` |
 | `REDIS_PORT` | The connection port of the redis server. Defaults to `6379`. |
 | `REDIS_PASSWORD` | The connection password for the redis server. No password by default. **Password should not contain any URL unsafe characters.** Use `pwgen -Bsv1 16` to generate one.|
@@ -1388,9 +1267,6 @@ docker-compose exec gitlab bash
 
 * https://github.com/gitlabhq/gitlabhq
 * https://github.com/gitlabhq/gitlabhq/blob/master/doc/install/installation.md
-* http://wiki.nginx.org/HttpSslModule
-* https://raymii.org/s/tutorials/Strong_SSL_Security_On_nginx.html
-* https://github.com/gitlabhq/gitlab-recipes/blob/master/web-server/nginx/gitlab-ssl
 * https://github.com/jpetazzo/nsenter
 * https://jpetazzo.github.io/2014/03/23/lxc-attach-nsinit-nsenter-docker-0-9/
 * https://docs.gitlab.com/ce/user/project/pages/index.html

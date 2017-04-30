@@ -54,7 +54,6 @@ services:
 
 # Gitlab SSL parameters
     - GITLAB_HTTPS=false
-    - SSL_SELF_SIGNED=false
 
 # Gitlab required parameters
     - GITLAB_HOST=localhost

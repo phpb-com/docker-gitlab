@@ -79,7 +79,6 @@ docker run --name=gitlab-test -d \
        --env="GITLAB_BACKUP_SCHEDULE=daily" \
        --env="GITLAB_BACKUP_TIME=01:00" \
        --env="GITLAB_BACKUP_SKIP=registry" \
-       --env="NGINX_RETAIN_IP_HEADER=true" \
        --env="SMTP_ENABLED=true" \
        --env="IMAP_ENABLED=false" \
        --env="OAUTH_ENABLED=true" \

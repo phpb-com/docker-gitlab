@@ -58,8 +58,6 @@ RUN apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv E1DD270288B4E60
  && echo "deb http://ppa.launchpad.net/git-core/ppa/ubuntu xenial main" >> /etc/apt/sources.list \
  && apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 80F70E11F0F0D5F10CB20E62F5DA5F09C3173AA6 \
  && echo "deb http://ppa.launchpad.net/brightbox/ruby-ng/ubuntu xenial main" >> /etc/apt/sources.list \
- && apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv 8B3981E7A6852F782CC4951600A6F0A3C300EE8C \
- && echo "deb http://ppa.launchpad.net/nginx/stable/ubuntu xenial main" >> /etc/apt/sources.list \
  && wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | apt-key add - \
  && echo 'deb http://apt.postgresql.org/pub/repos/apt/ xenial-pgdg main' > /etc/apt/sources.list.d/pgdg.list \
  && wget --quiet -O - https://deb.nodesource.com/gpgkey/nodesource.gpg.key | apt-key add - \
@@ -89,7 +87,6 @@ RUN apt-get install -y \
     logrotate \
     locales \
     mysql-client \
-    nginx \
     nodejs \
     openssh-server \
     postgresql-client \
@@ -119,7 +116,7 @@ RUN bash ${GITLAB_BUILD_DIR}/install.sh
 COPY entrypoint.sh /sbin/entrypoint.sh
 RUN chmod 755 /sbin/entrypoint.sh
 
-EXPOSE 22/tcp 80/tcp 443/tcp
+EXPOSE 22/tcp 80/tcp
 
 VOLUME ["${GITLAB_DATA_DIR}", "${GITLAB_LOG_DIR}"]
 WORKDIR ${GITLAB_INSTALL_DIR}
