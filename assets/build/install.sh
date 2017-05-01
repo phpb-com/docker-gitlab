@@ -46,6 +46,13 @@ exec_as_git git config --global core.autocrlf input
 exec_as_git git config --global gc.auto 0
 exec_as_git git config --global repack.writeBitmaps true
 
+# Increase git limits to allow for large imports
+exec_as_git git config --global core.packedGitLimit 1024m
+exec_as_git git config --global core.packedGitWindowSize 1024m
+exec_as_git git config --global pack.deltaCacheSize 4096m
+exec_as_git git config --global pack.packSizeLimit 4096m
+exec_as_git git config --global pack.windowMemory 4096m
+
 #
 # Download necessary sources
 #
