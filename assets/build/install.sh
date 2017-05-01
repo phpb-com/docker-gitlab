@@ -52,6 +52,7 @@ exec_as_git git config --global core.packedGitWindowSize 1024m
 exec_as_git git config --global pack.deltaCacheSize 4096m
 exec_as_git git config --global pack.packSizeLimit 4096m
 exec_as_git git config --global pack.windowMemory 4096m
+exec_as_git git config --global http.postBuffer 1048576000
 
 #
 # Download necessary sources
