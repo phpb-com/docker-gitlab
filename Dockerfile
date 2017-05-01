@@ -118,7 +118,8 @@ RUN bash ${GITLAB_BUILD_DIR}/install.sh
 COPY entrypoint.sh /sbin/entrypoint.sh
 RUN chmod 755 /sbin/entrypoint.sh
 
-EXPOSE 22/tcp 8181/tcp 8090/tcp
+# In order: SSH, WORKHORSE. gitlab-pages, gitlab-pages prometheus, gitaly prometheus, gitlab-monitor prometheus
+EXPOSE 22/tcp 8181/tcp 8090/tcp 9235/tcp 9236/tcp 9168/tcp
 
 VOLUME ["${GITLAB_DATA_DIR}", "${GITLAB_LOG_DIR}"]
 WORKDIR ${GITLAB_INSTALL_DIR}
