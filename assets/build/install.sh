@@ -97,9 +97,12 @@ echo "Cloning gitlab-pages v${GITLAB_PAGES_VERSION}..."
 exec_as_git git clone -q -b v${GITLAB_PAGES_VERSION} --depth 1 ${GITLAB_PAGES_CLONE_URL} ${GITLAB_PAGES_INSTALL_DIR}
 
 # download golang
-echo "Downloading Go ${GOLANG_VERSION}..."
+echo "Downloading and installing Go ${GOLANG_VERSION}..."
 curl -sL -o ${GITLAB_BUILD_DIR}/go${GOLANG_VERSION}.linux-amd64.tar.gz https://storage.googleapis.com/golang/go${GOLANG_VERSION}.linux-amd64.tar.gz
 tar -xf ${GITLAB_BUILD_DIR}/go${GOLANG_VERSION}.linux-amd64.tar.gz -C /tmp/
+# Set variables for golang
+export PATH=/tmp/go/bin:$PATH
+export GOROOT=/tmp/go
 
 #
 # Build and Install downloaded sources
@@ -117,6 +120,10 @@ prebuild_gitlab_shell
 
 exec_as_git cp -a ${GITLAB_SHELL_INSTALL_DIR}/config.yml.example ${GITLAB_SHELL_INSTALL_DIR}/config.yml
 exec_as_git ./bin/install
+if [[ -x ./bin/compile ]]; then
+  echo "Compiling gitlab-shell golang executables..."
+  exec_as_git PATH=/tmp/go/bin:$PATH GOROOT=/tmp/go ./bin/compile
+fi
 
 # Execute post-build hook
 echo "Executing post-build hook for gitlab-shell"
@@ -151,8 +158,8 @@ prebuild_gitlab_gitaly
 # copy default config for gitaly
 exec_as_git cp ${GITLAB_GITALY_INSTALL_DIR}/config.toml.example ${GITLAB_GITALY_INSTALL_DIR}/config.toml
 
-PATH=/tmp/go/bin:$PATH GOROOT=/tmp/go make install
-PATH=/tmp/go/bin:$PATH GOROOT=/tmp/go make clean
+make install
+make clean
 
 # Execute post-build hook
 echo "Executing post-build hook for gitlab-gitaly"
@@ -168,8 +175,8 @@ source ${GITLAB_BUILD_DIR}/hooks/gitlab-workhorse
 echo "Executing pre-build hook for gitlab-workhorse"
 prebuild_gitlab_workhorse
 
-PATH=/tmp/go/bin:$PATH GOROOT=/tmp/go make install
-PATH=/tmp/go/bin:$PATH GOROOT=/tmp/go make clean
+make install
+make clean
 
 # Execute post-build hook
 echo "Executing post-build hook for gitlab-workhorse"
@@ -189,7 +196,7 @@ GODIR=/tmp/go/src/gitlab.com/gitlab-org/gitlab-pages
 mkdir -p "$(dirname "$GODIR")"
 ln -sfv "$(pwd -P)" "$GODIR"
 cd "$GODIR"
-PATH=/tmp/go/bin:$PATH GOROOT=/tmp/go make gitlab-pages
+make gitlab-pages
 mv gitlab-pages /usr/local/bin/
 
 # Execute post-build hook
