@@ -176,7 +176,7 @@ services:
     - GITLAB_MONITOR_ENABLED=
     - GITLAB_MONITOR_PORT=
 
-# The following set of containers should only be uncommented if you wish to use grafana and prometheus servers for metrics collection and monitoring
+## Uncomment the following sections to start prometheus and grafana, be careful about indentation - just replace `#` with space.
 # prometheus-server:
 #   image: prom/prometheus
 #   ports:
@@ -184,12 +184,28 @@ services:
 #   volumes:
 ## The sample file can be located at https://gotfix.com/docker/gitlab/raw/master/prometheus/prometheus.yml
 #     - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+#     - ./prometheus/data:/prometheus:Z
 
 # grafana-ui:
+#   restart: always
 #   image: grafana/grafana
 #   ports:
 #     - 3000:3000
 #   environment:
-#     - GF_SECURITY_ADMIN_PASSWORD=
+#     - GF_SECURITY_ADMIN_PASSWORD=password #Make sure to set it to unique value and keep it secure
+#     - GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-piechart-panel,grafana-simple-json-datasource,cloudflare-app,mtanda-histogram-panel,mtanda-heatmap-epoch-panel,natel-plotly-panel
+#     - GF_SMTP_ENABLED=true
+#     - GF_SMTP_HOST=mail.example.com:25 # Set it to the hostname of your email server
+#     - GF_SMTP_FROM_ADDRESS=gitlab@example.com # This is a from address for your Grafana server
+#     - GF_SERVER_DOMAIN=grafana.example.com # Your Grafana server hostname
+#     - GF_SERVER_ROOT_URL=https://grafana.example.com/ #URL to access your Grafana server
+#     - GF_SERVER_ENFORCE_DOMAIN=true
+#     - GF_USERS_ALLOW_SIGN_UP=false
+#   depends_on:
+#     - prometheus-server
 #   links:
 #     - prometheus-server:prometheus
+#   volumes:
+#     - ./grafana/lib:/var/lib/grafana:Z
+#     - ./grafana/log:/var/log/grafana:Z
+
