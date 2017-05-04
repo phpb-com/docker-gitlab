@@ -31,7 +31,13 @@ Those are the steps that should be taken to upgrade GitLab, GitLab Shell, GitLab
 
 ## Release
 
- - Update Version in all relevant files (see above)
+### Update version from A.B.C to X.Y.Z
+ - Update documentation `sed -i -- 's/A\.B\.C/X.Y.Z/g' README.md docker-compose.yml Dockerfile docs/*`
+ - Perform commit `git commit -a -m "Update documentation for X.Y.Z"`
+ - Add Changelog
+ - Perform commit `git commit -a -m "Update changelog for X.Y.Z"`
+ - Update VERSION file
+ - Perform Commit `git commit -a -m "Release X.Y.Z"`
  - Tag the commit with release `git tag -a X.X.X-X -m "Release X.X.X-X"`
  - Set git config for tags `git config --global push.followTags true`
  - Push commit and tag `git push --follow-tags`
