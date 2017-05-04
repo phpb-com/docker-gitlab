@@ -4,9 +4,6 @@
 
 > Alternatively image is available from quay.io `quay.io/gotfix/gitlab:9.1.2`
 
-
-> **NOTE**: This project was forked from [sameersbn/docker-gitlab](https://github.com/sameersbn/docker-gitlab) to maintain slightly more modern and less conservative (i.e., things will  break) version of GitLab docker image.
-
 # Canonical source
 
 The canonical source of the repository is [hosted on gotfix.com](https://gotfix.com/docker/gitlab).
@@ -77,8 +74,9 @@ The canonical source of the repository is [hosted on gotfix.com](https://gotfix.
 
 <!-- tocstop -->
 
-**Other references**
+**Other References**
 
+- [Originally forked from sameersbn/docker-gitlab](https://github.com/sameersbn/docker-gitlab).
 - [GitLab Container Registry](https://gotfix.com/docker/gitlab/blob/master/docs/container_registry.md)
 - [Reuse docker host SSH daemon](https://gotfix.com/docker/gitlab/blob/master/docs/docker_host_ssh.md)
 - [GitLab Backup to s3 compatible storage](https://gotfix.com/docker/gitlab/blob/master/docs/s3_compatible_storage.md)
