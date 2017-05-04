@@ -26,6 +26,8 @@ Long story short, since the original project tends to be conservative and their 
 
 Best practice dictates that one docker image should serve one purpose, having NGINX in it is not a good idea. At this time it is still in the image but that will change very soon. If you do not know how to setup NGINX outside of this image, take a look at [nginx-proxy](https://github.com/jwilder/nginx-proxy), I am planning to support that instead. I will also prepare set of instructions to use [Caddy](https://gotfix.com/docker/caddy) with this image.
 
+**If you rely on the supplied NGINX, I have prepared [Caddy for GitLab](https://gotfix.com/docker/caddy) to cover those needs. This will allow you to front your Gitlab installation and also have automated SSL using [Let’s Encrypt](https://letsencrypt.org) certificate, and much more. Please take a look at the documentation that [Caddy for GitLab](https://gotfix.com/docker/caddy) provides.**
+
 ### Why are you not hosting this project on GitHub and only maintaining mirror there?
 
 This image is for Gitlab CE and I would like to use Gitlab CE to develop and maintain it, at the same time it will help test it as well.
