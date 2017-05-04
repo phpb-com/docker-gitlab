@@ -276,6 +276,7 @@ $ docker run -d \
     --env="TLS_AGREE=true" \
     --env="CADDY_EMAIL=admin@example.com" \
     -v $HOME/.caddy:/root/.caddy \
+    -v $HOME/caddy/logs:/var/log/caddy \
     -p 80:80 -p 443:443 \
     gotfix/caddy:latest-gitlab
 ```
