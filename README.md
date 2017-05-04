@@ -1,104 +1,105 @@
-[![build status](https://gotfix.com/docker/gitlab/badges/master/build.svg)](https://gotfix.com/docker/gitlab/commits/master)
-[![Docker Repository on Quay](https://quay.io/repository/gotfix/gitlab/status "Docker Repository on Quay")](https://quay.io/repository/gotfix/gitlab)
-[![](https://images.microbadger.com/badges/image/gotfix/gitlab.svg)](https://microbadger.com/images/gotfix/gitlab "Get your own image badge on microbadger.com")
-[![](https://images.microbadger.com/badges/version/gotfix/gitlab.svg)](https://microbadger.com/images/gotfix/gitlab "Get your own version badge on microbadger.com")
-[![Docker Pulls](https://img.shields.io/docker/pulls/gotfix/gitlab.svg)](https://hub.docker.com/r/gotfix/gitlab/)
+[![build status](https://gotfix.com/docker/gitlab/badges/master/build.svg)](https://gotfix.com/docker/gitlab/commits/master) [![Docker Repository on Quay](https://quay.io/repository/gotfix/gitlab/status "Docker Repository on Quay")](https://quay.io/repository/gotfix/gitlab) [![](https://images.microbadger.com/badges/image/gotfix/gitlab.svg)](https://microbadger.com/images/gotfix/gitlab "Get your own image badge on microbadger.com") [![](https://images.microbadger.com/badges/version/gotfix/gitlab.svg)](https://microbadger.com/images/gotfix/gitlab "Get your own version badge on microbadger.com") [![Docker Pulls](https://img.shields.io/docker/pulls/gotfix/gitlab.svg)](https://hub.docker.com/r/gotfix/gitlab/)
 
 # gotfix/gitlab:9.1.2
 
 > Alternatively image is available from quay.io `quay.io/gotfix/gitlab:9.1.2`
 
-**NOTE:** This project was forked from [sameersbn/docker-gitlab](https://github.com/sameersbn/docker-gitlab) to maintain slightly more modern and less conservative (i.e., things will  break) version of GitLab docker image.
 
-## Canonical source
+> **NOTE**: This project was forked from [sameersbn/docker-gitlab](https://github.com/sameersbn/docker-gitlab) to maintain slightly more modern and less conservative (i.e., things will  break) version of GitLab docker image.
+
+# Canonical source
 
 The canonical source of the repository is [hosted on gotfix.com](https://gotfix.com/docker/gitlab).
 
----
 
-## FAQ
+-------
 
-### Why did you fork instead of contributing to the original project?
+
+# FAQ
+
+## Why did you fork instead of contributing to the original project?
 
 Long story short, since the original project tends to be conservative and their goal is stability, it is not what I would like to run for myself. I prefer to follow Gitlab development cycle closer (when time allows) and play with new features. If you rely on Gitlab for your business and require stability, backwards compatibility, and do not want to update often, I would suggest using the original project. You are welcome to use this fork if you do not mind doing testing yourself.
 
-### Why NGINX is removed from the image?
+## Why NGINX is removed from the image?
 
 Best practice dictates that one docker image should serve one purpose, having NGINX in it is not a good idea. At this time it is still in the image but that will change very soon. If you do not know how to setup NGINX outside of this image, take a look at [nginx-proxy](https://github.com/jwilder/nginx-proxy), I am planning to support that instead. I will also prepare set of instructions to use [Caddy](https://gotfix.com/docker/caddy) with this image.
 
 **If you rely on the supplied NGINX, I have prepared [Caddy for GitLab](https://gotfix.com/docker/caddy) to cover those needs. This will allow you to front your Gitlab installation and also have automated SSL using [Let’s Encrypt](https://letsencrypt.org) certificate, and much more. Please take a look at the documentation that [Caddy for GitLab](https://gotfix.com/docker/caddy) provides.**
 
-### Why are you not hosting this project on GitHub and only maintaining mirror there?
+## Why are you not hosting this project on GitHub and only maintaining mirror there?
 
 This image is for Gitlab CE and I would like to use Gitlab CE to develop and maintain it, at the same time it will help test it as well.
 
-### I would like to help, what should I do?
+## I would like to help, what should I do?
 
 Thanks, I would love to get some help. You can start by creating account and contributing Merge requests, that will be awesome!
 
-### Why are you not supporting feature X?
+## Why are you not supporting feature X?
 
 Since I do not have unlimited time on my hands, it is very difficult to add/support all of the features. No worries, if you know how to add it to the image, send you Merge request and we will work it out.
 
-### Where are the kubernetes configuration files?
+## Where are the Kubernetes configuration files?
 
 There is a wonderful project that has a very good set of helm charts to get you started, please take a look here: https://github.com/lwolf/gitlab-chart
 
----
+
+-------
 
 
 # Table of Content
 
 <!-- toc -->
 
-- [Other references](#other-references)
 - [Introduction](#introduction)
-- [Contributing](#contributing)
-- [Team](#team)
-- [Issues](#issues)
-- [Prerequisites](#prerequisites)
+  * [Contributing](#contributing)
+  * [Team](#team)
+  * [Issues](#issues)
 - [Installation](#installation)
-- [Quick Start](#quick-start)
-- [Configuration](#configuration)
-  * [Data Store](#data-store)
-  * [Database](#database)
-    + [PostgreSQL](#postgresql)
-      - [External PostgreSQL Server](#external-postgresql-server)
-      - [Linking to PostgreSQL Container](#linking-to-postgresql-container)
-    + [MySQL](#mysql)
-      - [Internal MySQL Server](#internal-mysql-server)
-      - [External MySQL Server](#external-mysql-server)
-      - [Linking to MySQL Container](#linking-to-mysql-container)
-  * [Redis](#redis)
-    + [Internal Redis Server](#internal-redis-server)
-    + [External Redis Server](#external-redis-server)
-    + [Linking to Redis Container](#linking-to-redis-container)
-  * [Mail](#mail)
-    + [Reply by email](#reply-by-email)
-  * [Enabling HTTPS support](#enabling-https-support)
-    + [Using HTTPS with a load balancer](#using-https-with-a-load-balancer)
-    + [Installing Trusted SSL Server Certificates](#installing-trusted-ssl-server-certificates)
-  * [Deploy to a subdirectory (relative url root)](#deploy-to-a-subdirectory-relative-url-root)
-  * [OmniAuth Integration](#omniauth-integration)
-    + [CAS3](#cas3)
-    + [Authentiq](#authentiq)
-    + [Google](#google)
-    + [Facebook](#facebook)
-    + [Twitter](#twitter)
-    + [GitHub](#github)
-    + [GitLab](#gitlab)
-    + [BitBucket](#bitbucket)
-    + [SAML](#saml)
-    + [Crowd](#crowd)
-    + [Auth0](#auth0)
-    + [Microsoft Azure](#microsoft-azure)
-  * [Host UID / GID Mapping](#host-uid--gid-mapping)
-  * [Piwik](#piwik)
-  * [Grafana](#grafana)
-  * [Available Configuration Parameters](#available-configuration-parameters)
-    + [GitLab Pages](#gitlab-pages)
-    + [GitLab specific](#gitlab-specific)
-    + [Gitaly Experimental](#gitaly-experimental)
+  * [Prerequisites](#prerequisites)
+  * [Preparing container image](#preparing-container-image)
+  * [Quick Start](#quick-start)
+  * [Configuration](#configuration)
+    + [Data Store](#data-store)
+    + [Database](#database)
+      - [PostgreSQL](#postgresql)
+        * [External PostgreSQL Server](#external-postgresql-server)
+        * [Linking to PostgreSQL Container](#linking-to-postgresql-container)
+      - [MySQL](#mysql)
+        * [External MySQL Server](#external-mysql-server)
+        * [Linking to MySQL Container](#linking-to-mysql-container)
+    + [Redis](#redis)
+      - [External Redis Server](#external-redis-server)
+      - [Linking to Redis Container](#linking-to-redis-container)
+    + [Mail](#mail)
+      - [Reply by email](#reply-by-email)
+    + [Enabling HTTPS support](#enabling-https-support)
+      - [Using HTTPS with a load balancer](#using-https-with-a-load-balancer)
+      - [Installing Trusted SSL Server Certificates](#installing-trusted-ssl-server-certificates)
+    + [Deploy to a subdirectory (relative url root)](#deploy-to-a-subdirectory-relative-url-root)
+    + [OmniAuth Integration](#omniauth-integration)
+      - [CAS3](#cas3)
+      - [Authentiq](#authentiq)
+      - [Google](#google)
+      - [Facebook](#facebook)
+      - [Twitter](#twitter)
+      - [GitHub](#github)
+      - [GitLab](#gitlab)
+      - [BitBucket](#bitbucket)
+      - [SAML](#saml)
+      - [Crowd](#crowd)
+      - [Auth0](#auth0)
+      - [Microsoft Azure](#microsoft-azure)
+    + [Host UID / GID Mapping](#host-uid--gid-mapping)
+    + [Piwik](#piwik)
+    + [Grafana](#grafana)
+      - [Setup Grafana dashboard for GitLab](#setup-grafana-dashboard-for-gitlab)
+      - [GitLab settings to enable metrics agent for Prometheus](#gitlab-settings-to-enable-metrics-agent-for-prometheus)
+    + [Available Configuration Parameters](#available-configuration-parameters)
+      - [GitLab Monitor](#gitlab-monitor)
+      - [GitLab Pages](#gitlab-pages)
+      - [GitLab specific](#gitlab-specific)
+      - [Gitaly Experimental](#gitaly-experimental)
 - [Maintenance](#maintenance)
   * [Creating backups](#creating-backups)
   * [Restoring Backups](#restoring-backups)
@@ -114,11 +115,11 @@ There is a wonderful project that has a very good set of helm charts to get you 
 
 <!-- tocstop -->
 
-# Other references
+**Other references**
 
-- [GitLab Container Registry](docs/container_registry.md)
-- [Reuse docker host SSH daemon](docs/docker_host_ssh.md)
-- [GitLab Backup to s3 compatible storage](s3_compatible_storage.md)
+- [GitLab Container Registry](https://gotfix.com/docker/gitlab/blob/master/docs/container_registry.md)
+- [Reuse docker host SSH daemon](https://gotfix.com/docker/gitlab/blob/master/docs/docker_host_ssh.md)
+- [GitLab Backup to s3 compatible storage](https://gotfix.com/docker/gitlab/blob/master/docs/s3_compatible_storage.md)
 - [Caddy for GitLab](https://gotfix.com/docker/caddy)
 
 # Introduction
@@ -129,20 +130,20 @@ GitLab CE is set up in the Docker image using the [install from source](https://
 
 For other methods to install GitLab please refer to the [Official GitLab Installation Guide](https://about.gitlab.com/installation/) which includes a [GitLab image for Docker](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/docker).
 
-# Contributing
+## Contributing
 
 If you find this image useful here's how you can help:
 
 - Send a Pull Request with your awesome new features and bug fixes
 - Be a part of the community and help resolve [Issues](https://gotfix.com/docker/gitlab/issues)
 
-# Team
+## Team
 
 - Ian Matyssik ([matyssik](https://gotfix.com/matyssik))
 
 See [Contributors](https://gotfix.com/docker/gitlab/graphs/master) for the complete list developers that have contributed to this project.
 
-# Issues
+## Issues
 
 Docker is a relatively new project and is active being developed and tested by a thriving community of developers and testers and every release of docker features many enhancements and bugfixes.
 
@@ -158,7 +159,7 @@ Fedora and RHEL/CentOS users should try disabling selinux with `setenforce 0` an
 
 You may also set `DEBUG=true` to enable debugging of the entrypoint script, which could help you pin point any configuration issues.
 
-If using the latest docker version and/or disabling selinux does not fix the issue then please file an issue request on the [issues](https://gotfix.com/docker/gitlab/issues) page.
+If using the latest docker version and/or disabling selinux does not fix the issue then please file an issue request on the [**issues**](https://gotfix.com/docker/gitlab/issues) page.
 
 In your issue report please make sure you provide the following information:
 
@@ -167,11 +168,13 @@ In your issue report please make sure you provide the following information:
 - Output of the `docker info` command
 - The `docker run` command you used to run the image (mask out the sensitive bits).
 
-# Prerequisites
-
-Your docker host needs to have 1GB or more of available RAM to run GitLab. Please refer to the GitLab [hardware requirements](https://github.com/gitlabhq/gitlabhq/blob/master/doc/install/requirements.md#hardware-requirements) documentation for additional information.
-
 # Installation
+
+## Prerequisites
+
+Your docker host needs to have 2GB or more of available RAM to run GitLab. Please refer to the GitLab [hardware requirements](https://github.com/gitlabhq/gitlabhq/blob/master/doc/install/requirements.md#hardware-requirements) documentation for additional information. Note that those requirements might be outdated and not always based on the real data, so take precautions. It is always safer to slightly over provision capacity than have less than required.
+
+## Preparing container image
 
 Automated builds of the image are available from [Dockerhub](https://hub.docker.com/r/gotfix/gitlab) and is the recommended method of installation.
 
@@ -191,7 +194,7 @@ Alternatively you can build the image locally.
 docker build -t gotfix/gitlab gotfix.com/docker/gitlab
 ```
 
-# Quick Start
+## Quick Start
 
 The quickest way to get started is using [docker-compose](https://docs.docker.com/compose/).
 
@@ -258,9 +261,9 @@ You should now have the GitLab application up and ready for testing. If you want
 
 *The rest of the document will use the docker command line. You can quite simply adapt your configuration into a `docker-compose.yml` file if you wish to do so.*
 
-# Configuration
+## Configuration
 
-## Data Store
+### Data Store
 
 GitLab is a code hosting software and as such you don't want to lose your code when the docker container is stopped/deleted. To avoid losing any data, you should mount a volume at,
 
@@ -283,15 +286,15 @@ docker run --name gitlab -d \
     gotfix/gitlab:9.1.2
 ```
 
-## Database
+### Database
 
 GitLab uses a database backend to store its data. You can configure this image to use either MySQL or PostgreSQL.
 
 *Note: GitLab HQ recommends using PostgreSQL over MySQL*
 
-### PostgreSQL
+#### PostgreSQL
 
-#### External PostgreSQL Server
+##### External PostgreSQL Server
 
 The image also supports using an external PostgreSQL Server. This is also controlled via environment variables.
 
@@ -316,7 +319,7 @@ docker run --name gitlab -d \
     gotfix/gitlab:9.1.2
 ```
 
-#### Linking to PostgreSQL Container
+##### Linking to PostgreSQL Container
 
 You can link this image with a postgresql container for the database requirements. The alias of the postgresql server container should be set to **postgresql** while linking with the gitlab image.
 
@@ -365,44 +368,11 @@ Here the image will also automatically fetch the `DB_NAME`, `DB_USER` and `DB_PA
  - [postgres](https://hub.docker.com/_/postgres/)
  - [gotfix/postgresql](https://hub.docker.com/r/gotfix/postgresql/)
 
-### MySQL
+#### MySQL
 
 > Please read [this document](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/install/database_mysql.md) to understand complexity involved with MySQL and Gitlab. You might need to take some of the manual steps to have installation or upgrade work correctly. Also see docker/gitlab#81 for what support is implemented.
 
-#### Internal MySQL Server
-
-The internal mysql server has been removed from the image. Please use a [linked mysql](#linking-to-mysql-container) container or specify a connection to a [external mysql](#external-mysql-server) server.
-
-If you have been using the internal mysql server follow these instructions to migrate to a linked mysql container:
-
-Assuming that your mysql data is available at `/srv/docker/gitlab/mysql`
-
-```bash
-docker run --name gitlab-mysql -d \
-    --volume /srv/docker/gitlab/mysql:/var/lib/mysql \
-    --env='MYSQL_RANDOM_ROOT_PASSWORD=yes' \
-    -d mariadb:latest \
-    --character-set-server=utf8 \
-    --collation-server=utf8_unicode_ci \
-    --innodb-file-format=barracuda \
-    --innodb-file-per-table=1 \
-    --innodb-large-prefix=1 \
-    --default-storage-engine=InnoDB
-```
-
-> The generated root password will be printed to stdout `(GENERATED ROOT PASSWORD: .....)`
-
-> See `docker run -it --rm mariadb:tag --verbose --help` for the list of all available options to start MariaDB
-
-> **Read [this](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/install/database_mysql.md) to understand how to set MySQL up.**
-
-This will start a mysql container with your existing mysql data. Now login to the mysql container and create a user for the existing `gitlabhq_production` database.
-
-All you need to do now is link this mysql container to the gitlab ci container using the `--link gitlab-mysql:mysql` option and provide the `DB_NAME`, `DB_USER` and `DB_PASS` parameters.
-
-Refer to [Linking to MySQL Container](#linking-to-mysql-container) for more information.
-
-#### External MySQL Server
+##### External MySQL Server
 
 The image can be configured to use an external MySQL database. The database configuration should be specified using environment variables while starting the GitLab image.
 
@@ -427,7 +397,7 @@ docker run --name gitlab -d \
     gotfix/gitlab:9.1.2
 ```
 
-#### Linking to MySQL Container
+##### Linking to MySQL Container
 
 You can link this image with a mysql container for the database requirements. The alias of the mysql server container should be set to **mysql** while linking with the gitlab image.
 
@@ -478,15 +448,11 @@ docker run --name gitlab -d --link gitlab-mysql:mysql \
     gotfix/gitlab:9.1.2
 ```
 
-## Redis
+### Redis
 
 GitLab uses the redis server for its key-value data store. The redis server connection details can be specified using environment variables.
 
-### Internal Redis Server
-
-The internal redis server has been removed from the image. Please use a [linked redis](#linking-to-redis-container) container or specify a [external redis](#external-redis-server) connection.
-
-### External Redis Server
+#### External Redis Server
 
 The image can be configured to use an external redis server. The configuration should be specified using environment variables while starting the GitLab image.
 
@@ -498,7 +464,7 @@ docker run --name gitlab -it --rm \
     gotfix/gitlab:9.1.2
 ```
 
-### Linking to Redis Container
+#### Linking to Redis Container
 
 You can link this image with a redis container to satisfy gitlab's redis requirement. The alias of the redis server container should be set to **redisio** while linking with the gitlab image.
 
@@ -525,7 +491,7 @@ docker run --name gitlab -d --link gitlab-redis:redisio \
     gotfix/gitlab:9.1.2
 ```
 
-## Mail
+### Mail
 
 The mail configuration should be specified using environment variables while starting the GitLab image. The configuration defaults to using gmail to send emails and requires the specification of a valid username and password to login to the gmail servers.
 
@@ -540,7 +506,7 @@ docker run --name gitlab -d \
 
 Please refer the [Available Configuration Parameters](#available-configuration-parameters) section for the list of SMTP parameters that can be specified.
 
-### Reply by email
+#### Reply by email
 
 Since version `8.0.0` GitLab adds support for commenting on issues by replying to emails.
 
@@ -560,7 +526,7 @@ docker run --name gitlab -d \
 
 Please refer the [Available Configuration Parameters](#available-configuration-parameters) section for the list of IMAP parameters that can be specified.
 
-## Enabling HTTPS support
+### Enabling HTTPS support
 
 HTTPS support can be enabled by setting the `GITLAB_HTTPS` option to `true`.
 
@@ -575,7 +541,7 @@ docker run --name gitlab -d \
 
 In this configuration, any requests made over the plain http protocol will automatically be redirected to use the https protocol.
 
-### Using HTTPS with a load balancer
+#### Using HTTPS with a load balancer
 
 Load balancers like nginx/haproxy/hipache talk to backend applications over plain http and as such the installation of ssl keys and certificates are not required and should **NOT** be installed in the container. The SSL configuration has to instead be done at the load balancer.
 
@@ -600,7 +566,7 @@ In case GitLab responds to any kind of POST request (login, OAUTH, changing sett
 
 `proxy_set_header X-Forwarded-Ssl on;` (nginx format)
 
-### Installing Trusted SSL Server Certificates
+#### Installing Trusted SSL Server Certificates
 
 If any of the services that your GitLab server is accessing are using self-signed SSL certificates then you should make sure their server certificate are trusted on the GitLab server for them to be able to talk to each other.
 
@@ -610,7 +576,7 @@ Copy the `ca.crt` file into the certs directory on the [datastore](#data-store).
 
 By default, our own server certificate [gitlab.crt](#generation-of-self-signed-certificate) is added to the trusted certificates list.
 
-## Deploy to a subdirectory (relative url root)
+### Deploy to a subdirectory (relative url root)
 
 By default GitLab expects that your application is running at the root (eg. /). This section explains how to run your application inside a directory.
 
@@ -627,19 +593,19 @@ GitLab will now be accessible at the `/git` path, e.g., `http://www.example.com/
 
 **Note**: *The `GITLAB_RELATIVE_URL_ROOT` parameter should always begin with a slash and* **SHOULD NOT** *have any trailing slashes.*
 
-## OmniAuth Integration
+### OmniAuth Integration
 
 GitLab leverages OmniAuth to allow users to sign in using Twitter, GitHub, and other popular services. Configuring OmniAuth does not prevent standard GitLab authentication or LDAP (if configured) from continuing to work. Users can choose to sign in using any of the configured mechanisms.
 
 Refer to the GitLab [documentation](http://doc.gitlab.com/ce/integration/omniauth.html) for additional information.
 
-### CAS3
+#### CAS3
 
 To enable the CAS OmniAuth provider you must register your application with your CAS instance. This requires the service URL GitLab will supply to CAS. It should be something like: https://git.example.com:443/users/auth/cas3/callback?url. By default handling for SLO is enabled, you only need to configure CAS for backchannel logout.
 
 For example, if your cas server url is `https://sso.example.com`, then adding `--env 'OAUTH_CAS3_SERVER=https://sso.example.com'` to the docker run command enables support for CAS3 OAuth. Please refer to [Available Configuration Parameters](#available-configuration-parameters) for additional CAS3 configuration parameters.
 
-### Authentiq
+#### Authentiq
 
 To enable the Authentiq OmniAuth provider for password-less authentication you must register an application with [Authentiq](https://www.authentiq.com/). Please refer to the GitLab [documentation](https://docs.gitlab.com/ce/administration/auth/authentiq.html) for the procedure to generate the client ID and secret key with Authentiq.
 
@@ -649,7 +615,7 @@ For example, if your API key is `xxx` and the API secret key is `yyy`, then addi
 
 You may want to specify `OAUTH_AUTHENTIQ_REDIRECT_URI` as well. The OAuth scope can be altered as well with `OAUTH_AUTHENTIQ_SCOPE` (defaults to `'aq:name email~rs address aq:push'`).
 
-### Google
+#### Google
 
 To enable the Google OAuth2 OmniAuth provider you must register your application with Google. Google will generate a client ID and secret key for you to use. Please refer to the GitLab [documentation](http://doc.gitlab.com/ce/integration/google.html) for the procedure to generate the client ID and secret key with google.
 
@@ -659,7 +625,7 @@ For example, if your client ID is `xxx.apps.googleusercontent.com` and client se
 
 You can also restrict logins to a single domain by adding `--env "OAUTH_GOOGLE_RESTRICT_DOMAIN='example.com'"`.
 
-### Facebook
+#### Facebook
 
 To enable the Facebook OAuth2 OmniAuth provider you must register your application with Facebook. Facebook will generate an API key and secret for you to use. Please refer to the GitLab [documentation](http://doc.gitlab.com/ce/integration/facebook.html) for the procedure to generate the API key and secret.
 
@@ -667,7 +633,7 @@ Once you have the API key and secret generated, configure them using the `OAUTH_
 
 For example, if your API key is `xxx` and the API secret key is `yyy`, then adding `--env 'OAUTH_FACEBOOK_API_KEY=xxx' --env 'OAUTH_FACEBOOK_APP_SECRET=yyy'` to the docker run command enables support for Facebook OAuth.
 
-### Twitter
+#### Twitter
 
 To enable the Twitter OAuth2 OmniAuth provider you must register your application with Twitter. Twitter will generate an API key and secret for you to use. Please refer to the GitLab [documentation](http://doc.gitlab.com/ce/integration/twitter.html) for the procedure to generate the API key and secret with twitter.
 
@@ -675,7 +641,7 @@ Once you have the API key and secret generated, configure them using the `OAUTH_
 
 For example, if your API key is `xxx` and the API secret key is `yyy`, then adding `--env 'OAUTH_TWITTER_API_KEY=xxx' --env 'OAUTH_TWITTER_APP_SECRET=yyy'` to the docker run command enables support for Twitter OAuth.
 
-### GitHub
+#### GitHub
 
 To enable the GitHub OAuth2 OmniAuth provider you must register your application with GitHub. GitHub will generate a Client ID and secret for you to use. Please refer to the GitLab [documentation](http://doc.gitlab.com/ce/integration/github.html) for the procedure to generate the Client ID and secret with github.
 
@@ -685,7 +651,7 @@ For example, if your Client ID is `xxx` and the Client secret is `yyy`, then add
 
 Users of GitHub Enterprise may want to specify `OAUTH_GITHUB_URL` and `OAUTH_GITHUB_VERIFY_SSL` as well.
 
-### GitLab
+#### GitLab
 
 To enable the GitLab OAuth2 OmniAuth provider you must register your application with GitLab. GitLab will generate a Client ID and secret for you to use. Please refer to the GitLab [documentation](http://doc.gitlab.com/ce/integration/gitlab.html) for the procedure to generate the Client ID and secret with GitLab.
 
@@ -693,7 +659,7 @@ Once you have the Client ID and secret generated, configure them using the `OAUT
 
 For example, if your Client ID is `xxx` and the Client secret is `yyy`, then adding `--env 'OAUTH_GITLAB_API_KEY=xxx' --env 'OAUTH_GITLAB_APP_SECRET=yyy'` to the docker run command enables support for GitLab OAuth.
 
-### BitBucket
+#### BitBucket
 
 To enable the BitBucket OAuth2 OmniAuth provider you must register your application with BitBucket. BitBucket will generate a Client ID and secret for you to use. Please refer to the GitLab [documentation](http://doc.gitlab.com/ce/integration/bitbucket.html) for the procedure to generate the Client ID and secret with BitBucket.
 
@@ -701,7 +667,7 @@ Once you have the Client ID and secret generated, configure them using the `OAUT
 
 For example, if your Client ID is `xxx` and the Client secret is `yyy`, then adding `--env 'OAUTH_BITBUCKET_API_KEY=xxx' --env 'OAUTH_BITBUCKET_APP_SECRET=yyy'` to the docker run command enables support for BitBucket OAuth.
 
-### SAML
+#### SAML
 
 GitLab can be configured to act as a SAML 2.0 Service Provider (SP). This allows GitLab to consume assertions from a SAML 2.0 Identity Provider (IdP) such as Microsoft ADFS to authenticate users. Please refer to the GitLab [documentation](http://doc.gitlab.com/ce/integration/saml.html).
 
@@ -711,19 +677,19 @@ You can also override the default "Sign in with" button label with `OAUTH_SAML_L
 
 Please refer to [Available Configuration Parameters](#available-configuration-parameters) for the default configurations of these parameters.
 
-### Crowd
+#### Crowd
 
 To enable the Crowd server OAuth2 OmniAuth provider you must register your application with Crowd server.
 
 Configure GitLab to enable access the Crowd server by specifying the `OAUTH_CROWD_SERVER_URL`, `OAUTH_CROWD_APP_NAME` and `OAUTH_CROWD_APP_PASSWORD` environment variables.
 
-### Auth0
+#### Auth0
 
 To enable the Auth0 OmniAuth provider you must register your application with [auth0](https://auth0.com/).
 
 Configure the following environment variables `OAUTH_AUTH0_CLIENT_ID`, `OAUTH_AUTH0_CLIENT_SECRET` and `OAUTH_AUTH0_DOMAIN` to complete the integration.
 
-### Microsoft Azure
+#### Microsoft Azure
 
 To enable the Microsoft Azure OAuth2 OmniAuth provider you must register your application with Azure. Azure will generate a Client ID, Client secret and Tenant ID for you to use. Please refer to the GitLab [documentation](http://doc.gitlab.com/ce/integration/azure.html) for the procedure.
 
@@ -731,7 +697,7 @@ Once you have the Client ID, Client secret and Tenant ID generated, configure th
 
 For example, if your Client ID is `xxx`, the Client secret is `yyy` and the Tenant ID is `zzz`, then adding `--env 'OAUTH_AZURE_API_KEY=xxx' --env 'OAUTH_AZURE_API_SECRET=yyy' --env 'OAUTH_AZURE_TENANT_ID=zzz'` to the docker run command enables support for Microsoft Azure OAuth.
 
-## Host UID / GID Mapping
+### Host UID / GID Mapping
 
 Per default the container is configured to run gitlab as user and group `git` with `uid` and `gid` `1000`. The host possibly uses this ids for different purposes leading to unfavorable effects. From the host it appears as if the mounted data volumes are owned by the host's user/group `1000`.
 
@@ -750,7 +716,7 @@ docker run --name gitlab -d [OPTIONS] \
     gotfix/gitlab:9.1.2 app:sanitize
 ```
 
-## Piwik
+### Piwik
 
 If you want to monitor your gitlab instance with [Piwik](http://piwik.org/), there are two options to setup: `PIWIK_URL` and `PIWIK_SITE_ID`.
 These options should contain something like:
@@ -759,9 +725,48 @@ These options should contain something like:
 - `PIWIK_SITE_ID=42`
 
 
-## Grafana
+### Grafana
 
-If you want to graph gitlab metrics on grafana you have to setup the grafana instance :
+If you want to graph gitlab metrics in [Grafana](https://grafana.com), you have to setup a Grafana instance . The simplest way to do it, is by adding the following to your docker-compose.yml (if you are using docker-compose):
+```yaml
+version: '2'
+
+services:
+  prometheus-server:
+    image: prom/prometheus
+    ports:
+      - 9090:9090
+    volumes:
+## The sample file can be located at https://gotfix.com/docker/gitlab/raw/master/prometheus/prometheus.yml
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml
+      - ./prometheus/data:/prometheus:Z
+
+  grafana-ui:
+    restart: always
+    image: grafana/grafana
+    ports:
+      - 3000:3000
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=password #Make sure to set it to unique value and keep it secure
+      - GF_INSTALL_PLUGINS=grafana-clock-panel,grafana-piechart-panel,grafana-simple-json-datasource,cloudflare-app,mtanda-histogram-panel,mtanda-heatmap-epoch-panel,natel-plotly-panel
+      - GF_SMTP_ENABLED=true
+      - GF_SMTP_HOST=mail.example.com:25 # Set it to the hostname of your email server
+      - GF_SMTP_FROM_ADDRESS=gitlab@example.com # This is a from address for your Grafana server
+      - GF_SERVER_DOMAIN=grafana.example.com # Your Grafana server hostname
+      - GF_SERVER_ROOT_URL=https://grafana.example.com/ #URL to access your Grafana server
+      - GF_SERVER_ENFORCE_DOMAIN=true
+      - GF_USERS_ALLOW_SIGN_UP=false
+    depends_on:
+      - prometheus-server
+    links:
+      - prometheus-server:prometheus
+    volumes:
+      - ./grafana/lib:/var/lib/grafana:Z
+      - ./grafana/log:/var/log/grafana:Z
+```
+Once you have Prometheus and Grafana servers running, you can proceed with the next step.
+
+#### Setup Grafana dashboard for GitLab
 
 On Grafana UI : 
 - Click Data Sources
@@ -769,21 +774,29 @@ On Grafana UI :
 - Set Type Prometheus
 - Url : http://prometheus-server:9090
 
-You can now import the [following dashboard](https://grafana.net/dashboards/1575), or create a custom one using the prometheus metrics.
+You can now import the [following dashboard](https://grafana.net/dashboards/1575), or create a custom one using the Prometheus metrics.
+
+#### GitLab settings to enable metrics agent for Prometheus
 
 | Parameter | Description |
 |-----------|-------------|
 | `GITLAB_MONITOR_ENABLED` | Enable gitlab-monitor. Default to `false` |
 | `GITLAB_MONITOR_PORT`    | Specify port that gitlab-monitor will listen on. Default to `9168` |
 
-
-## Available Configuration Parameters
+### Available Configuration Parameters
 
 *Please refer the docker run command options for the `--env-file` flag where you can specify all required environment variables in a single file. This will save you from writing a potentially long docker run command. Alternatively you can use docker-compose.*
 
 Below is the complete list of available configuration options segregated by category. Those options will allow you to customize your installation of GitLab.
 
-### GitLab Pages
+#### GitLab Monitor
+
+| Parameter | Description |
+|-----------|-------------|
+| `GITLAB_MONITOR_ENABLED` | Enable gitlab-monitor. Default to `false` |
+| `GITLAB_MONITOR_PORT`    | Specify port that gitlab-monitor will listen on. Default to `9168` |
+
+#### GitLab Pages
 
 | Parameter | Description |
 |-----------|-------------|
@@ -800,7 +813,7 @@ Below is the complete list of available configuration options segregated by cate
 | `GITLAB_PAGES_EXTERNAL_HTTP_IP` | External IP for gitlab-pages that will accept HTTP requests. Used to enable custom domain setup by the user. No Defaults. |
 | `GITLAB_PAGES_EXTERNAL_HTTPS_IP` | External IP for gitlab-pages that will accept HTTPS requests. Used to enable custom domain setup by the user. No Defaults. |
 
-### GitLab specific
+#### GitLab specific
 
 | Parameter | Description |
 |-----------|-------------|
@@ -1012,7 +1025,7 @@ Below is the complete list of available configuration options segregated by cate
 | `RACK_ATTACK_BANTIME` | Number of seconds an IP should be banned after too many auth attempts. Defaults to `3600`. |
 | `GITLAB_TRACK_DEPLOYMENTS` | Enable tracking of deployments. See [rake tasks](https://docs.gitlab.com/ce/administration/raketasks/maintenance.html#tracking-deployments). Defaults to `false`. |
 
-### Gitaly Experimental
+#### Gitaly Experimental
 
 | Parameter | Description |
 |-----------|-------------|
@@ -1287,3 +1300,4 @@ docker-compose exec gitlab bash
 * https://docs.gitlab.com/ce/administration/raketasks/maintenance.html - List of maintanance tasks for GitLab
 * https://gitlab.com/gitlab-org/gitlab-runner-docker-cleanup - docker base cleaner for docker, useful on the runner host
 * https://docs.gitlab.com/ce/user/project/pages/introduction.html - GitLab pages useful link
+
