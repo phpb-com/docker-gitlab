@@ -2,6 +2,14 @@
 
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list of changes in GitLab.
 
+**9.1.2-1**
+- gitlab: Gitlab CE 9.1.2
+- Additional parameters for git to allow work with large repos
+- Information on how to configure Caddy as your front-end web-server
+- Cleaner documentation
+- Add steps to compile gitlab-shell golang executables during image build
+- Other minor cleanups and improvements
+
 **9.1.2**
 - gitlab: Gitlab CE 9.1.2
 - gitlab-monitor 1.6.0
