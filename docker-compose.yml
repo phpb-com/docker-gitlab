@@ -1,6 +1,27 @@
 version: '2'
 
 services:
+
+  caddy:
+    restart: always
+    image: gotfix/caddy:latest-gitlab
+    depends_on:
+    - gitlab # Ensures that caddy will relink if gitlab container is restarted
+    command:
+    - -quic
+    ports:
+    - 80:80
+    - 443:443
+    environment:
+    - DUMP_CADDY_CONFIG=true # Will dump Caddyfile in stdout, can be seen by `docker-compose logs -f caddy`
+    - GITLAB_HOST=example.com # Hostname of the GitLab installation that this server is reachable at
+    - TLS_AGREE=true # Indicates that you have read and agree to the Let's Encrypt Subscriber Agreement.
+    - CADDY_EMAIL=admin@example.com # Make sure this email is yours and reachable
+    - GITLAB_IP=gitlab # The container with GitLab will be available with this alias as part of this docker-compose file
+    volumes:
+    - ./.caddy:/root/.caddy # Your certificates will be stored here
+    - ./gitlab/caddy/logs:/var/log/caddy:Z # Caddy logs will be stored here
+
   redis:
     restart: always
     image: gotfix/redis:latest
