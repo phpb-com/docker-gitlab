@@ -60,6 +60,7 @@ There is a wonderful project that has a very good set of helm charts to get you 
   * [Preparing container image](#preparing-container-image)
   * [Quick Start](#quick-start)
   * [Configuration](#configuration)
+    + [Caddy (front-end web-server)](#caddy-front-end-web-server)
     + [Data Store](#data-store)
     + [Database](#database)
       - [PostgreSQL](#postgresql)
@@ -262,6 +263,45 @@ You should now have the GitLab application up and ready for testing. If you want
 *The rest of the document will use the docker command line. You can quite simply adapt your configuration into a `docker-compose.yml` file if you wish to do so.*
 
 ## Configuration
+
+### Caddy (front-end web-server)
+
+GitLab uses gitlab-workhorse to accept HTTP connection, and it is expecting to receive those connections via reveres-proxy, such as Caddy (or nginx). Since NGINX is no longer present in this container image, we will use [Caddy for GitLab](https://gotfix.com/docker/caddy) to handle those. For a complete list of configuration parameters, you should read [here](https://gotfix.com/docker/caddy/blob/master/README.md). In this section we will only cover minimum steps to get you started.
+
+If you are using plain docker (not docker-compose), the follwoing `--env` settings will be required to run GitLab (similar setting are available for Pages and Registry):
+```bash
+$ docker run -d \
+    --link=gitlab:gitlab \
+    --env="GITLAB_HOST=gitlab.example.com" \
+    --env="TLS_AGREE=true" \
+    --env="CADDY_EMAIL=admin@example.com" \
+    -v $HOME/.caddy:/root/.caddy \
+    -p 80:80 -p 443:443 \
+    gotfix/caddy:latest-gitlab
+```
+
+For docker-compose, you will have to configure something similar to the following:
+```yaml
+  caddy:
+    restart: always
+    image: gotfix/caddy:latest-gitlab
+    depends_on:
+    - gitlab # Ensures that caddy will relink if gitlab container is restarted
+    command:
+    - -quic
+    ports:
+    - 80:80
+    - 443:443
+    environment:
+    - TLS_AGREE=true # Indicates that you have read and agree to the Let's Encrypt Subscriber Agreement.
+    - CADDY_EMAIL=admin@example.com # Make sure this email is yours and reachable
+    - GITLAB_HOST=gitlab.example.com # Hostname of the GitLab installation that this server is reachable at
+    - GITLAB_IP=gitlab # IP/Hostname of the running Gitlab service. This assume that Gitlab is configured in the same `services:` section under name gitlab.
+    volumes:
+    - ./.caddy:/root/.caddy # Your certificates will be stored here
+    - ./gitlab/caddy/logs:/var/log/caddy:Z # Caddy logs will be stored here
+```
+See [example gitlab docker-compose](https://gotfix.com/docker/caddy/blob/master/gitlab/docker-compose.yml) for a more complete file.
 
 ### Data Store
 
