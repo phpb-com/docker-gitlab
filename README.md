@@ -15,38 +15,6 @@ The canonical source of the repository is [hosted on gotfix.com](https://gotfix.
 -------
 
 
-# FAQ
-
-## Why did you fork instead of contributing to the original project?
-
-Long story short, since the original project tends to be conservative and their goal is stability, it is not what I would like to run for myself. I prefer to follow Gitlab development cycle closer (when time allows) and play with new features. If you rely on Gitlab for your business and require stability, backwards compatibility, and do not want to update often, I would suggest using the original project. You are welcome to use this fork if you do not mind doing testing yourself.
-
-## Why NGINX is removed from the image?
-
-Best practice dictates that one docker image should serve one purpose, having NGINX in it is not a good idea. At this time it is still in the image but that will change very soon. If you do not know how to setup NGINX outside of this image, take a look at [nginx-proxy](https://github.com/jwilder/nginx-proxy), I am planning to support that instead. I will also prepare set of instructions to use [Caddy](https://gotfix.com/docker/caddy) with this image.
-
-**If you rely on the supplied NGINX, I have prepared [Caddy for GitLab](https://gotfix.com/docker/caddy) to cover those needs. This will allow you to front your Gitlab installation and also have automated SSL using [Let’s Encrypt](https://letsencrypt.org) certificate, and much more. Please take a look at the documentation that [Caddy for GitLab](https://gotfix.com/docker/caddy) provides.**
-
-## Why are you not hosting this project on GitHub and only maintaining mirror there?
-
-This image is for Gitlab CE and I would like to use Gitlab CE to develop and maintain it, at the same time it will help test it as well.
-
-## I would like to help, what should I do?
-
-Thanks, I would love to get some help. You can start by creating account and contributing Merge requests, that will be awesome!
-
-## Why are you not supporting feature X?
-
-Since I do not have unlimited time on my hands, it is very difficult to add/support all of the features. No worries, if you know how to add it to the image, send you Merge request and we will work it out.
-
-## Where are the Kubernetes configuration files?
-
-There is a wonderful project that has a very good set of helm charts to get you started, please take a look here: https://github.com/lwolf/gitlab-chart
-
-
--------
-
-
 # Table of Content
 
 <!-- toc -->
@@ -98,6 +66,13 @@ There is a wonderful project that has a very good set of helm charts to get you 
       - [GitLab settings to enable metrics agent for Prometheus](#gitlab-settings-to-enable-metrics-agent-for-prometheus)
     + [Available Configuration Parameters](#available-configuration-parameters)
 - [Maintenance](#maintenance)
+- [FAQ](#faq)
+  * [Why did you fork instead of contributing to the original project?](#why-did-you-fork-instead-of-contributing-to-the-original-project)
+  * [Why NGINX is removed from the image?](#why-nginx-is-removed-from-the-image)
+  * [Why are you not hosting this project on GitHub and only maintaining mirror there?](#why-are-you-not-hosting-this-project-on-github-and-only-maintaining-mirror-there)
+  * [I would like to help, what should I do?](#i-would-like-to-help-what-should-i-do)
+  * [Why are you not supporting feature X?](#why-are-you-not-supporting-feature-x)
+  * [Where are the Kubernetes configuration files?](#where-are-the-kubernetes-configuration-files)
 - [References](#references)
 
 <!-- tocstop -->
@@ -819,6 +794,34 @@ You can now import the [following dashboard](https://grafana.net/dashboards/1575
 # Maintenance
 
 **See [Maintenance](https://gotfix.com/docker/gitlab/blob/master/docs/maintenance.md) for documentation about maintenance.**
+
+# FAQ
+
+## Why did you fork instead of contributing to the original project?
+
+Long story short, since the original project tends to be conservative and their goal is stability, it is not what I would like to run for myself. I prefer to follow Gitlab development cycle closer (when time allows) and play with new features. If you rely on Gitlab for your business and require stability, backwards compatibility, and do not want to update often, I would suggest using the original project. You are welcome to use this fork if you do not mind doing testing yourself.
+
+## Why NGINX is removed from the image?
+
+Best practice dictates that one docker image should serve one purpose, having NGINX in it is not a good idea. At this time it is still in the image but that will change very soon. If you do not know how to setup NGINX outside of this image, take a look at [nginx-proxy](https://github.com/jwilder/nginx-proxy), I am planning to support that instead. I will also prepare set of instructions to use [Caddy](https://gotfix.com/docker/caddy) with this image.
+
+**If you rely on the supplied NGINX, I have prepared [Caddy for GitLab](https://gotfix.com/docker/caddy) to cover those needs. This will allow you to front your Gitlab installation and also have automated SSL using [Let’s Encrypt](https://letsencrypt.org) certificate, and much more. Please take a look at the documentation that [Caddy for GitLab](https://gotfix.com/docker/caddy) provides.**
+
+## Why are you not hosting this project on GitHub and only maintaining mirror there?
+
+This image is for Gitlab CE and I would like to use Gitlab CE to develop and maintain it, at the same time it will help test it as well.
+
+## I would like to help, what should I do?
+
+Thanks, I would love to get some help. You can start by creating account and contributing Merge requests, that will be awesome!
+
+## Why are you not supporting feature X?
+
+Since I do not have unlimited time on my hands, it is very difficult to add/support all of the features. No worries, if you know how to add it to the image, send you Merge request and we will work it out.
+
+## Where are the Kubernetes configuration files?
+
+There is a wonderful project that has a very good set of helm charts to get you started, please take a look here: https://github.com/lwolf/gitlab-chart
 
 # References
 
