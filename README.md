@@ -26,6 +26,8 @@ Long story short, since the original project tends to be conservative and their 
 
 Best practice dictates that one docker image should serve one purpose, having NGINX in it is not a good idea. At this time it is still in the image but that will change very soon. If you do not know how to setup NGINX outside of this image, take a look at [nginx-proxy](https://github.com/jwilder/nginx-proxy), I am planning to support that instead. I will also prepare set of instructions to use [Caddy](https://gotfix.com/docker/caddy) with this image.
 
+**If you rely on the supplied NGINX, I have prepared [Caddy for GitLab](https://gotfix.com/docker/caddy) to cover those needs. This will allow you to front your Gitlab installation and also have automated SSL using [Let’s Encrypt](https://letsencrypt.org) certificate, and much more. Please take a look at the documentation that [Caddy for GitLab](https://gotfix.com/docker/caddy) provides.**
+
 ### Why are you not hosting this project on GitHub and only maintaining mirror there?
 
 This image is for Gitlab CE and I would like to use Gitlab CE to develop and maintain it, at the same time it will help test it as well.
@@ -47,6 +49,9 @@ There is a wonderful project that has a very good set of helm charts to get you 
 
 # Table of Content
 
+<!-- toc -->
+
+- [Other references](#other-references)
 - [Introduction](#introduction)
 - [Contributing](#contributing)
 - [Team](#team)
@@ -60,39 +65,40 @@ There is a wonderful project that has a very good set of helm charts to get you 
     + [PostgreSQL](#postgresql)
       - [External PostgreSQL Server](#external-postgresql-server)
       - [Linking to PostgreSQL Container](#linking-to-postgresql-container)
-    + [MySQL/MariaDB](#mysql)
-      - [Internal MySQL/MariaDB Server](#internal-mysql-server)
-      - [External MySQL/MariaDB Server](#external-mysql-server)
-      - [Linking to MySQL/MariaDB Container](#linking-to-mysql-container)
+    + [MySQL](#mysql)
+      - [Internal MySQL Server](#internal-mysql-server)
+      - [External MySQL Server](#external-mysql-server)
+      - [Linking to MySQL Container](#linking-to-mysql-container)
   * [Redis](#redis)
     + [Internal Redis Server](#internal-redis-server)
     + [External Redis Server](#external-redis-server)
     + [Linking to Redis Container](#linking-to-redis-container)
-    + [Mail](#mail)
-      - [Reply by email](#reply-by-email)
-    + [Enabling HTTPS support](#enabling-https-support)
-      - [Using HTTPS with a load balancer](#using-https-with-a-load-balancer)
-    + [Deploy to a subdirectory (relative url root)](#deploy-to-a-subdirectory-relative-url-root)
-    + [OmniAuth Integration](#omniauth-integration)
-      - [CAS3](#cas3)
-      - [Authentiq](#authentiq)
-      - [Google](#google)
-      - [Facebook](#facebook)
-      - [Twitter](#twitter)
-      - [GitHub](#github)
-      - [GitLab](#gitlab)
-      - [BitBucket](#bitbucket)
-      - [SAML](#saml)
-      - [Crowd](#crowd)
-      - [Auth0](#auth0)
-      - [Microsoft Azure](#microsoft-azure)
-    + [Host UID / GID Mapping](#host-uid--gid-mapping)
-    + [Piwik](#piwik)
-    + [Grafana](#grafana)
-    + [Available Configuration Parameters](#available-configuration-parameters)
-      - [GitLab Pages](#gitlab-pages)
-      - [GitLab specific](#gitlab-specific)
-      - [Gitaly Experimental](#gitaly-experimental)
+  * [Mail](#mail)
+    + [Reply by email](#reply-by-email)
+  * [Enabling HTTPS support](#enabling-https-support)
+    + [Using HTTPS with a load balancer](#using-https-with-a-load-balancer)
+    + [Installing Trusted SSL Server Certificates](#installing-trusted-ssl-server-certificates)
+  * [Deploy to a subdirectory (relative url root)](#deploy-to-a-subdirectory-relative-url-root)
+  * [OmniAuth Integration](#omniauth-integration)
+    + [CAS3](#cas3)
+    + [Authentiq](#authentiq)
+    + [Google](#google)
+    + [Facebook](#facebook)
+    + [Twitter](#twitter)
+    + [GitHub](#github)
+    + [GitLab](#gitlab)
+    + [BitBucket](#bitbucket)
+    + [SAML](#saml)
+    + [Crowd](#crowd)
+    + [Auth0](#auth0)
+    + [Microsoft Azure](#microsoft-azure)
+  * [Host UID / GID Mapping](#host-uid--gid-mapping)
+  * [Piwik](#piwik)
+  * [Grafana](#grafana)
+  * [Available Configuration Parameters](#available-configuration-parameters)
+    + [GitLab Pages](#gitlab-pages)
+    + [GitLab specific](#gitlab-specific)
+    + [Gitaly Experimental](#gitaly-experimental)
 - [Maintenance](#maintenance)
   * [Creating backups](#creating-backups)
   * [Restoring Backups](#restoring-backups)
@@ -106,11 +112,14 @@ There is a wonderful project that has a very good set of helm charts to get you 
   * [Shell Access](#shell-access)
 - [References](#references)
 
+<!-- tocstop -->
+
 # Other references
 
 - [GitLab Container Registry](docs/container_registry.md)
 - [Reuse docker host SSH daemon](docs/docker_host_ssh.md)
 - [GitLab Backup to s3 compatible storage](s3_compatible_storage.md)
+- [Caddy for GitLab](https://gotfix.com/docker/caddy)
 
 # Introduction
 
@@ -516,7 +525,7 @@ docker run --name gitlab -d --link gitlab-redis:redisio \
     gotfix/gitlab:9.1.2
 ```
 
-### Mail
+## Mail
 
 The mail configuration should be specified using environment variables while starting the GitLab image. The configuration defaults to using gmail to send emails and requires the specification of a valid username and password to login to the gmail servers.
 
@@ -531,7 +540,7 @@ docker run --name gitlab -d \
 
 Please refer the [Available Configuration Parameters](#available-configuration-parameters) section for the list of SMTP parameters that can be specified.
 
-#### Reply by email
+### Reply by email
 
 Since version `8.0.0` GitLab adds support for commenting on issues by replying to emails.
 
@@ -551,7 +560,7 @@ docker run --name gitlab -d \
 
 Please refer the [Available Configuration Parameters](#available-configuration-parameters) section for the list of IMAP parameters that can be specified.
 
-### Enabling HTTPS support
+## Enabling HTTPS support
 
 HTTPS support can be enabled by setting the `GITLAB_HTTPS` option to `true`.
 
@@ -566,7 +575,7 @@ docker run --name gitlab -d \
 
 In this configuration, any requests made over the plain http protocol will automatically be redirected to use the https protocol.
 
-#### Using HTTPS with a load balancer
+### Using HTTPS with a load balancer
 
 Load balancers like nginx/haproxy/hipache talk to backend applications over plain http and as such the installation of ssl keys and certificates are not required and should **NOT** be installed in the container. The SSL configuration has to instead be done at the load balancer.
 
@@ -591,7 +600,7 @@ In case GitLab responds to any kind of POST request (login, OAUTH, changing sett
 
 `proxy_set_header X-Forwarded-Ssl on;` (nginx format)
 
-#### Installing Trusted SSL Server Certificates
+### Installing Trusted SSL Server Certificates
 
 If any of the services that your GitLab server is accessing are using self-signed SSL certificates then you should make sure their server certificate are trusted on the GitLab server for them to be able to talk to each other.
 
@@ -601,7 +610,7 @@ Copy the `ca.crt` file into the certs directory on the [datastore](#data-store).
 
 By default, our own server certificate [gitlab.crt](#generation-of-self-signed-certificate) is added to the trusted certificates list.
 
-### Deploy to a subdirectory (relative url root)
+## Deploy to a subdirectory (relative url root)
 
 By default GitLab expects that your application is running at the root (eg. /). This section explains how to run your application inside a directory.
 
@@ -618,19 +627,19 @@ GitLab will now be accessible at the `/git` path, e.g., `http://www.example.com/
 
 **Note**: *The `GITLAB_RELATIVE_URL_ROOT` parameter should always begin with a slash and* **SHOULD NOT** *have any trailing slashes.*
 
-### OmniAuth Integration
+## OmniAuth Integration
 
 GitLab leverages OmniAuth to allow users to sign in using Twitter, GitHub, and other popular services. Configuring OmniAuth does not prevent standard GitLab authentication or LDAP (if configured) from continuing to work. Users can choose to sign in using any of the configured mechanisms.
 
 Refer to the GitLab [documentation](http://doc.gitlab.com/ce/integration/omniauth.html) for additional information.
 
-#### CAS3
+### CAS3
 
 To enable the CAS OmniAuth provider you must register your application with your CAS instance. This requires the service URL GitLab will supply to CAS. It should be something like: https://git.example.com:443/users/auth/cas3/callback?url. By default handling for SLO is enabled, you only need to configure CAS for backchannel logout.
 
 For example, if your cas server url is `https://sso.example.com`, then adding `--env 'OAUTH_CAS3_SERVER=https://sso.example.com'` to the docker run command enables support for CAS3 OAuth. Please refer to [Available Configuration Parameters](#available-configuration-parameters) for additional CAS3 configuration parameters.
 
-#### Authentiq
+### Authentiq
 
 To enable the Authentiq OmniAuth provider for password-less authentication you must register an application with [Authentiq](https://www.authentiq.com/). Please refer to the GitLab [documentation](https://docs.gitlab.com/ce/administration/auth/authentiq.html) for the procedure to generate the client ID and secret key with Authentiq.
 
@@ -640,7 +649,7 @@ For example, if your API key is `xxx` and the API secret key is `yyy`, then addi
 
 You may want to specify `OAUTH_AUTHENTIQ_REDIRECT_URI` as well. The OAuth scope can be altered as well with `OAUTH_AUTHENTIQ_SCOPE` (defaults to `'aq:name email~rs address aq:push'`).
 
-#### Google
+### Google
 
 To enable the Google OAuth2 OmniAuth provider you must register your application with Google. Google will generate a client ID and secret key for you to use. Please refer to the GitLab [documentation](http://doc.gitlab.com/ce/integration/google.html) for the procedure to generate the client ID and secret key with google.
 
@@ -650,7 +659,7 @@ For example, if your client ID is `xxx.apps.googleusercontent.com` and client se
 
 You can also restrict logins to a single domain by adding `--env "OAUTH_GOOGLE_RESTRICT_DOMAIN='example.com'"`.
 
-#### Facebook
+### Facebook
 
 To enable the Facebook OAuth2 OmniAuth provider you must register your application with Facebook. Facebook will generate an API key and secret for you to use. Please refer to the GitLab [documentation](http://doc.gitlab.com/ce/integration/facebook.html) for the procedure to generate the API key and secret.
 
@@ -658,7 +667,7 @@ Once you have the API key and secret generated, configure them using the `OAUTH_
 
 For example, if your API key is `xxx` and the API secret key is `yyy`, then adding `--env 'OAUTH_FACEBOOK_API_KEY=xxx' --env 'OAUTH_FACEBOOK_APP_SECRET=yyy'` to the docker run command enables support for Facebook OAuth.
 
-#### Twitter
+### Twitter
 
 To enable the Twitter OAuth2 OmniAuth provider you must register your application with Twitter. Twitter will generate an API key and secret for you to use. Please refer to the GitLab [documentation](http://doc.gitlab.com/ce/integration/twitter.html) for the procedure to generate the API key and secret with twitter.
 
@@ -666,7 +675,7 @@ Once you have the API key and secret generated, configure them using the `OAUTH_
 
 For example, if your API key is `xxx` and the API secret key is `yyy`, then adding `--env 'OAUTH_TWITTER_API_KEY=xxx' --env 'OAUTH_TWITTER_APP_SECRET=yyy'` to the docker run command enables support for Twitter OAuth.
 
-#### GitHub
+### GitHub
 
 To enable the GitHub OAuth2 OmniAuth provider you must register your application with GitHub. GitHub will generate a Client ID and secret for you to use. Please refer to the GitLab [documentation](http://doc.gitlab.com/ce/integration/github.html) for the procedure to generate the Client ID and secret with github.
 
@@ -676,7 +685,7 @@ For example, if your Client ID is `xxx` and the Client secret is `yyy`, then add
 
 Users of GitHub Enterprise may want to specify `OAUTH_GITHUB_URL` and `OAUTH_GITHUB_VERIFY_SSL` as well.
 
-#### GitLab
+### GitLab
 
 To enable the GitLab OAuth2 OmniAuth provider you must register your application with GitLab. GitLab will generate a Client ID and secret for you to use. Please refer to the GitLab [documentation](http://doc.gitlab.com/ce/integration/gitlab.html) for the procedure to generate the Client ID and secret with GitLab.
 
@@ -684,7 +693,7 @@ Once you have the Client ID and secret generated, configure them using the `OAUT
 
 For example, if your Client ID is `xxx` and the Client secret is `yyy`, then adding `--env 'OAUTH_GITLAB_API_KEY=xxx' --env 'OAUTH_GITLAB_APP_SECRET=yyy'` to the docker run command enables support for GitLab OAuth.
 
-#### BitBucket
+### BitBucket
 
 To enable the BitBucket OAuth2 OmniAuth provider you must register your application with BitBucket. BitBucket will generate a Client ID and secret for you to use. Please refer to the GitLab [documentation](http://doc.gitlab.com/ce/integration/bitbucket.html) for the procedure to generate the Client ID and secret with BitBucket.
 
@@ -692,7 +701,7 @@ Once you have the Client ID and secret generated, configure them using the `OAUT
 
 For example, if your Client ID is `xxx` and the Client secret is `yyy`, then adding `--env 'OAUTH_BITBUCKET_API_KEY=xxx' --env 'OAUTH_BITBUCKET_APP_SECRET=yyy'` to the docker run command enables support for BitBucket OAuth.
 
-#### SAML
+### SAML
 
 GitLab can be configured to act as a SAML 2.0 Service Provider (SP). This allows GitLab to consume assertions from a SAML 2.0 Identity Provider (IdP) such as Microsoft ADFS to authenticate users. Please refer to the GitLab [documentation](http://doc.gitlab.com/ce/integration/saml.html).
 
@@ -702,19 +711,19 @@ You can also override the default "Sign in with" button label with `OAUTH_SAML_L
 
 Please refer to [Available Configuration Parameters](#available-configuration-parameters) for the default configurations of these parameters.
 
-#### Crowd
+### Crowd
 
 To enable the Crowd server OAuth2 OmniAuth provider you must register your application with Crowd server.
 
 Configure GitLab to enable access the Crowd server by specifying the `OAUTH_CROWD_SERVER_URL`, `OAUTH_CROWD_APP_NAME` and `OAUTH_CROWD_APP_PASSWORD` environment variables.
 
-#### Auth0
+### Auth0
 
 To enable the Auth0 OmniAuth provider you must register your application with [auth0](https://auth0.com/).
 
 Configure the following environment variables `OAUTH_AUTH0_CLIENT_ID`, `OAUTH_AUTH0_CLIENT_SECRET` and `OAUTH_AUTH0_DOMAIN` to complete the integration.
 
-#### Microsoft Azure
+### Microsoft Azure
 
 To enable the Microsoft Azure OAuth2 OmniAuth provider you must register your application with Azure. Azure will generate a Client ID, Client secret and Tenant ID for you to use. Please refer to the GitLab [documentation](http://doc.gitlab.com/ce/integration/azure.html) for the procedure.
 
@@ -722,7 +731,7 @@ Once you have the Client ID, Client secret and Tenant ID generated, configure th
 
 For example, if your Client ID is `xxx`, the Client secret is `yyy` and the Tenant ID is `zzz`, then adding `--env 'OAUTH_AZURE_API_KEY=xxx' --env 'OAUTH_AZURE_API_SECRET=yyy' --env 'OAUTH_AZURE_TENANT_ID=zzz'` to the docker run command enables support for Microsoft Azure OAuth.
 
-### Host UID / GID Mapping
+## Host UID / GID Mapping
 
 Per default the container is configured to run gitlab as user and group `git` with `uid` and `gid` `1000`. The host possibly uses this ids for different purposes leading to unfavorable effects. From the host it appears as if the mounted data volumes are owned by the host's user/group `1000`.
 
@@ -741,7 +750,7 @@ docker run --name gitlab -d [OPTIONS] \
     gotfix/gitlab:9.1.2 app:sanitize
 ```
 
-### Piwik
+## Piwik
 
 If you want to monitor your gitlab instance with [Piwik](http://piwik.org/), there are two options to setup: `PIWIK_URL` and `PIWIK_SITE_ID`.
 These options should contain something like:
@@ -750,7 +759,7 @@ These options should contain something like:
 - `PIWIK_SITE_ID=42`
 
 
-### Grafana
+## Grafana
 
 If you want to graph gitlab metrics on grafana you have to setup the grafana instance :
 
@@ -768,13 +777,13 @@ You can now import the [following dashboard](https://grafana.net/dashboards/1575
 | `GITLAB_MONITOR_PORT`    | Specify port that gitlab-monitor will listen on. Default to `9168` |
 
 
-### Available Configuration Parameters
+## Available Configuration Parameters
 
 *Please refer the docker run command options for the `--env-file` flag where you can specify all required environment variables in a single file. This will save you from writing a potentially long docker run command. Alternatively you can use docker-compose.*
 
 Below is the complete list of available configuration options segregated by category. Those options will allow you to customize your installation of GitLab.
 
-#### GitLab Pages
+### GitLab Pages
 
 | Parameter | Description |
 |-----------|-------------|
@@ -791,7 +800,7 @@ Below is the complete list of available configuration options segregated by cate
 | `GITLAB_PAGES_EXTERNAL_HTTP_IP` | External IP for gitlab-pages that will accept HTTP requests. Used to enable custom domain setup by the user. No Defaults. |
 | `GITLAB_PAGES_EXTERNAL_HTTPS_IP` | External IP for gitlab-pages that will accept HTTPS requests. Used to enable custom domain setup by the user. No Defaults. |
 
-#### GitLab specific
+### GitLab specific
 
 | Parameter | Description |
 |-----------|-------------|
@@ -1003,7 +1012,7 @@ Below is the complete list of available configuration options segregated by cate
 | `RACK_ATTACK_BANTIME` | Number of seconds an IP should be banned after too many auth attempts. Defaults to `3600`. |
 | `GITLAB_TRACK_DEPLOYMENTS` | Enable tracking of deployments. See [rake tasks](https://docs.gitlab.com/ce/administration/raketasks/maintenance.html#tracking-deployments). Defaults to `false`. |
 
-#### Gitaly Experimental
+### Gitaly Experimental
 
 | Parameter | Description |
 |-----------|-------------|
