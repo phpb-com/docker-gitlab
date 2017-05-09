@@ -6,6 +6,7 @@ variables:
   NO_PROXY: "127.0.0.1, localhost, docker, registry, *.gotfix.com"
   DOCKER_HUB_BASE: gotfix/gitlab
   GITHUB_REPO_URL: https://phpb-com:${GITHUB_TOKEN}@github.com/gotfix/gitlab.git
+  GITHUB_REPO_URL2: https://phpb-com:${GITHUB_TOKEN}@github.com/gotfix/docker-gitlab.git
   GIT_SUBMODULE_STRATEGY: recursive
   GIT_DEPTH: "5"
   GET_SOURCES_ATTEMPTS: "3"
@@ -151,6 +152,7 @@ github_mirror:
     - git clone -q --mirror "${CI_REPOSITORY_URL}"
     - cd "${CI_PROJECT_NAME}.git"
     - git push -q --mirror "${GITHUB_REPO_URL}"
+    - git push -q --mirror "${GITHUB_REPO_URL2}"
   when: always
   tags:
     - self
