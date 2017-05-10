@@ -246,6 +246,7 @@ chown -R ${GITLAB_USER}: ${GITLAB_HOME}
 # gitlab.yml and database.yml are required for `assets:precompile`
 exec_as_git cp ${GITLAB_INSTALL_DIR}/config/gitlab.yml.example ${GITLAB_INSTALL_DIR}/config/gitlab.yml
 exec_as_git cp ${GITLAB_INSTALL_DIR}/config/database.yml.postgresql ${GITLAB_INSTALL_DIR}/config/database.yml
+exec_as_git cp ${GITLAB_INSTALL_DIR}/config/resque.yml.example ${GITLAB_INSTALL_DIR}/config/resque.yml # https://github.com/sameersbn/docker-gitlab/pull/1208
 
 echo "Compiling assets. Please be patient, this could take a while..."
 # Update asstets/runtime/functions file as well, if you make any changes for the next line
