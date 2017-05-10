@@ -59,7 +59,7 @@ build:
   except:
     - latest
   tags:
-    - baremetal
+    - cloud
 
 image-test-mysql:
   stage: test
