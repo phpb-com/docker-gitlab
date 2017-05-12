@@ -85,7 +85,7 @@ echo "Cloning gitlab-shell v${GITLAB_SHELL_VERSION}..."
 exec_as_git git clone -q -b v${GITLAB_SHELL_VERSION} --depth 1 ${GITLAB_SHELL_CLONE_URL} ${GITLAB_SHELL_INSTALL_DIR}
 
 # download gitaly
-echo "Cloning gitlab-pages v${GITLAB_GITALY_VERSION}..."
+echo "Cloning gitaly v${GITLAB_GITALY_VERSION}..."
 exec_as_git git clone -q -b v${GITLAB_GITALY_VERSION} --depth 1 ${GITLAB_GITALY_CLONE_URL} ${GITLAB_GITALY_INSTALL_DIR}
 
 # download gitlab-workhose
