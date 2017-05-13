@@ -14,8 +14,6 @@ The canonical source of the repository is [hosted on gotfix.com](https://gotfix.
 
 # Table of Content
 
-<!-- toc -->
-
 - [Introduction](#introduction)
   * [Contributing](#contributing)
   * [Team](#team)
@@ -72,7 +70,6 @@ The canonical source of the repository is [hosted on gotfix.com](https://gotfix.
   * [Where are the Kubernetes configuration files?](#where-are-the-kubernetes-configuration-files)
 - [References](#references)
 
-<!-- tocstop -->
 
 **Other References**
 
