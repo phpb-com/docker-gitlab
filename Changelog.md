@@ -2,7 +2,7 @@
 
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list of changes in GitLab.
 
-**9.1.4**
+**9.1.4-1**
 - gitlab: Gitlab CE 9.1.4
 - Allow to specify multiple IPs in `GITLAB_PAGES_EXTERNAL_HTTP_IP` and `GITLAB_PAGES_EXTERNAL_HTTPS_IP` configuration parameters
 
