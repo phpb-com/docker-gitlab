@@ -104,7 +104,6 @@ docker run --name=gitlab-test -d \
        --env="OAUTH_AZURE_API_SECRET=${TEST_RANDOM_STRING}" \
        --env="OAUTH_AZURE_TENANT_ID=${TEST_RANDOM_STRING}" \
        --env="GOOGLE_ANALYTICS_ID=UA-123-ab" \
-       --env="GITALY_ENABLED=true" \
        --env="DB_ADAPTER=${DB_ADAPTER}" \
        --volume "${TEST_BASE_DIR}/logs:/var/log/gitlab" \
        ${REGISTRY_IMAGE}
