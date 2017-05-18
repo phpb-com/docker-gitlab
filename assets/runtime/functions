@@ -77,6 +77,24 @@ update_template() {
   rm -f ${tmp_file}
 }
 
+# Converts CSV string into yaml array: 1,2,3 --> ["1", "2", "3"]
+csv_to_yaml_array() {
+  local csv out tmp
+  csv=$1
+  while IFS=',' read -ra ADDR; do
+    for i in "${ADDR[@]}"; do
+      tmp=${i# }
+      tmp=${tmp% }
+      if [[ -z ${out} ]]; then
+        out="\"${tmp}\""
+      else
+        out="${out}, \"${tmp}\""
+      fi
+    done
+  done <<< "${csv}"
+  echo "[${out}]"
+}
+
 gitlab_finalize_database_parameters() {
   # is a mysql or postgresql database linked?
   # requires that the mysql or postgresql containers have exposed
@@ -987,6 +1005,7 @@ gitlab_configure_pages() {
     GITLAB_PAGES_HTTPS 
 
     if [[ -n ${GITLAB_PAGES_EXTERNAL_HTTP_IP} ]]; then
+      GITLAB_PAGES_EXTERNAL_HTTP_IP=$(csv_to_yaml_array "${GITLAB_PAGES_EXTERNAL_HTTP_IP}")
       update_template ${GITLAB_CONFIG} \
         GITLAB_PAGES_EXTERNAL_HTTP_IP
     else
@@ -994,6 +1013,7 @@ gitlab_configure_pages() {
     fi
   
     if [[ -n ${GITLAB_PAGES_EXTERNAL_HTTPS_IP} ]]; then
+      GITLAB_PAGES_EXTERNAL_HTTPS_IP=$(csv_to_yaml_array "${GITLAB_PAGES_EXTERNAL_HTTPS_IP}")
       update_template ${GITLAB_CONFIG} \
         GITLAB_PAGES_EXTERNAL_HTTPS_IP
     else
