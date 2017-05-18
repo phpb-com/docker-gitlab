@@ -4,6 +4,10 @@ This file only reflects the changes that are made in this image. Please refer to
 
 **9.1.4**
 - gitlab: Gitlab CE 9.1.4
+- Allow to specify multiple IPs in `GITLAB_PAGES_EXTERNAL_HTTP_IP` and `GITLAB_PAGES_EXTERNAL_HTTPS_IP` configuration parameters
+
+**9.1.4**
+- gitlab: Gitlab CE 9.1.4
 - Minor fixes of container image build
 
 **9.1.3**
