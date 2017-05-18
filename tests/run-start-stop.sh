@@ -69,7 +69,7 @@ docker run --name=gitlab-test -d \
        --env="GITLAB_SECRETS_OTP_KEY_BASE=${TEST_RANDOM_STRING}" \
        --env="GITLAB_MONITOR_ENABLED=true" \
        --env="GITLAB_PAGES_ENABLED=true" \
-       --env="GITLAB_PAGES_EXTERNAL_HTTP_IP=1.1.1.1" \
+       --env="GITLAB_PAGES_EXTERNAL_HTTP_IP=1.1.1.1:80,[2001:db8::1]:80" \
        --env="GITLAB_PROJECTS_SNIPPETS=true" \
        --env="GITLAB_NOTIFY_PUSHER=true" \
        --env="GITLAB_MATTERMOST_ENABLED=true" \
