@@ -25,8 +25,8 @@ Below is the complete list of available configuration options segregated by cate
 | `SSL_PAGES_CERT_PATH` | Path to the gitlab-pages SSL certificate. Default to `$GITLAB_DATA_DIR/certs/pages.crt` |
 | `GITLAB_PAGES_EXTERNAL_HTTP` | Port for gitlab-pages that will accept HTTP requests. Default `8888` |
 | `GITLAB_PAGES_EXTERNAL_HTTPS` | Port for gitlab-pages that will accept HTTPS requests. Default `8443` |
-| `GITLAB_PAGES_EXTERNAL_HTTP_IP` | External IP for gitlab-pages that will accept HTTP requests. Used to enable custom domain setup by the user. No Defaults. |
-| `GITLAB_PAGES_EXTERNAL_HTTPS_IP` | External IP for gitlab-pages that will accept HTTPS requests. Used to enable custom domain setup by the user. No Defaults. |
+| `GITLAB_PAGES_EXTERNAL_HTTP_IP` | Comma separated list of external IPs for gitlab-pages that will accept HTTP requests. Used to enable custom domain setup by the user. IPv6 should be written as `[2001:0db8::1]`, surrounded with square brackets. No Defaults. |
+| `GITLAB_PAGES_EXTERNAL_HTTPS_IP` | Comma separated list of external IP for gitlab-pages that will accept HTTPS requests. Used to enable custom domain setup by the user. IPv6 should be written as `[2001:0db8::1]`, surrounded with square brackets. No Defaults. |
 
 ## GitLab specific
 
