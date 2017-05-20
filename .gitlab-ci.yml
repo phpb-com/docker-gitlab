@@ -59,7 +59,8 @@ build:
   except:
     - latest
   tags:
-    - baremetal
+    - cloud
+    - 4gb
 
 image-test-mysql:
   stage: test
