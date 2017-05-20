@@ -44,7 +44,7 @@ gitlab_ce_cleanup_dir_post() {
 # Function that is executed before build process starts
 prebuild_gitlab_ce() {
   gitlab_ce_bundle_config
-  gitlab_ce_update_omniauth_google_oauth2
+# gitlab_ce_update_omniauth_google_oauth2
 # gitlab_ce_update_redis_gem_to_latest
   return 0
 }
