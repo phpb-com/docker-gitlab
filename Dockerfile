@@ -109,7 +109,7 @@ RUN update-locale LANG=C.UTF-8 LC_MESSAGES=POSIX \
  && rm -rf /etc/update-motd.d /etc/motd /etc/motd.dynamic \
  && ln -fs /dev/null /run/motd.dynamic
 
-RUN gem install bundler --no-ri --no-rdoc
+RUN gem install bundler --version '1.14.6' --no-ri --no-rdoc
 
 COPY assets/build/ ${GITLAB_BUILD_DIR}/
 COPY assets/runtime/ ${GITLAB_RUNTIME_DIR}/
