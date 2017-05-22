@@ -80,6 +80,7 @@ The canonical source of the repository is [hosted on gotfix.com](https://gotfix.
 - [Complete list of Configuration Parameters](https://gotfix.com/docker/gitlab/blob/master/docs/configuration_parameters.md)
 - [Maintenance Commands](https://gotfix.com/docker/gitlab/blob/master/docs/maintenance.md)
 - [Caddy for GitLab](https://gotfix.com/docker/caddy)
+- [Setup of GitLab Docker on Synology DSM](https://github.com/cpoetter/Synology-GitLab-Setup) - Courtesy of [cpoetter@](https://github.com/cpoetter)
 
 # Introduction
 
