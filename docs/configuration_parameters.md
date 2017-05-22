@@ -240,11 +240,11 @@ Below is the complete list of available configuration options segregated by cate
 | `RACK_ATTACK_BANTIME` | Number of seconds an IP should be banned after too many auth attempts. Defaults to `3600`. |
 | `GITLAB_TRACK_DEPLOYMENTS` | Enable tracking of deployments. See [rake tasks](https://docs.gitlab.com/ce/administration/raketasks/maintenance.html#tracking-deployments). Defaults to `false`. |
 
-## Gitaly Experimental
+## Gitaly
 
 | Parameter | Description |
 |-----------|-------------|
-| `GITALY_ENABLED`                | **Experimental** Enable Gitaly. Default `false`. |
-| `GITALY_ADDRESS`                | **Experimental** Set Gitaly server address. `unix:/path/to/socket.file` or `tcp://host:port`. Default `unix:/home/git/gitlab/tmp/sockets/private/gitaly.socket`. |
-| `GITALY_PROMETHEUS_LISTEN_ADDR` | **Experimental** Specify port for Gitaly to emit metrics. Default `localhost:9236`. |
+| `GITALY_ENABLED`                | Enable Gitaly. Default `true`. |
+| `GITALY_ADDRESS`                | Set Gitaly server address. `unix:/path/to/socket.file` or `tcp://host:port`. Default `unix:/home/git/gitlab/tmp/sockets/private/gitaly.socket`. |
+| `GITALY_PROMETHEUS_LISTEN_ADDR` | Specify port for Gitaly to emit metrics. Default `localhost:9236`. |
 

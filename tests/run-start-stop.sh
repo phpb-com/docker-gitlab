@@ -73,7 +73,6 @@ docker run --name=gitlab-test -d \
        --env="GITLAB_PROJECTS_SNIPPETS=true" \
        --env="GITLAB_NOTIFY_PUSHER=true" \
        --env="GITLAB_MATTERMOST_ENABLED=true" \
-       --env="GITLAB_RELATIVE_URL_ROOT=/git" \
        --env="GITLAB_TRUSTED_PROXIES=1.1.1.1" \
        --env="GITLAB_REGISTRY_ENABLED=true" \
        --env="GITLAB_HTTPS=true" \
@@ -104,26 +103,17 @@ docker run --name=gitlab-test -d \
        --env="OAUTH_AZURE_API_SECRET=${TEST_RANDOM_STRING}" \
        --env="OAUTH_AZURE_TENANT_ID=${TEST_RANDOM_STRING}" \
        --env="GOOGLE_ANALYTICS_ID=UA-123-ab" \
-       --env="GITALY_ENABLED=true" \
        --env="DB_ADAPTER=${DB_ADAPTER}" \
        --volume "${TEST_BASE_DIR}/logs:/var/log/gitlab" \
        ${REGISTRY_IMAGE}
 
 RC=0
 
-echo "Waiting for containers to start and settle, up to 20 minutes ..."
+echo "Waiting for containers to start and settle, up to 30 minutes ..."
 c=0
-while [[ $(docker logs gitlab-test 2>&1 | grep -c "Recompiling assets") == 0 ]]; do
+while [[ $(docker logs gitlab-test 2>&1 | grep -c "Clearing cache") == 0 ]]; do
     echo "Still waiting ..."
-    ((c++)) && ((c==40)) && echo "Timeout, exiting ..." && export RC=1 && break
-    sleep 30
-done
-
-echo "Wait for gitlab to recompile assets, up to 20 minutes ..."
-c=0
-while [[ $(docker logs gitlab-test 2>&1 | tail -n 1 | grep -c "Recompiling assets") != 0 ]]; do
-    echo "Still waiting ..."
-    ((c++)) && ((c==40)) && echo "Timeout, exiting ..." && export RC=1 && break
+    ((c++)) && ((c==60)) && echo "Timeout, exiting ..." && export RC=1 && break
     sleep 30
 done
 
