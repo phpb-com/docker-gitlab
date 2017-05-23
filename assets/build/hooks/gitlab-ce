@@ -20,9 +20,9 @@ gitlab_ce_update_redis_gem_to_latest() {
 }
 
 # Workaround for GitLab CE 9.1.4-1 build, https://gotfix.com/docker/gitlab/issues/111
-gitlab_ce_update_omniauth_google_oauth2() {
-  echo "Updating omniauth-google-oauth2 gem to the latest version ... "
-  exec_as_git bundle update omniauth-google-oauth2
+gitlab_ce_loack_omniauth_google_oauth2() {
+  echo "Locking omniauth-google-oauth2 gem ... "
+  exec_as_git bundle lock --update=omniauth-google-oauth2
 }
 
 gitlab_ce_cleanup_tmp_cache() {
@@ -44,7 +44,7 @@ gitlab_ce_cleanup_dir_post() {
 # Function that is executed before build process starts
 prebuild_gitlab_ce() {
   gitlab_ce_bundle_config
-# gitlab_ce_update_omniauth_google_oauth2
+  gitlab_ce_lock_omniauth_google_oauth2
 # gitlab_ce_update_redis_gem_to_latest
   return 0
 }
