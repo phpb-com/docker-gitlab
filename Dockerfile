@@ -22,7 +22,7 @@ LABEL org.label-schema.schema-version="1.0" \
 
 ENV GITLAB_VERSION=9.2.7 \
     RUBY_VERSION=2.3 \
-    GOLANG_VERSION=1.8.1 \
+    GOLANG_VERSION=1.8.3 \
     GITLAB_MONITOR_VERSION=1.8.0 \
     GITLAB_USER="git" \
     GITLAB_HOME="/home/git" \
