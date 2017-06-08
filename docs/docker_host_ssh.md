@@ -40,7 +40,7 @@ Start the container, mapping the `uid` and `gid` of host `git` user:
 ```bash
 docker run --name gitlab -it --rm [options] \
     --env "USERMAP_UID=$(id -u git)" --env "USERMAP_GID=$(id -g git)" \
-    gotfix/gitlab:9.2.3
+    gotfix/gitlab:9.2.4
 ```
 
 ### (Optional) Use default UID/GID in the container
@@ -49,7 +49,7 @@ if you rely on the default `uid` and `git`, for example if you link GitLab to [s
 
 ```bash
 docker run --name gitlab -it --rm [options] \
-    gotfix/gitlab:9.2.3
+    gotfix/gitlab:9.2.4
 ```
 
 Create the script at `/srv/docker/gitlab/data/fix_ssh_permissions.incron.sh`:
