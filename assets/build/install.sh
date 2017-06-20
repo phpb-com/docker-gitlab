@@ -250,8 +250,8 @@ exec_as_git cp ${GITLAB_INSTALL_DIR}/config/resque.yml.example ${GITLAB_INSTALL_
 
 echo "Compiling assets. Please be patient, this could take a while..."
 # Update asstets/runtime/functions file as well, if you make any changes for the next line
-#Not yet: Additional compilation for gettext https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/install/installation.md#compile-gettext-po-files
-exec_as_git bundle exec rake yarn:install gitlab:assets:clean gitlab:assets:compile webpack:compile USE_DB=false SKIP_STORAGE_VALIDATION=true RAILS_ENV=${RAILS_ENV} NODE_ENV=${NODE_ENV}
+# Additional compilation for gettext https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/install/installation.md#compile-gettext-po-files
+exec_as_git bundle exec rake yarn:install gitlab:assets:clean gitlab:assets:compile webpack:compile gettext:compile USE_DB=false SKIP_STORAGE_VALIDATION=true RAILS_ENV=${RAILS_ENV} NODE_ENV=${NODE_ENV}
 
 # Execute post-build hook
 echo "Executing post-build hook for gitlab-ce"
