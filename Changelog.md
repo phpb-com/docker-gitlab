@@ -4,6 +4,13 @@ This file only reflects the changes that are made in this image. Please refer to
 
 **9.2.7**
 - gitlab: Gitlab CE 9.2.7
+- Add parameter to configure automatic email sync from external provider, `OAUTH_SYNC_EMAIL_FROM_PROVIDER`
+- Add compilation step for i18n files
+- Update Golang to 1.8.3
+- Update gitlab-monitor to 1.8.0
+
+**9.2.7**
+- gitlab: Gitlab CE 9.2.7
 - Removed google-omniauth2 gem workaround
 
 **9.2.6**
