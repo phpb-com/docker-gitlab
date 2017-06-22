@@ -14,7 +14,7 @@ Execute the rake task to create a backup.
 
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    gotfix/gitlab:9.2.7 app:rake gitlab:backup:create
+    gotfix/gitlab:9.3.0 app:rake gitlab:backup:create
 ```
 
 A backup will be created in the backups folder of the [Data Store](#data-store). You can change the location of the backups using the `GITLAB_BACKUP_DIR` configuration parameter.
@@ -48,7 +48,7 @@ Execute the rake task to restore a backup. Make sure you run the container in in
 
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    gotfix/gitlab:9.2.7 app:rake gitlab:backup:restore
+    gotfix/gitlab:9.3.0 app:rake gitlab:backup:restore
 ```
 
 The list of all available backups will be displayed in reverse chronological order. Select the backup you want to restore and continue.
@@ -57,7 +57,7 @@ To avoid user interaction in the restore operation, specify the timestamp of the
 
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    gotfix/gitlab:9.2.7 app:rake gitlab:backup:restore BACKUP=1417624827
+    gotfix/gitlab:9.3.0 app:rake gitlab:backup:restore BACKUP=1417624827
 ```
 
 When using `docker-compose` you may use the following command to execute the restore.
@@ -106,7 +106,7 @@ The `app:rake` command allows you to run gitlab rake tasks. To run a rake task s
 
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    gotfix/gitlab:9.2.7 app:rake gitlab:env:info
+    gotfix/gitlab:9.3.0 app:rake gitlab:env:info
 ```
 
 You can also use `docker exec` to run raketasks on running gitlab instance. For example,
@@ -119,7 +119,7 @@ Similarly, to import bare repositories into GitLab project instance
 
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    gotfix/gitlab:9.2.7 app:rake gitlab:import:repos
+    gotfix/gitlab:9.3.0 app:rake gitlab:import:repos
 ```
 
 Or
@@ -150,7 +150,7 @@ Copy all the **bare** git repositories to the `repositories/` directory of the [
 
 ```bash
 docker run --name gitlab -it --rm [OPTIONS] \
-    gotfix/gitlab:9.2.7 app:rake gitlab:import:repos
+    gotfix/gitlab:9.3.0 app:rake gitlab:import:repos
 ```
 
 Watch the logs and your repositories should be available into your new gitlab container.
@@ -172,17 +172,17 @@ To upgrade to newer gitlab releases, simply follow this 4 step upgrade procedure
 
 For docker:
 ```bash
-docker pull gotfix/gitlab:9.2.7
+docker pull gotfix/gitlab:9.3.0
 ```
 
 For docker-compose:
 
-Update `docker-compose.yml` and change `image:` variable to `gotfix/gitlab:9.2.7`, to have it look like snippet below:
+Update `docker-compose.yml` and change `image:` variable to `gotfix/gitlab:9.3.0`, to have it look like snippet below:
 ```yaml
 ...
   gitlab:
     restart: always
-    image: gotfix/gitlab:9.2.7
+    image: gotfix/gitlab:9.3.0
 ...
 ```
 
@@ -229,7 +229,7 @@ Replace `x.x.x` with the version you are upgrading from. For example, if you are
 
 For docker:
 ```bash
-docker run --name gitlab -d [OPTIONS] gotfix/gitlab:9.2.7
+docker run --name gitlab -d [OPTIONS] gotfix/gitlab:9.3.0
 ```
 
 For docker-compose:
