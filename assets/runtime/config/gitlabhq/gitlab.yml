@@ -167,7 +167,7 @@ production: &base
   ## Gravatar
   ## For Libravatar see: http://doc.gitlab.com/ce/customization/libravatar.html
   gravatar:
-    # gravatar urls: possible placeholders: %{hash} %{size} %{email}
+    # gravatar urls: possible placeholders: %{hash} %{size} %{email} %{username}
     plain_url: "{{GITLAB_GRAVATAR_HTTP_URL}}"     # default: http://www.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon
     ssl_url:   "{{GITLAB_GRAVATAR_HTTPS_URL}}"    # default: https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon
 
@@ -334,6 +334,10 @@ production: &base
     # Uncomment this to automatically sign in with a specific omniauth provider's without
     # showing GitLab's sign-in page (default: show the GitLab sign-in page)
     auto_sign_in_with_provider: {{OAUTH_AUTO_SIGN_IN_WITH_PROVIDER}}
+
+    # Sync user's email address from the specified Omniauth provider every time the user logs
+    # in (default: nil). And consequently make this field read-only.
+    sync_email_from_provider: {{OAUTH_SYNC_EMAIL_FROM_PROVIDER}}
 
     # CAUTION!
     # This allows users to login without having a user account first. Define the allowed providers
