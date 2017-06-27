@@ -2,6 +2,9 @@
 
 This file only reflects the changes that are made in this image. Please refer to the upstream GitLab [CHANGELOG](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CHANGELOG.md) for the list of changes in GitLab.
 
+**9.3.1**
+- gitlab: Gitlab CE 9.3.1
+
 **9.3.0**
 - gitlab: Gitlab CE 9.3.0
 - Add parameter to configure automatic email sync from external provider, `OAUTH_SYNC_EMAIL_FROM_PROVIDER`
