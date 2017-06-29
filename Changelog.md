@@ -4,6 +4,10 @@ This file only reflects the changes that are made in this image. Please refer to
 
 **9.3.2**
 - gitlab: Gitlab CE 9.3.2
+- Bugfix: correct order of gitlab-shell golang executables compilation and installation
+
+**9.3.2**
+- gitlab: Gitlab CE 9.3.2
 
 **9.3.1**
 - gitlab: Gitlab CE 9.3.1
