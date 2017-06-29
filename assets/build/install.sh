@@ -119,11 +119,11 @@ echo "Executing pre-build hook for gitlab-shell"
 prebuild_gitlab_shell
 
 exec_as_git cp -a ${GITLAB_SHELL_INSTALL_DIR}/config.yml.example ${GITLAB_SHELL_INSTALL_DIR}/config.yml
-exec_as_git ./bin/install
 if [[ -x ./bin/compile ]]; then
   echo "Compiling gitlab-shell golang executables..."
   exec_as_git PATH=/tmp/go/bin:$PATH GOROOT=/tmp/go ./bin/compile
 fi
+exec_as_git ./bin/install
 
 # Execute post-build hook
 echo "Executing post-build hook for gitlab-shell"
