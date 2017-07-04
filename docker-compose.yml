@@ -43,7 +43,7 @@ services:
 
   gitlab:
     restart: always
-    image: gotfix/gitlab:9.3.3
+    image: gotfix/gitlab:9.3.4
     depends_on:
     - redis
     - postgresql
