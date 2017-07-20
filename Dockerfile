@@ -86,6 +86,7 @@ RUN apt-get install -y \
     libcurl3 \
     libicu55 \
     libmysqlclient20 \
+    libre2 \
     logrotate \
     locales \
     mysql-client \
