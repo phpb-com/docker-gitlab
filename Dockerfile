@@ -85,6 +85,7 @@ RUN apt-get install -y \
     libxslt1.1 \
     libcurl3 \
     libicu55 \
+    libre2-dev \
     libmysqlclient20 \
     logrotate \
     locales \
